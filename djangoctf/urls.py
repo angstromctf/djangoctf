@@ -4,6 +4,6 @@ from django.contrib import admin
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'djangoctf.views.home', name='home'),
-    url(r'^problems/', include('problems.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('ctfapp.urls')),
 )

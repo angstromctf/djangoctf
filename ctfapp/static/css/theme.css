@@ -1,0 +1,10 @@
+header.page-title {
+	padding-top: 1em;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+	background-color: #888;
+}
+
+nav.navbar {
+	margin-bottom: 0;
+}
