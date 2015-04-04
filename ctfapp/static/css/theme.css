@@ -8,3 +8,41 @@ header.page-title {
 nav.navbar {
 	margin-bottom: 0;
 }
+
+.panel-success {
+  border-color: #3c763d;
+}
+.panel-success > .panel-heading {
+  color: #fff;
+  background-color: #3c763d;
+  border-color: #3c763d;
+}
+.panel-success > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #3c763d;
+}
+.panel-success > .panel-heading .badge {
+  color: #3c763d;
+  background-color: #3c763d;
+}
+.panel-success > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #3c763d;
+}
+
+.panel-danger {
+  border-color: #a94442;
+}
+.panel-danger > .panel-heading {
+  color: #fff;
+  background-color: #a94442;
+  border-color: #a94442;
+}
+.panel-danger > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #a94442;
+}
+.panel-danger > .panel-heading .badge {
+  color: #a94442;
+  background-color: #a94442;
+}
+.panel-danger > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #a94442;
+}

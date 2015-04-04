@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
 
 from .models import Problem
-from .forms import SubmitForm
+from .forms import SubmitForm, LoginForm
 
 import hashlib
 
@@ -11,7 +13,7 @@ def index(request):
 	context = RequestContext(request)
 	return HttpResponse(template.render(context))
 
-
+#@login_required
 def problems(request):
 	last_submission = -1
 	good = False
@@ -34,5 +36,12 @@ def problems(request):
 		'form': SubmitForm(),
 		'last': last_submission,
 		'good': good,
+	})
+	return HttpResponse(template.render(context))
+
+def login_view(request):
+	template = loader.get_template('login.html')
+	context = RequestContext(request, {
+		'form': LoginForm(),
 	})
 	return HttpResponse(template.render(context))
