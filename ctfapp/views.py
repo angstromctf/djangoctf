@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render_to_response, render
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.models import User
 
 from .models import Problem, UserProfile
 from .forms import SubmitForm, LoginForm
@@ -67,3 +68,18 @@ def problems(request):
         'status': status,
         'solved': solved,
     })
+
+
+def signup(request):
+    if request.method == 'GET':
+        # Show our template
+        return render(request, 'signup.html', {})
+    elif request.method == 'POST':
+        # They're submitting their response
+        user = User.objects.create_user(request.POST['username'],
+                                        request.POST['email'],
+                                        request.POST['password'])
+        profile = UserProfile(user=user,
+                              school=request.POST['school'])
+        profile.save()
+        return redirect("/")
