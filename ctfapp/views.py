@@ -69,7 +69,7 @@ def problems(request):
                 status = "SOLVED"
                 
                 delta = datetime.now() - start_time
-                solution = ProblemSolved(request.user, request.user.userprofile.score, (delta.days * 86400 + delta.seconds) // 60)
+                solution = ProblemSolved(team=request.user, new_score=request.user.userprofile.score, minutes=(delta.days * 86400 + delta.seconds) // 60)
                 solution.save()
             else:
                 solved[pid] = (False, next_count)
