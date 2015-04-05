@@ -3,6 +3,7 @@ from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 
 from .models import Problem, UserProfile
 from .forms import SubmitForm, LoginForm
@@ -76,10 +77,22 @@ def signup(request):
         return render(request, 'signup.html', {})
     elif request.method == 'POST':
         # They're submitting their response
-        user = User.objects.create_user(request.POST['username'],
-                                        request.POST['email'],
-                                        request.POST['password'])
-        profile = UserProfile(user=user,
-                              school=request.POST['school'])
-        profile.save()
+        # Keep a running list of errors
+        errors = {}
+        # Make sure no fields are empty
+        for field in ['username', 'password', 'school', 'email']:
+            if len(request.POST[field]) == 0:
+                errors[field + '_error'] = "You need a {:s}".format(field.capitalize())
+        # Create the user
+        try:
+            user = User.objects.create_user(request.POST['username'],
+                                            request.POST['email'],
+                                            request.POST['password'])
+            profile = UserProfile(user=user,
+                                  school=request.POST['school'])
+            profile.save()
+        except IntegrityError as e:
+            # The username/email they're requesting is already in use
+            errors['username_error'] = 'Username already in use'
+            return render(request, 'signup.html', errors)
         return redirect("/")
