@@ -5,13 +5,15 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 
-from .models import Problem, UserProfile
+from .models import Problem, UserProfile, ProblemSolved
 from .forms import SubmitForm, LoginForm
 
 import hashlib
 import pickle
 from datetime import datetime
 
+#REPLACE THIS WITH CONTEST START TIME
+start_time = datetime(2015, 4, 5, 11, 22, 58, 83014)
 
 def index(request):
     return render_to_response('index.html', {
@@ -21,11 +23,23 @@ def index(request):
 
 def scoreboard(request):
     user_list = UserProfile.objects.all().order_by('-score', 'score_lastupdate')
+    
+    solutions_list = []
+    for x in range(5):
+        minor = ProblemSolved.objects.all().filter(team=user_list[x])
+        
+        for j in minor:
+            solutions_list.append([j.minutes] + [-1] * x + [j.new_score] + [-1] * (4-x))
+    
+    solutions_list.sort()
+    solutions_list.insert(0, ['X'] + list(map(lambda x: user_list[x].user.username, range(5))))
+    solutions_list[-1] = [solutions_list[-1][0]] + list(map(lambda x: user_list[x].score, range(5)))
+    
     return render(request, 'scoreboard.html', {
         'user': request.user,
         'user_list': user_list,
+        'data': str(solutions_list).replace('-1', 'null').replace('(', '[').replace(')', ']'),
     })
-
 
 @login_required
 def problems(request):
@@ -53,6 +67,10 @@ def problems(request):
                 request.user.userprofile.score += problem.problem_value
                 request.user.userprofile.score_lastupdate = datetime.now()
                 status = "SOLVED"
+                
+                delta = datetime.now() - start_time
+                solution = ProblemSolved(request.user, request.user.userprofile.score, (delta.days * 86400 + delta.seconds) // 60)
+                solution.save()
             else:
                 solved[pid] = (False, next_count)
                 status = "FAILED"
