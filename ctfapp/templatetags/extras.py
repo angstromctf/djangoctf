@@ -1,4 +1,5 @@
 from django import template
+from ctfapp.models import UserProfile
 
 register = template.Library()
 
@@ -9,3 +10,12 @@ def is_solved(problem, solved):
 @register.filter
 def try_count(problem, solved):
 	return solved[problem.id][1] if problem.id in solved else 1
+
+@register.filter
+def place(user):
+	for index, item in enumerate(UserProfile.objects.all().order_by('-score', 'score_lastupdate')):
+		if item.user.id == user.id:
+			return index+1
+	
+	return -1
+	

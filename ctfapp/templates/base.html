@@ -1,4 +1,6 @@
 {% load staticfiles %}
+{% load extras %}
+{% load humanize %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,7 +38,7 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						{% if user.is_authenticated %}
-						<li><a href="{% url 'home' %}">Profile</a></li>
+						<p class="navbar-text">Hi {{ user.username }}! You've got {{ user.userprofile.score }} points, in {{ user|place|ordinal }} place.</p>
 						<li><a href="{% url 'logout' %}">Logout</a></li>
 						{% else %}
 						<li><a href="{% url 'login' %}">Login</a></li>

@@ -36,47 +36,64 @@
 	{% endif %}
 		
 			<div class="panel-body">
-				{{ problem.problem_text }}
+				<ul class="nav nav-tabs">
+					<li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
+					<li><a data-toggle="tab" href="#hint{{ problem.id }}">Hint</a></li>
+				</ul>
 				
 				<br/>
-				<br/>
 				
-				<form action="." method="post">
-					{% csrf_token %}
-					
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Problem submission" id="id_flag_guess" name="flag_guess">
-						<span class="input-group-btn">
-							<button class="btn btn-primary" type="submit">Submit!</button>
-						</span>
-						<input id="id_problem" name="problem" type="hidden" value="{{ problem.id }}"></input>
+				<div class="tab-content">
+					<div id="problem{{ problem.id }}" class="tab-pane in active">
+						{{ problem.problem_text }}
+						
+						<br/>
+						<br/>
+						
+						<form action="." method="post">
+							{% csrf_token %}
+							
+							<div class="input-group">
+								<input type="text" class="form-control" placeholder="Problem submission" id="id_flag_guess" name="flag_guess">
+								<span class="input-group-btn">
+									<button class="btn btn-primary" type="submit">Submit!</button>
+								</span>
+								<input id="id_problem" name="problem" type="hidden" value="{{ problem.id }}"></input>
+							</div>
+						</form>
+						
+						{% ifequal problem.id last %}
+							<br/>
+							{% ifequal status "SOLVED" %}
+								<div class="alert alert-success .alert-dismissible" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+									<strong>Correct!</strong> Nice job!
+									It took you {{ problem|try_count:solved }} attempt{{ problem|try_count:solved|pluralize }}.
+								</div>
+							{% endifequal %}
+							{% ifequal status "FAILED" %}
+								<div class="alert alert-danger .alert-dismissible" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+									<strong>Incorrect.</strong>
+									Sorry, please try again. You've tried {{ problem|try_count:solved }} time{{ problem|try_count:solved|pluralize }} so far.
+								</div>
+							{% endifequal %}
+							{% ifequal status "ALREADY" %}
+								<div class="alert alert-info .alert-dismissible" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+									<strong>Hmmm?</strong> Looks like you've already solved this problem..
+								</div>
+							{% endifequal %}
+						{% endifequal %}
 					</div>
-				</form>
-				
-				{% ifequal problem.id last %}
-					<br/>
-					{% ifequal status "SOLVED" %}
-						<div class="alert alert-success .alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-							<strong>Correct!</strong> Nice job! It took you {{ problem|try_count:solved }} attempt(s).
-						</div>
-					{% endifequal %}
-					{% ifequal status "FAILED" %}
-						<div class="alert alert-danger .alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-							<strong>Incorrect.</strong> Sorry, please try again. You've tried {{ problem|try_count:solved }} time(s) so far.
-						</div>
-					{% endifequal %}
-					{% ifequal status "ALREADY" %}
-						<div class="alert alert-info .alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-							<strong>Hmmm?</strong> Looks like you've already solved this problem..
-						</div>
-					{% endifequal %}
-				{% endifequal %}
+					
+					<div id="hint{{ problem.id }}" class="tab-pane">
+						{{ problem.hint_text }}
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
