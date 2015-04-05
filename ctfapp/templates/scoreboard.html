@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load extras %}
+
+{% block title %}Scoreboard - angstromCTF{% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>Scoreboard</h1>	
+	</div>
+</header>
+{% endblock %}
+
+
+{% block content %}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Place</th>
+			<th>Team Name</th>
+			<th>School</th>
+			<th>Score</th>
+		</tr>
+	</thead>
+	{% for team in user_list %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td>{{ team.user.get_username }}</td>
+			<td>{{ team.school }}</td>
+			<td>{{ team.score }}</td>
+	{% endfor %}
+</table>
+{% endblock %}
