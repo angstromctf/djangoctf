@@ -95,13 +95,19 @@ def signup(request):
         # Show our template
         return render(request, 'signup.html', {})
     elif request.method == 'POST':
+        
         # They're submitting their response
         # Keep a running list of errors
         errors = {}
         # Make sure no fields are empty
         for field in ['username', 'password', 'school', 'email']:
-            if len(request.POST[field]) == 0:
+            if len(request.cleaned_data[field]) == 0:
                 errors[field + '_error'] = "You need a {:s}".format(field.capitalize())
+        
+        if hashlib.sha512(request.cleaned_data['special'].encode()).hexdigest() != "21cd8426ab8bdd348e6d8ecd22c33f9b178bd3136508f5296c7c348f8eeefb223cf55aa00f18bc5dead0769a658603f6f0b13c7eaaa37c6be55d0f0bc51182a0":
+            errors['special_error'] = "Bad verification code."
+            return render(request, 'signup.html', errors)
+        
         # Create the user
         try:
             user = User.objects.create_user(request.cleaned_data['username'],
