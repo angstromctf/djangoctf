@@ -103,12 +103,16 @@ def signup(request):
                 errors[field + '_error'] = "You need a {:s}".format(field.capitalize())
         # Create the user
         try:
-            user = User.objects.create_user(request.POST['username'],
-                                            request.POST['email'],
-                                            request.POST['password'])
+            user = User.objects.create_user(request.cleaned_data['username'],
+                                            request.cleaned_data['email'],
+                                            request.cleaned_data['password'])
+                                      
             profile = UserProfile(user=user,
-                                  school=request.POST['school'])
+                                  school=request.cleaned_data['school'])
             profile.save()
+            
+            solved = ProblemSolved(team=user)
+            solved.save()
         except IntegrityError as e:
             # The username/email they're requesting is already in use
             errors['username_error'] = 'Username already in use'
