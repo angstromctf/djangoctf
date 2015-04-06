@@ -1,6 +1,5 @@
 # Secret stuff
 db.sqlite3
-/djangoctf/settings.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
