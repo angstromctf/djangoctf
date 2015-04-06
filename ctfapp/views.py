@@ -15,6 +15,7 @@ from datetime import datetime
 #REPLACE THIS WITH CONTEST START TIME
 start_time = datetime(2015, 4, 5, 11, 22, 58, 83014)
 
+
 def index(request):
     return render_to_response('index.html', {
         'user': request.user,
@@ -41,6 +42,7 @@ def scoreboard(request):
         'user_list': user_list,
         'data': str(solutions_list).replace('-1', 'null').replace('(', '[').replace(')', ']'),
     })
+
 
 @login_required
 def problems(request):
@@ -104,10 +106,6 @@ def signup(request):
             if len(request.cleaned_data[field]) == 0:
                 errors[field + '_error'] = "You need a {:s}".format(field.capitalize())
         
-        if hashlib.sha512(request.cleaned_data['special'].encode()).hexdigest() != "21cd8426ab8bdd348e6d8ecd22c33f9b178bd3136508f5296c7c348f8eeefb223cf55aa00f18bc5dead0769a658603f6f0b13c7eaaa37c6be55d0f0bc51182a0":
-            errors['special_error'] = "Bad verification code."
-            return render(request, 'signup.html', errors)
-        
         # Create the user
         try:
             user = User.objects.create_user(request.cleaned_data['username'],
@@ -120,7 +118,7 @@ def signup(request):
             
             solved = ProblemSolved(team=user)
             solved.save()
-        except IntegrityError as e:
+        except IntegrityError:
             # The username/email they're requesting is already in use
             errors['username_error'] = 'Username already in use'
             return render(request, 'signup.html', errors)
