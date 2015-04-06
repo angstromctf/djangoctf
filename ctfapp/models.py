@@ -25,7 +25,8 @@ class UserProfile(models.Model):
     score = models.IntegerField(default=0)
     score_lastupdate = models.DateTimeField(default=now())
 
+
 class ProblemSolved(models.Model):
-	team = models.ForeignKey(User)
-	new_score = models.IntegerField(default=0)
-	minutes = models.IntegerField(default=now())
+    team = models.ForeignKey(User)
+    new_score = models.IntegerField(default=0)
+    minutes = models.IntegerField(default=now())
