@@ -5,12 +5,10 @@ from django.contrib.auth.models import User
 
 from .models import UserProfile, ProblemSolved, Problem
 
-
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'profile'
-
 
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline,)

@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import datetime
+from django.utils.timezone import now
 
 import pickle
 
@@ -23,9 +23,9 @@ class UserProfile(models.Model):
     solved = models.BinaryField(default=pickle.dumps({}))
 
     score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=datetime.now())
+    score_lastupdate = models.DateTimeField(default=now())
 
 class ProblemSolved(models.Model):
 	team = models.ForeignKey(User)
-	new_score = models.IntegerField()
-	minutes = models.IntegerField()
+	new_score = models.IntegerField(default=0)
+	minutes = models.IntegerField(default=now())

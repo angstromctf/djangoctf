@@ -25,15 +25,16 @@ def scoreboard(request):
     user_list = UserProfile.objects.all().order_by('-score', 'score_lastupdate')
     
     solutions_list = []
-    for x in range(5):
+    GRAPH_SIZE = min(5, len(UserProfile.objects.all()))
+    for x in range(GRAPH_SIZE):
         minor = ProblemSolved.objects.all().filter(team=user_list[x])
         
         for j in minor:
-            solutions_list.append([j.minutes] + [-1] * x + [j.new_score] + [-1] * (4-x))
+            solutions_list.append([j.minutes] + [-1] * x + [j.new_score] + [-1] * (GRAPH_SIZE-1-x))
     
     solutions_list.sort()
-    solutions_list.insert(0, ['X'] + list(map(lambda x: user_list[x].user.username, range(5))))
-    solutions_list[-1] = [solutions_list[-1][0]] + list(map(lambda x: user_list[x].score, range(5)))
+    solutions_list.insert(0, ['X'] + list(map(lambda x: user_list[x].user.username, range(GRAPH_SIZE))))
+    solutions_list[-1] = [solutions_list[-1][0]] + list(map(lambda x: user_list[x].score, range(GRAPH_SIZE)))
     
     return render(request, 'scoreboard.html', {
         'user': request.user,
@@ -103,12 +104,16 @@ def signup(request):
                 errors[field + '_error'] = "You need a {:s}".format(field.capitalize())
         # Create the user
         try:
-            user = User.objects.create_user(request.POST['username'],
-                                            request.POST['email'],
-                                            request.POST['password'])
+            user = User.objects.create_user(request.cleaned_data['username'],
+                                            request.cleaned_data['email'],
+                                            request.cleaned_data['password'])
+                                      
             profile = UserProfile(user=user,
-                                  school=request.POST['school'])
+                                  school=request.cleaned_data['school'])
             profile.save()
+            
+            solved = ProblemSolved(team=user)
+            solved.save()
         except IntegrityError as e:
             # The username/email they're requesting is already in use
             errors['username_error'] = 'Username already in use'
