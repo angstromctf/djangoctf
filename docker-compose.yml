@@ -1,0 +1,11 @@
+db:
+  image: postgres
+web:
+  build: .
+  command: pypy3 manage.py runserver 0.0.0.0:8000
+  volumes:
+    - .:/code
+  ports:
+    - "8000:8000"
+  links:
+    - db
