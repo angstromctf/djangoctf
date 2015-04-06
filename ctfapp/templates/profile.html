@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load extras %}
+
+{% block title %}angstromCTF: {{ user|capfirst|possession }} profile{% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>{{ user|capfirst|possession }} profile</h1>
+	</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<table class="table">
+	<thead>
+		<tr>
+			<th>Problem</th>
+			<th>Point value</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for problem in problems %}
+		<tr style="background-color: {{ problem.status|color_solved }};">
+			<td>{{ problem.name }}</td>
+			<td>{{ problem.value }}</td>
+			<td>{{ problem.status|solved }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% endblock %}

@@ -11,6 +11,7 @@ from .forms import SubmitForm, LoginForm
 import hashlib
 import pickle
 from datetime import datetime
+from collections import OrderedDict
 
 #REPLACE THIS WITH CONTEST START TIME
 start_time = datetime(2015, 4, 5, 11, 22, 58, 83014)
@@ -123,3 +124,36 @@ def signup(request):
             errors['username_error'] = 'Username already in use'
             return render(request, 'signup.html', errors)
         return redirect("/")
+
+
+def profile(request, user):
+    # Find all problems
+    problems = Problem.objects.all()
+    # ... and all the problems the user has solved
+    problems_solved = pickle.loads(UserProfile.objects.get(user__username=user).solved)
+    # Create an array of all problems, set to unsolved
+    annotated_problems = OrderedDict()
+    for problem in problems:
+        annotated_problems[problem.id] = (problem.problem_title, problem.problem_value, False)
+
+    # Now put all solved problems in the array
+    for solved in problems_solved.items():
+        annotated_problems[solved[0]] = (
+            annotated_problems[solved[0]][0],
+            annotated_problems[solved[0]][1],
+            solved[1][0]
+        )
+
+    # Finally, convert to a more usable data structure
+    problems_list = []
+    for item in annotated_problems.values():
+        problems_list.append({
+            'name': item[0],
+            'value': item[1],
+            'status': item[2]
+        })
+
+    return render(request, 'profile.html', {
+        'user': user,
+        'problems': problems_list
+    })

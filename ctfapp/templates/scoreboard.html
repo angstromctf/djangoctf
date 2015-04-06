@@ -24,11 +24,12 @@
 		</tr>
 	</thead>
 	{% for team in user_list %}
-		<tr>
+		<tr onclick="document.location = '/profile/{{ team.user.get_username }}';">
 			<td>{{ forloop.counter }}</td>
 			<td>{{ team.user.get_username }}</td>
 			<td>{{ team.school }}</td>
 			<td>{{ team.score }}</td>
+		</tr>
 	{% endfor %}
 </table>
 
