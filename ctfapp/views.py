@@ -27,7 +27,7 @@ def scoreboard(request):
     solutions_list = []
     GRAPH_SIZE = min(5, len(UserProfile.objects.all()))
     for x in range(GRAPH_SIZE):
-        minor = ProblemSolved.objects.all().filter(team=user_list[x])
+        minor = ProblemSolved.objects.all().filter(team=user_list[x].user)
         
         for j in minor:
             solutions_list.append([j.minutes] + [-1] * x + [j.new_score] + [-1] * (GRAPH_SIZE-1-x))
