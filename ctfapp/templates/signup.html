@@ -63,6 +63,21 @@
 				<input type="password" class="form-control" id="id_password" placeholder="Password" name="password">
 			</div>
 		</div>
+        
+        {% if password_error|length > 0 %}
+		<div class="form-group has-error">
+			<div class="alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+				<strong>{{ special_error }}</strong>
+			</div>
+		{% else %}
+		<div class="form-group">
+		{% endif %}
+            <label for="id_special" class="col-sm-2 control-label">Special verification code</label>
+			<div class="col-sm-10">
+				<input type="password" class="form-control" id="id_special" placeholder="Special verification code" name="special">
+			</div>
+		</div>
 
 		{% if school_error|length > 0 %}
 		<div class="form-group has-error">
