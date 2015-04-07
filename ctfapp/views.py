@@ -177,11 +177,13 @@ def profile(request, user):
 
     # Now put all solved problems in the array
     for solved in problems_solved.items():
-        annotated_problems[solved[0]] = (
-            annotated_problems[solved[0]][0],
-            annotated_problems[solved[0]][1],
-            solved[1][0]
-        )
+        try:
+            annotated_problems[solved[0]] = (
+                annotated_problems[solved[0]][0],
+                annotated_problems[solved[0]][1],
+                solved[1][0])
+        except KeyError:
+            pass
 
     # Finally, convert to a more usable data structure
     problems_list = []
