@@ -16,7 +16,7 @@
 
 {% for problem in problem_list %}
 	{% if problem|is_solved:solved %}
-	<div class="panel panel-success">
+	<div class="panel panel-success" id="panel{{ problem.id }}">
 		<div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
 			<h3 class="panel-title">
 				{{ problem.problem_title }} ({{ problem.problem_category }}, {{ problem.problem_value }})
@@ -25,7 +25,7 @@
 		</div>
 		<div class="collapse {% ifequal problem.id last %} in{% endifequal %}" id="wrapper{{ problem.id }}">
 	{% else %}
-	<div class="panel panel-danger">
+	<div class="panel panel-danger" id="panel{{ problem.id }}">
 		<div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
 			<h3 class="panel-title">
 				{{ problem.problem_title }} ({{ problem.problem_category }}, {{ problem.problem_value }})
@@ -50,7 +50,7 @@
 						<br/>
 						<br/>
 						
-						<form action="." method="post">
+						<form action=".#panel{{ problem.id }}" method="post">
 							{% csrf_token %}
 							
 							<div class="input-group">
