@@ -152,6 +152,7 @@ def profile(request, user):
             'value': item[1],
             'status': item[2]
         })
+    problems_list.sort(key=lambda row: row['value'])
 
     return render(request, 'profile.html', {
         'user': user,
