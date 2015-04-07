@@ -37,4 +37,4 @@ def solved(value):
 
 @register.filter
 def color_solved(value):
-    return 'green' if value else '#FF4040'
+    return 'solved' if value else 'unsolved'
