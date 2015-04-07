@@ -1,4 +1,10 @@
 import datetime
+from django.utils.timezone import now
+
+print(now())
+
+#REPLACE THIS WITH CONTEST START TIME
+start_time = datetime.datetime(2015, 4, 5, 11, 22, 58, 83014, datetime.timezone.utc)
 
 
 def to_minutes(date)-> int:
