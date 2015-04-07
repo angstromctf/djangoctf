@@ -60,6 +60,10 @@ nav.navbar {
   border-bottom-color: #2c3e50;
 }
 
+div.panel div.alert:last-child {
+    margin-bottom: 0;
+}
+
 /* Profile styles */
 .problem-solved {
     color: white;
