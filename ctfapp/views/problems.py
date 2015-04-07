@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.utils import timezone
 
 from ctfapp.forms import SubmitForm
 from ctfapp.models import Problem, ProblemSolved
@@ -58,7 +59,7 @@ def problems(request: HttpRequest):
                 request.user.userprofile.score_lastupdate = datetime.now()
 
                 # Add a new Solution object corresponding to having solved the problem
-                delta = datetime.now() - start_time
+                delta = timezone.now() - start_time
                 solution = ProblemSolved(team=request.user, new_score=request.user.userprofile.score, minutes=to_minutes(delta))
                 solution.save()
             else:
