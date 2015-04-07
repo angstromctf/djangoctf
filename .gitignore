@@ -1,5 +1,6 @@
 # Secret stuff
 db.sqlite3
+*.old
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
