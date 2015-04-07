@@ -6,6 +6,7 @@ from ctfapp.forms import SubmitForm
 from ctfapp.models import Problem, ProblemSolved
 
 from datetime import datetime
+from enum import IntEnum
 import hashlib
 import pickle
 
@@ -13,6 +14,12 @@ from ctfapp.utils import to_minutes
 
 #REPLACE THIS WITH CONTEST START TIME
 start_time = datetime(2015, 4, 5, 11, 22, 58, 83014)
+
+class ProblemStatus(IntEnum):
+    okay = 1
+    wrong = 2
+    correct = 3
+    already = 4
 
 @login_required
 def problems(request: HttpRequest):
@@ -23,7 +30,7 @@ def problems(request: HttpRequest):
     last_submission = -1
 
     # The status of the last submission (correct, failed, etc.)
-    status = ""
+    status = ProblemStatus.okay
 
     # Load the user's solved dictionary using Pickle
     solved = pickle.loads(request.user.userprofile.solved)
@@ -50,11 +57,11 @@ def problems(request: HttpRequest):
 
             if pid in solved and solved[pid][0]:
                 # We'd already solved the problem
-                status = "ALREADY"
+                status = ProblemStatus.already
             elif correct:
                 # We have now solved the problem because the solution was correct
                 solved[pid] = (True, next_count)
-                status = "SOLVED"
+                status = ProblemStatus.correct
 
                 # Update the user's score
                 request.user.userprofile.score += problem.problem_value
@@ -67,7 +74,7 @@ def problems(request: HttpRequest):
             else:
                 # We haven't solved the problem, the solution was bad
                 solved[pid] = (False, next_count)
-                status = "FAILED"
+                status = ProblemStatus.wrong
 
             request.user.userprofile.solved = pickle.dumps(solved)
             request.user.userprofile.save()
