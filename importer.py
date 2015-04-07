@@ -1,9 +1,10 @@
 from django.conf import settings
 from djangoctf.settings import DATABASES, TIME_ZONE
 from sys import argv
-from os import listdir
-from os.path import isdir
+from os import listdir, makedirs
+from os.path import isdir, isfile, realpath
 from hashlib import sha512
+from shutil import copyfile
 
 if len(argv) != 2:
     print('Usage: {:s} problems_directory'.format(argv[0]))
@@ -13,6 +14,8 @@ path = argv[1]
 # Configure settings
 settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE)
 from ctfapp.models import *
+
+STATIC = '/'.join(realpath(__file__).split('/')[:-1]) + '/ctfapp/static/problems'
 
 for category in listdir(path):
     category_path = path + '/' + category
@@ -53,3 +56,34 @@ for category in listdir(path):
                           hint_text=hint,
                           flag_sha512_hash=flag)
         problem.save()
+        print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
+
+print()
+# Now copy static files
+# This is in a seperate for loop so that static files are copied even when their respective problem already exists
+for category in listdir(path):
+    category_path = path + '/' + category
+    if not isdir(category_path) or category[0] == '.':
+        continue
+
+    for problem in listdir(category_path):
+        problem_path = category_path + '/' + problem
+        if not isdir(problem_path):
+            continue
+
+        # Create the static path if necessary
+        static_dir = STATIC + '/' + category + '/' + problem
+        makedirs(static_dir, exist_ok=True)
+
+        try:
+            files = open(problem_path + '/files.txt').readlines()
+        except FileNotFoundError:
+            continue
+
+        for file in files:
+            file_path = problem_path + '/' + file.strip()
+            static_path = static_dir + '/' + file.strip()
+            if len(file) == 0 or not isfile(file_path):
+                continue
+            copyfile(file_path, static_path)
+            print("Note: Copying static file {:s} for problem {:s}/{:s}".format(file.strip(), category, problem))
