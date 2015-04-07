@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
+from ctfapp.utils import to_minutes
 import pickle
-
 
 class Problem(models.Model):
     problem_title = models.CharField(max_length=200)
@@ -29,4 +29,4 @@ class UserProfile(models.Model):
 class ProblemSolved(models.Model):
     team = models.ForeignKey(User)
     new_score = models.IntegerField(default=0)
-    minutes = models.IntegerField(default=now())
+    minutes = models.IntegerField(default=to_minutes(now()))
