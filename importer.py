@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned
 from djangoctf.settings import DATABASES, TIME_ZONE
 from sys import argv
 from os import listdir, makedirs
@@ -33,11 +34,6 @@ for category in listdir(path):
         except FileNotFoundError:
             name = problem
 
-        # Make sure the problem does not already exist
-        if Problem.objects.filter(problem_title=name).exists():
-            print("Note: Problem {:s}/{:s} already exists, skipping".format(category, problem))
-            continue
-
         # Get the problem text and hint
         try:
             text = open(problem_path + '/problem.txt').read().strip()
@@ -48,15 +44,31 @@ for category in listdir(path):
             print("Error: Failed to import problem {:s}/{:s}".format(category, problem))
             continue
 
-        # Finally, create the problem
-        problem_obj = Problem(problem_title=name,
-                              problem_text=text,
-                              problem_value=value,
-                              problem_category=category,
-                              hint_text=hint,
-                              flag_sha512_hash=flag)
-        problem_obj.save()
-        print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
+        if Problem.objects.filter(problem_title=name).exists():
+            # Update the problem if it already exists
+            try:
+                problem_obj = Problem.objects.get(problem_title=name)
+                problem_obj.problem_text = text
+                problem_obj.hint_text = hint
+                problem_obj.problem_value = value
+                problem_obj.flag_sha512_hash = flag
+                # We can't update the name for obvious reasons
+                problem_obj.save()
+
+            except MultipleObjectsReturned:
+                print("Error: Multiple problems exist with name {:s}".format(name))
+                continue
+            print("Note: Successfully updated problem {:s}/{:s}".format(category, problem))
+        else:
+            # Otherwise, create new problem
+            problem_obj = Problem(problem_title=name,
+                                  problem_text=text,
+                                  problem_value=value,
+                                  problem_category=category,
+                                  hint_text=hint,
+                                  flag_sha512_hash=flag)
+            problem_obj.save()
+            print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
 
 print()
 # Now copy static files
