@@ -26,7 +26,7 @@ for category in listdir(path):
 
         # Check if there's a special name file
         try:
-            name = open(category_path + '/name.txt')
+            name = open(problem_path + '/name.txt').read()
         except FileNotFoundError:
             name = problem
 
@@ -37,10 +37,10 @@ for category in listdir(path):
 
         # Get the problem text and hint
         try:
-            text = open(category_path + '/problem.txt').read().strip()
-            hint = open(category_path + '/hint.txt').read().strip()
-            value = int(open(category_path + '/value.txt').read())
-            flag = sha512(open(category_path + '/flag.txt').read().strip()).hexdigest()
+            text = open(problem_path + '/problem.txt').read().strip()
+            hint = open(problem_path + '/hint.txt').read().strip()
+            value = int(open(problem_path + '/value.txt').read())
+            flag = sha512(open(problem_path + '/flag.txt').read().strip().encode('utf-8')).hexdigest()
         except FileNotFoundError:
             print("Error: Failed to import problem {:s}/{:s}".format(category, problem))
             continue
