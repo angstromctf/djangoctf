@@ -49,13 +49,13 @@ for category in listdir(path):
             continue
 
         # Finally, create the problem
-        problem = Problem(problem_title=name,
+        problem_obj = Problem(problem_title=name,
                           problem_text=text,
                           problem_value=value,
                           problem_category=category,
                           hint_text=hint,
                           flag_sha512_hash=flag)
-        problem.save()
+        problem_obj.save()
         print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
 
 print()
