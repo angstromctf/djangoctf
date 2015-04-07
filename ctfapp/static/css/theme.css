@@ -1,14 +1,14 @@
-header.page-title {
-	padding-top: 1em;
-	padding-bottom: 1em;
-	margin-bottom: 1em;
-	background-color: #888;
+/* Custom styles */
+.container {
+	width: 70vw;
+	text-align: justify;
 }
 
 nav.navbar {
 	margin-bottom: 0;
 }
 
+/* Problem styles */
 .panel-success {
   border-color: #3c763d;
 }
@@ -29,20 +29,20 @@ nav.navbar {
 }
 
 .panel-danger {
-  border-color: #a94442;
+  border-color: #2c3e50;
 }
 .panel-danger > .panel-heading {
   color: #fff;
-  background-color: #a94442;
-  border-color: #a94442;
+  background-color: #2c3e50;
+  border-color: #2c3e50;
 }
 .panel-danger > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #a94442;
+  border-top-color: #2c3e50;
 }
 .panel-danger > .panel-heading .badge {
-  color: #a94442;
-  background-color: #a94442;
+  color: #2c3e50;
+  background-color: #2c3e50;
 }
 .panel-danger > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #a94442;
+  border-bottom-color: #2c3e50;
 }
