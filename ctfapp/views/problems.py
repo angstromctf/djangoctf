@@ -9,10 +9,7 @@ from datetime import datetime
 import hashlib
 import pickle
 
-from ctfapp.utils import to_minutes
-
-#REPLACE THIS WITH CONTEST START TIME
-start_time = datetime(2015, 4, 5, 11, 22, 58, 83014)
+from ctfapp.time import to_minutes, start_time
 
 @login_required
 def problems(request: HttpRequest):

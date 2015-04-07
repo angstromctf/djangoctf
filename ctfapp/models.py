@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from ctfapp.utils import to_minutes
+from ctfapp.time import to_minutes, start_time
 import pickle
 
 
@@ -36,7 +36,7 @@ class UserProfile(models.Model):
 class ProblemSolved(models.Model):
     team = models.ForeignKey(User)
     new_score = models.IntegerField(default=0)
-    minutes = models.IntegerField(default=to_minutes(now()))
+    minutes = models.IntegerField(default=to_minutes(now()-start_time))
 
     def __str__(self):
         return "{:s} solved at {:s}".format(str(self.team), str(self.minutes))
