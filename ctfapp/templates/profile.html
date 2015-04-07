@@ -22,7 +22,7 @@
 	</thead>
 	<tbody>
 	{% for problem in problems %}
-		<tr style="background-color: {{ problem.status|color_solved }};">
+		<tr class="problem-{{ problem.status|color_solved }}">
 			<td>{{ problem.name }}</td>
 			<td>{{ problem.value }}</td>
 			<td>{{ problem.status|solved }}</td>
