@@ -58,21 +58,13 @@
 								<span class="input-group-btn">
 									<button class="btn btn-primary" type="submit">Submit!</button>
 								</span>
-								<input id="id_problem" name="problem" type="hidden" value="{{ problem.id }}"></input>
+								<input id="id_problem" name="problem" type="hidden" value="{{ problem.id }}">
 							</div>
 						</form>
 						
 						{% ifequal problem.id last %}
 							<br/>
-							{% ifequal status "SOLVED" %}
-								<div class="alert alert-success .alert-dismissible" role="alert">
-									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-									<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-									<strong>Correct!</strong> Nice job!
-									It took you {{ problem|try_count:solved }} attempt{{ problem|try_count:solved|pluralize }}.
-								</div>
-							{% endifequal %}
-							{% ifequal status "FAILED" %}
+							{% ifequal status 2 %}
 								<div class="alert alert-danger .alert-dismissible" role="alert">
 									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 									<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
@@ -80,7 +72,15 @@
 									Sorry, please try again. You've tried {{ problem|try_count:solved }} time{{ problem|try_count:solved|pluralize }} so far.
 								</div>
 							{% endifequal %}
-							{% ifequal status "ALREADY" %}
+							{% ifequal status 3 %}
+								<div class="alert alert-success .alert-dismissible" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+									<strong>Correct!</strong> Nice job!
+									It took you {{ problem|try_count:solved }} attempt{{ problem|try_count:solved|pluralize }}.
+								</div>
+							{% endifequal %}
+							{% ifequal status 4 %}
 								<div class="alert alert-info .alert-dismissible" role="alert">
 									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 									<span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
