@@ -82,7 +82,7 @@ def problems(request):
             request.user.userprofile.solved = pickle.dumps(solved)
             request.user.userprofile.save()
 
-    problem_list = Problem.objects.all()
+    problem_list = Problem.objects.all().order_by('problem_value')
     return render(request, 'problems.html', {
         'user': request.user,
         'problem_list': problem_list,
