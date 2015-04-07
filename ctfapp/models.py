@@ -36,7 +36,7 @@ class UserProfile(models.Model):
 class ProblemSolved(models.Model):
     team = models.ForeignKey(User)
     new_score = models.IntegerField(default=0)
-    minutes = models.IntegerField(default=to_minutes(now()-start_time))
+    minutes = models.IntegerField(default=0)
 
     def __str__(self):
         return "{:s} solved at {:s}".format(str(self.team), str(self.minutes))
