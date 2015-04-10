@@ -1,4 +1,5 @@
 from django import template
+from django.contrib.humanize.templatetags.humanize import ordinal
 from ctfapp.models import UserProfile
 
 register = template.Library()
@@ -38,3 +39,10 @@ def solved(value):
 @register.filter
 def color_solved(value):
     return 'solved' if value else 'unsolved'
+
+@register.filter
+def grade_to_name(grade):
+    try:
+        return ['Freshman', 'Sophmore', 'Junior', 'Senior'][grade - 9]
+    except IndexError:
+        return ordinal(grade) + " Grade"
