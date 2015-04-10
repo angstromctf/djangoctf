@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load extras %}
+
+{% block title %}angstromCTF: About{% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>About angstromCTF</h1>
+	</div>
+</header>
+{% endblock %}
+
+{% block content %}
+	<h3>What is AngstromCTF?</h3>
+	AngstromCTF is a Capture the Flag competition modeled after PicoCTF and created at Montgomery Blair High School.
+	It is designed to teach high school students reverse engineering and other skills needed in computer security.
+	<h3>Who is AngstromCTF?</h3>
+	AngstromCTF is created by several students, all at MBHS. In no particular order, they are:
+	<table id='about-table' style="width: 100%">
+		<thead>
+			<tr>
+				<th></th>
+				<th>Name</th>
+				<th>Grade</th>
+				<th>Contributions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for person in people %}
+				<tr>
+					<td>
+						<div style="width: 20vh; height: 20vh">
+							<img class="circular" src="{{ person.picture }}">
+						</div>
+					</td>
+					<td>{{ person.name }}</td>
+					<td>{{ person.grade|grade_to_name }}</td>
+					<td>{{ person.contributions }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
