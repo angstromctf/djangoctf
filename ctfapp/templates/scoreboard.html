@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="chart_div" style="width:400; height:300"></div>
+<div id="chart_div" style="width:400px; height:300px"></div>
 
 <table class="table">
 	<thead>
@@ -41,7 +41,7 @@ google.setOnLoadCallback(drawBasic);
 function drawBasic() {
     var data = google.visualization.arrayToDataTable({{ data|safe }});
 
-    var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true};
+    var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true, legend: {position:  'bottom'}};
 
     var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
