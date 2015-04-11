@@ -4,11 +4,11 @@ from random import shuffle
 
 people = [
     # Name               Picture          Grade Contributions
-    ['Noah Singer',     'noahsinger.jpg',   9,  'Extensive contributions to the platform and crypto problems'],
-    ['George Klees',    'georgeklees.jpg',  9,  'Reverse engineering and binary exploitation problems'],
-    ['Artemis Tosini',     'theotosini.jpg',   9,  'Extensive contributions to platform and deployment, and some misc and web problems'],
+    ['Noah Singer',     'noahsinger.jpg',   9,  'Platform and crypto problems'],
+    ['George Klees',    'georgeklees.jpg',  9,  'RE and binary problems'],
+    ['Artemis Tosini',     'theotosini.jpg',   9,  'Platform, deployment, problems'],
     ['Andrew Komo',     'andrewkomo.jpg',   9,  'Many crypto problems'],
-    ['Noah Kim',        'noahkim.jpg',      9,  'Contributions to platform and problems']
+    ['Noah Kim',        'noahkim.jpg',      9,  'Graphic design']
 ]
 PICTURE_STATIC = 'http://lorempixel.com/200/200/cats/'
 

@@ -43,6 +43,6 @@ def color_solved(value):
 @register.filter
 def grade_to_name(grade):
     try:
-        return ['Freshman', 'Sophmore', 'Junior', 'Senior'][grade - 9]
+        return ['freshman', 'sophomore', 'junior', 'senior'][grade - 9]
     except IndexError:
         return ordinal(grade) + " Grade"

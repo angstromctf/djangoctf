@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load extras %}
 
-{% block title %}angstromCTF: About{% endblock %}
+{% block title %} About - angstromCTF {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
@@ -13,32 +13,26 @@
 
 {% block content %}
 	<h3>What is AngstromCTF?</h3>
-	AngstromCTF is a Capture the Flag competition modeled after PicoCTF and created at Montgomery Blair High School.
-	It is designed to teach high school students reverse engineering and other skills needed in computer security.
+
+	<p>AngstromCTF is a Capture the Flag competition modeled after PicoCTF and created at Montgomery Blair High School.
+	It is designed to teach high school students reverse engineering and other skills needed in computer security.</p>
+
 	<h3>Who is AngstromCTF?</h3>
-	AngstromCTF is created by several students, all at MBHS. In no particular order, they are:
-	<table id='about-table' style="width: 100%">
-		<thead>
-			<tr>
-				<th></th>
-				<th>Name</th>
-				<th>Grade</th>
-				<th>Contributions</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for person in people %}
-				<tr>
-					<td>
-						<div style="width: 20vh; height: 20vh">
-							<img class="circular" src="{{ person.picture }}">
-						</div>
-					</td>
-					<td>{{ person.name }}</td>
-					<td>{{ person.grade|grade_to_name }}</td>
-					<td>{{ person.contributions }}</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <p>AngstromCTF is created by several students, all at MBHS. In no particular order, they are:</p>
+
+    <div class="row about-row">
+        {% for person in people %}
+            <div class="col-lg-4 col-sm-6 col-xs-12">
+                <div style="width: 20vh; height: 20vh;" class="about-img">
+                    <img class="circular about-img" src="{{ person.picture }}">
+                </div>
+
+                <div class="about-caption">
+                    {{ person.name }}, {{ person.grade|grade_to_name }}
+                    <br/>
+                    <span style="font-style: italic;">{{ person.contributions }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
