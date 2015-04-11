@@ -76,10 +76,10 @@ div.panel div.alert:last-child {
 }
 
 /* About page */
-table#about-table {
-    display: inline-block;
-    vertical-align: middle;
+div.about-row {
+    margin: 0 auto;
 }
+
 .circular {
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
@@ -87,3 +87,14 @@ table#about-table {
     width: 100%;
     height: 100%
 }
+
+div.about-row div.about-img {
+    margin: 0 auto;
+}
+
+div.about-row div.about-caption {
+    padding-top: .5em;
+    padding-bottom: 2em;
+    text-align: center;
+}
+
