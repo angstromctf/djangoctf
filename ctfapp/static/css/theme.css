@@ -1,6 +1,13 @@
 /* Custom styles */
-body {
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div#wrapper {
     min-height: 100%;
+    position: relative;
 }
 
 div.container {
@@ -9,7 +16,7 @@ div.container {
 }
 
 div#main-container {
-    margin-bottom: 1em;
+    padding-bottom: 75px;
 }
 
 nav.navbar {
@@ -17,11 +24,16 @@ nav.navbar {
 }
 
 .input-group-btn > .btn {
-	border-top-left-radius: 0px;
-	border-bottom-left-radius: 0px;	
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
 }
 
-footer#footer {
+div#footer-wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    height: 75px;
     width: 100%;
     background-color: #2c3e50;
     color: white;
@@ -89,7 +101,14 @@ div.panel div.alert:last-child {
     background-color: #2c3e50;
 }
 
-/* About page */
+/* Scoreboard styles */
+div#chart-div {
+    width: 70vw;
+    height: 50vh;
+    margin-bottom: 1em;
+}
+
+/* About styles */
 div.about-row {
     margin: 3em auto 0 auto;
 }
@@ -111,4 +130,3 @@ div.about-row div.about-caption {
     padding-bottom: 2em;
     text-align: center;
 }
-

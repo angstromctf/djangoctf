@@ -25,44 +25,48 @@
 	</head>
 
 	<body role="document">
-		<!-- Static navbar -->
-		<nav class="navbar navbar-default navbar-static-top">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="{% url 'home' %}">åCTF</a>
-				</div>
-				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-left">
-                        <li><a href="{% url 'about' %}">About</a></li>
-						<li><a href="{% url 'problems' %}">Problems</a></li>
-						<li><a href="{% url 'scoreboard' %}">Scoreboard</a></li>
-					</ul>
-					<ul class="nav navbar-nav navbar-right">
-						{% if user.is_authenticated %}
-						<p class="navbar-text">Hi {{ user.username }}! You've got {{ user.userprofile.score }} points, in {{ user|place|ordinal }} place.</p>
-						<li><a href="{% url 'logout' %}">Logout</a></li>
-						{% else %}
-						<li><a href="{% url 'login' %}">Login</a></li>
-						<li><a href="{% url 'signup' %}">Sign Up</a></li>
-						{% endif %}
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-		{% block pagetitle %}{% endblock %}
-		
-		<div class="container theme-showcase" role="main" id="main-container">
-			{% block content %}{% endblock %}
-		</div>
-
-        <footer id="footer">
-            <div class="container">
-                <div class="col-sm-12 text-center navbar-text">
-                    Copyright &copy; 2015 angstromCTF.  Platform source is on <a href="https://github.com/angstromctf/djangoctf">GitHub</a>.
+        <div id="wrapper">
+            <!-- Static navbar -->
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{% url 'home' %}">åCTF</a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li><a href="{% url 'about' %}">About</a></li>
+                            <li><a href="{% url 'problems' %}">Problems</a></li>
+                            <li><a href="{% url 'scoreboard' %}">Scoreboard</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            {% if user.is_authenticated %}
+                            <p class="navbar-text">Hi {{ user.username }}! You've got {{ user.userprofile.score }} points, in {{ user|place|ordinal }} place.</p>
+                            <li><a href="{% url 'logout' %}">Logout</a></li>
+                            {% else %}
+                            <li><a href="{% url 'login' %}">Login</a></li>
+                            <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
+            </nav>
+
+            {% block pagetitle %}{% endblock %}
+
+            <div class="container theme-showcase" role="main" id="main-container">
+                {% block content %}{% endblock %}
             </div>
-        </footer>
+
+            <div id="footer-wrapper">
+                <footer id="footer">
+                    <div class="container">
+                        <div class="col-sm-12 text-center navbar-text">
+                            Copyright &copy; 2015 angstromCTF.  Platform source is on <a href="https://github.com/angstromctf/djangoctf">GitHub</a>.
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 		<script src="{% static 'js/bootstrap.min.js' %}"></script>

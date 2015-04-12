@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="chart_div" style="width:400px; height:300px"></div>
+<div id="chart-div"></div>
 
 <table class="table">
 	<thead>
@@ -43,7 +43,7 @@ function drawBasic() {
 
     var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true, legend: {position:  'bottom'}};
 
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+    var chart = new google.visualization.LineChart(document.getElementById('chart-div'));
 
     chart.draw(data, options);
 }
