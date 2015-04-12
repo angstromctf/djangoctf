@@ -14,6 +14,7 @@ people = [
     ['Daniel Chen', 'danielchen.jpg', 10, '???'],
     ['Linden Yuan', 'lindenyuan.jpg', 10, '???'],
     ['Noah Levine', 'noahlevine.jpg', 11, 'Contest organizer'],
+    ['Noah Kim', 'noahkim.jpg', 9, 'Website Design']
 ]
 PICTURE_STATIC = 'http://lorempixel.com/200/200/cats/'
 
