@@ -17,6 +17,13 @@ class Problem(models.Model):
     def __str__(self):
         return self.problem_title
 
+class Update(models.Model):
+    update_title = models.CharField(max_length=200)
+    update_text = models.CharField(max_length=500)
+    date = models.DateTimeField(default=now())
+
+    def __str__(self):
+        return self.update_list
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
