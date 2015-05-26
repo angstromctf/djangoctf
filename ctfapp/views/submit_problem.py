@@ -53,7 +53,7 @@ def submit_problem(request: HttpRequest):
             solution = ProblemSolved(team=request.user, new_score=request.user.userprofile.score, minutes=to_minutes(delta))
             solution.save()
 
-            alert = "<strong>Good job!</strong> You've solved " + problem.problem_title + "! (+" + str(problem.problem_value) + " points)"
+            alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
             alert_type = "success"
             alert_class = "glyphicon glyphicon-ok-sign"
         else:
