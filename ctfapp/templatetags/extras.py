@@ -32,15 +32,6 @@ def possession(name):
 
 
 @register.filter
-def solved(value):
-    return "Solved" if value else "Unsolved"
-
-
-@register.filter
-def color_solved(value):
-    return 'solved' if value else 'unsolved'
-
-@register.filter
 def grade_to_name(grade):
     try:
         return ['freshman', 'sophomore', 'junior', 'senior'][grade - 9]
