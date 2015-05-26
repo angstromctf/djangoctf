@@ -28,10 +28,10 @@
                 <div id="problem{{ problem.id }}" class="tab-pane in active">
                     {{ problem.problem_text|safe }}
 
-                    <br/>
-                    <br/>
-
                     {% if not problem|is_solved:solved %}
+                        <br/>
+                        <br/>
+
                         <div class="input-group">
                             <input type="text" class="form-control" onkeypress="check_press(event, {{ problem.id }});" placeholder="Problem submission" id="guess{{ problem.id }}" {% if guess %}value="{{ guess }}"{% endif %}>
                             <span class="input-group-btn">
