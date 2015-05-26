@@ -30,10 +30,12 @@ def submit_problem(request: HttpRequest):
         problem = Problem.objects.get(id=pid)
 
         # Check if the submission was correct
-        correct = hashlib.sha512(guess.encode()).hexdigest() == problem.flag_sha512_hash
+        guess_hash = hashlib.sha512(guess.encode()).hexdigest()
+        correct = guess_hash == problem.flag_sha512_hash
 
         # The number of tries to display
         next_count = solved[pid][1] + 1 if pid in solved else 1
+        next_tries = list(set(solved[pid][2] + [guess_hash])) if pid in solved else [guess_hash]
 
         if pid in solved and solved[pid][0]:
             # We've already solved the problem
@@ -42,7 +44,7 @@ def submit_problem(request: HttpRequest):
             alert_class = "glyphicon glyphicon-info-sign"
         elif correct:
             # We have now solved the problem because the solution was correct
-            solved[pid] = (True, next_count)
+            solved[pid] = (True, next_count, next_tries)
 
             # Update the user's score
             request.user.userprofile.score += problem.problem_value
@@ -57,23 +59,30 @@ def submit_problem(request: HttpRequest):
             alert_type = "success"
             alert_class = "glyphicon glyphicon-ok-sign"
         else:
-            # We haven't solved the problem, the solution was bad
-            solved[pid] = (False, next_count)
-
             alert = "<strong>Sorry.</strong> That was incorrect."
+
+            if pid in solved and guess_hash in solved[pid][2]:
+                alert = "<strong>Oops</strong> You've already tried this solution."
+
             alert_type = "danger"
             alert_class = "glyphicon glyphicon-remove-sign"
+
+            # We haven't solved the problem, the solution was bad
+            solved[pid] = (False, next_count, next_tries)
 
         request.user.userprofile.solved = pickle.dumps(solved)
         request.user.userprofile.save()
 
-    html = render(request, "problem.html", {
-        'user': request.user,
-        'problem': problem,
-        'solved': solved
-    }).content
+        html = render(request, "problem.html", {
+            'user': request.user,
+            'problem': problem,
+            'solved': solved,
+            'guess': guess,
+        }).content
 
-    response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+        response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+    else:
+        return HttpResponse("Must be POST.")
 
 
