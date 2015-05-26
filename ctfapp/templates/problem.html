@@ -33,7 +33,7 @@
 
                     {% if not problem|is_solved:solved %}
                         <div class="input-group">
-                            <input type="text" class="form-control" onkeypress="check_press(event, {{ problem.id }});" placeholder="Problem submission" id="guess{{ problem.id }}">
+                            <input type="text" class="form-control" onkeypress="check_press(event, {{ problem.id }});" placeholder="Problem submission" id="guess{{ problem.id }}" {% if guess %}value="{{ guess }}"{% endif %}>
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" onclick="submit_problem({{ problem.id }});">Submit!</button>
                             </span>
