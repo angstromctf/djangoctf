@@ -70,8 +70,7 @@ def submit_problem(request: HttpRequest):
     html = render(request, "problem.html", {
         'user': request.user,
         'problem': problem,
-        'solved': solved,
-        'special': True
+        'solved': solved
     }).content
 
     response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}
