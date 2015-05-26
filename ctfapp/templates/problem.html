@@ -15,7 +15,7 @@
         </h3>
     </div>
 
-    <div class="collapse in" id="wrapper{{ problem.id }}">
+    <div class="collapse {% if problem|is_solved:solved and not special %}out{% else %}in{% endif %}" id="wrapper{{ problem.id }}">
         <div class="panel-body">
             <ul class="nav nav-tabs">
                 <li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
