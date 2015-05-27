@@ -1,10 +1,10 @@
 {% load staticfiles %}
 {% load extras %}
 
-<div class="panel panel-{% if problem|is_solved:solved %}success{% else %}danger{% endif %}" id="panel{{ problem.id }}">
+<div class="panel problem panel-{% if problem|is_solved:solved %}success{% else %}danger{% endif %}" id="panel{{ problem.id }}">
     <div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
         <h3 class="panel-title">
-            {{ problem.problem_title }} ({{ problem.problem_category }}, {{ problem.problem_value }})
+            {{ problem.problem_title|safe }} ({{ problem.problem_category }}, {{ problem.problem_value }})
             <span style="float: right;">
                 {% if problem|is_solved:solved %}
                     Solved

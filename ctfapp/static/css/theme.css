@@ -44,6 +44,10 @@ div#footer-wrapper {
   border-color: #3c763d;
 }
 
+.problem {
+  margin-bottom: 10px;
+}
+
 .panel-success > .panel-heading {
   color: #fff;
   background-color: #3c763d;
