@@ -130,3 +130,8 @@ div.about-row div.about-caption {
     padding-bottom: 2em;
     text-align: center;
 }
+
+/* Form styles */
+.asteriskField {
+    display: none;
+}

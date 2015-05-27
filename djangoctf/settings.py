@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 	'django.contrib.humanize',
     'ctfapp',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,3 +87,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+CRISPY_TEMPLATE_PACK = "bootstrap3"
