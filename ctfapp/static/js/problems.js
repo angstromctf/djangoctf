@@ -20,6 +20,18 @@ function submit_problem(num) {
             });
 
             $('#outer'+num.toString()).html(json.html);
+
+            $.ajax({
+                url : "/score/",
+
+                success : function(data) {
+                    $('#score').html(data);
+                },
+
+                error : function(xhr,errmsg,err) {
+                    alert(errmsg + ". " + xhr.status + ": " + xhr.responseText);
+                }
+            });
         },
 
         error : function(xhr,errmsg,err) {

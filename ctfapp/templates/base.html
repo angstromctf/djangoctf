@@ -56,14 +56,8 @@
                             <li><a href="{% url 'scoreboard' %}">Scoreboard</a></li>
                             <li><a href="{% url 'chat' %}">Chat</a></li>
                         </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            {% if user.is_authenticated %}
-                            <p class="navbar-text">Hi {{ user.username }}! You've got {{ user.userprofile.score }} points, in {{ user|place|ordinal }} place.</p>
-                            <li><a href="{% url 'logout' %}">Logout</a></li>
-                            {% else %}
-                            <li><a href="{% url 'login' %}">Login</a></li>
-                            <li><a href="{% url 'signup' %}">Sign Up</a></li>
-                            {% endif %}
+                        <ul id="score" class="nav navbar-nav navbar-right">
+                            {% include "score.html" with user=user %}
                         </ul>
                     </div>
                 </div>
