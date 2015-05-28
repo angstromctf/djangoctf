@@ -14,5 +14,6 @@ urlpatterns = [
     url(r'^accounts/signup/$', views.signup, name='signup'),
     url(r'^profile/(?P<user>[a-zA-Z0-9]*)$', views.profile),
     url(r'^about/', views.about, name='about'),
-    url(r'^chat/', views.chat, name='chat')
+    url(r'^chat/', views.chat, name='chat'),
+    url(r'^score/', views.score, name='score')
 ]

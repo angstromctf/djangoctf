@@ -7,3 +7,4 @@ from .about import about
 from .updates import updates
 from .submit_problem import submit_problem
 from .chat import chat
+from .score import score

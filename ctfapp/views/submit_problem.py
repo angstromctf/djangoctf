@@ -84,5 +84,3 @@ def submit_problem(request: HttpRequest):
         return HttpResponse(json.dumps(response_data), content_type="application/json")
     else:
         return HttpResponse("Must be POST.")
-
-
