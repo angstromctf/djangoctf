@@ -1,17 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from django.db.utils import IntegrityError
 
 from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile, ProblemSolved
+
+import configparser
+
 
 def signup(request):
     """
     View for the registration page.
     """
+    parser = configparser.ConfigParser()
+    parser.read('../../djangoctf/secure.ini')
+
+    enabled = parser['secret'].getboolean('SignupEnabled')
+
+    if not enabled:
+        return render(request, 'signup.html', {'enabled': False})
+
     if request.method == 'GET':
         # Show our template
-        return render(request, 'signup.html', {'form': CreateUserForm()})
+        return render(request, 'signup.html', {'form': CreateUserForm(), 'enabled': True})
     elif request.method == 'POST':
         form = CreateUserForm(request.POST)
 
@@ -35,4 +45,4 @@ def signup(request):
             return redirect("/")
         else:
             # The form didn't validate properly
-            return render(request, 'signup.html', {'form': form})
+            return render(request, 'signup.html', {'form': form, 'enabled': True})
