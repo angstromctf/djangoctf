@@ -86,3 +86,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
+
+# Security stuff
+CSRF_COOKIE_SECURE = parser['public'].getboolean('SSL')
+SESSION_COOKIE_SECURE = parser['public'].getboolean('SSL')
