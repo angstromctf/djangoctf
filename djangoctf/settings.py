@@ -12,20 +12,17 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+import configparser
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+# Parse the secure configuration file
+parser = configparser.ConfigParser()
+parser.read('djangoctf/secure.ini')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6v_^&wm@6!bo54@ys#m5fqf2r45wpbpow8!_15mc4prbccktpm'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# Read security options from the file
+SECRET_KEY = parser['secret']['SecretKey']
+DEBUG = parser['public'].getboolean('Debug')
+TEMPLATE_DEBUG = parser['public'].getboolean('TemplateDebug')
+ALLOWED_HOSTS = parser['public']['AllowedHosts'].split(",")
 
 # Application definition
 
