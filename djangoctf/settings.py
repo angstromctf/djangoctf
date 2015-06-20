@@ -93,3 +93,5 @@ CSRF_COOKIE_SECURE = parser['public'].getboolean('SSL')
 SESSION_COOKIE_SECURE = parser['public'].getboolean('SSL')
 
 CSRF_COOKIE_HTTPONLY = True
+
+X_FRAME_OPTIONS = "DENY"
