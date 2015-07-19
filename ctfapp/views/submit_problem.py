@@ -25,7 +25,7 @@ def submit_problem(request: HttpRequest):
 
     if request.method == "POST":
         pid = int(request.POST.get("problem"))
-        guess = request.POST.get("guess")
+        guess = request.POST.get("guess").strip()
 
         problem = Problem.objects.get(id=pid)
 
@@ -62,7 +62,7 @@ def submit_problem(request: HttpRequest):
             alert = "<strong>Sorry.</strong> That was incorrect."
 
             if pid in solved and guess_hash in solved[pid][2]:
-                alert = "<strong>Oops</strong> You've already tried this solution."
+                alert = "<strong>Oops!</strong> You've already tried this solution."
 
             alert_type = "danger"
             alert_class = "glyphicon glyphicon-remove-sign"
