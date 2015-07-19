@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.template.context_processors import csrf
 
 from ctfapp.models import Problem
 
@@ -16,8 +17,12 @@ def problems(request: HttpRequest):
     solved = pickle.loads(request.user.userprofile.solved)
 
     problem_list = Problem.objects.all().order_by('problem_value')
-    return render(request, 'problems.html', {
+
+    context = {
         'user': request.user,
         'problem_list': problem_list,
         'solved': solved
-    })
+    }
+    context.update(csrf(request))
+
+    return render(request, 'problems.html', context)
