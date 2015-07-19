@@ -16,7 +16,7 @@ path = argv[1]
 settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE)
 from ctfapp.models import *
 
-STATIC = '/'.join(realpath(__file__).split('/')[:-1]) + '/ctfapp/static/problems'
+STATIC = '/'.join(realpath(__file__).replace('\\', '/').split('/')[:-1]) + '/ctfapp/static/problems'
 
 for category in listdir(path):
     category_path = path + '/' + category
