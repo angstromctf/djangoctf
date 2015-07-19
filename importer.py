@@ -1,22 +1,36 @@
+from django import setup
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
 from djangoctf.settings import DATABASES, TIME_ZONE
+
 from sys import argv
 from os import listdir, makedirs
 from os.path import isdir, isfile, realpath
 from hashlib import sha512
-from shutil import copyfile
+from shutil import copyfile, rmtree
+import argparse
 
-if len(argv) != 2:
-    print('Usage: {:s} problems_directory'.format(argv[0]))
-    exit()
-path = argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument("problems_directory", help="import problems from directory")
+parser.add_argument("-r", "--reset", help="reset all problems", action="store_true")
+parser.add_argument("-s", "--reset-static", help="reset static problem files", action="store_true")
+
+args = parser.parse_args()
+
+path = args.problems_directory
 
 # Configure settings
 settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE)
+setup()
 from ctfapp.models import *
 
 STATIC = '/'.join(realpath(__file__).replace('\\', '/').split('/')[:-1]) + '/ctfapp/static/problems'
+
+if args.reset:
+    Problem.objects.all().delete()
+
+if args.reset_static:
+    rmtree(STATIC)
 
 for category in listdir(path):
     category_path = path + '/' + category
@@ -85,7 +99,8 @@ for category in listdir(path):
 
         # Create the static path if necessary
         static_dir = STATIC + '/' + category + '/' + problem
-        makedirs(static_dir, exist_ok=True)
+
+        makedirs(static_dir, exist_ok=False)
 
         try:
             files = open(problem_path + '/files.txt').readlines()
