@@ -41,7 +41,7 @@ div#footer-wrapper {
 
 /* Index styles */
 .categories-row {
-    padding-bottom: 10px;
+    margin-bottom: 2em;
     text-align: center;
 }
 
@@ -156,7 +156,7 @@ div.about-row div.about-img {
 
 div.about-row div.about-caption {
     padding-top: .5em;
-    padding-bottom: 2em;
+    margin-bottom: 2em;
     text-align: center;
 }
 
