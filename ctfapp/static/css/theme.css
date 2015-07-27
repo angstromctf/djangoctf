@@ -15,7 +15,7 @@ div#wrapper {
 }
 
 div.container {
-	width: 70vw;
+	width: 85vw;
 	text-align: justify;
 }
 
@@ -55,10 +55,10 @@ div#footer-wrapper {
 
 .category-icon {
     margin: 10px auto;
-    width: 10vw;
-    min-height: 10vw;
-    line-height: 10vw;
-    border-radius: 5vw;
+    width: 10em;
+    min-height: 10em;
+    line-height: 10em;
+    border-radius: 5em;
     text-align: center;
 }
 
