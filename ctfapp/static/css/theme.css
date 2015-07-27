@@ -39,6 +39,31 @@ div#footer-wrapper {
     color: white;
 }
 
+/* Index styles */
+.categories-row {
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.category {
+    margin-top: 0;
+}
+
+.category-icon {
+    margin: 10px auto;
+    width: 10vw;
+    min-height: 10vw;
+    line-height: 10vw;
+    border-radius: 5vw;
+    text-align: center;
+}
+
+.category-icon > span {
+    vertical-align: middle;
+    font-size: 5em;
+    margin: 0 auto;
+}
+
 /* Problem styles */
 .panel-success {
   border-color: #3c763d;
