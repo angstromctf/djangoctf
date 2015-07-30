@@ -100,7 +100,7 @@ for category in listdir(path):
         # Create the static path if necessary
         static_dir = STATIC + '/' + category + '/' + problem
 
-        makedirs(static_dir, exist_ok=False)
+        makedirs(static_dir, exist_ok=True)
 
         try:
             files = open(problem_path + '/files.txt').readlines()
