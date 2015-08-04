@@ -42,8 +42,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
         <div id="wrapper">
-            <!-- Static navbar -->
-            <nav class="navbar navbar-default navbar-static-top">
+            <nav class="navbar navbar-default navbar-static-top block">
                 <div class="container">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -71,21 +70,31 @@
 
             {% block pagetitle %}{% endblock %}
 
-            <div class="container theme-showcase" role="main" id="main-container">
+            <div class="container theme-showcase block push" role="main" id="main-container">
                 {% block content %}{% endblock %}
             </div>
 
             <script type="text/javascript" src="{% static "js/csrf.js" %}"></script>
 
-            <div id="footer-wrapper">
-                <footer id="footer">
-                    <div class="container">
-                        <div class="col-sm-12 text-center navbar-text">
-                            Copyright &copy; 2015 angstromCTF.  Platform source is on <a href="https://github.com/angstromctf/djangoctf">GitHub</a>.
+            <footer id="footer" class="block">
+                <div class="container">
+                    <div class="col-sm-12 text-center navbar-text">
+                        <div id="footer-social">
+                            <a href="https://www.facebook.com/pages/AngstromCTF/911482855569039" target="_blank">
+                                <img class="social-img" src="{% static 'images/facebook.png' %}"/>
+                            </a>
+                            <a href="https://github.com/angstromctf/djangoctf" target="_blank">
+                                <img class="social-img" src="{% static 'images/github.png' %}"/>
+                            </a>
+                            <a href="https://twitter.com/angstromctf" target="_blank">
+                                <img class="social-img" src="{% static 'images/twitter.png' %}"/>
+                            </a>
                         </div>
+
+                        Copyright &copy; 2015 angstromCTF.
                     </div>
-                </footer>
-            </div>
+                </div>
+            </footer>
         </div>
 
 		<script src="{% static 'js/bootstrap.min.js' %}"></script>
