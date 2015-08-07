@@ -52,10 +52,18 @@ div#footer-social {
     padding-bottom: .5em;
 }
 
+div#github-back {
+    width: 2.5em;
+    height: 2.5em;
+    background-color: lightskyblue;
+    display: inline-block;
+    border-radius: 1.25em;
+}
+
 img.social-img {
     width: 2em;
     height: 2em;
-    margin: 0 .25em;
+    margin: .25em;
 }
 
 /* Index styles */
