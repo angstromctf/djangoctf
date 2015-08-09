@@ -3,8 +3,8 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
 from djangoctf.settings import DATABASES, TIME_ZONE
 
-from os import listdir, makedirs
-from os.path import isdir, isfile, realpath
+from os import listdir, makedirs, system, getcwd, chdir
+from os.path import isdir, isfile, realpath, exists
 from hashlib import sha512
 from shutil import copyfile, rmtree
 import argparse
@@ -68,10 +68,9 @@ for category in listdir(path):
                 # We can't update the name for obvious reasons
                 problem_obj.save()
 
+                print("Note: Successfully updated problem {:s}/{:s}".format(category, problem))
             except MultipleObjectsReturned:
                 print("Error: Multiple problems exist with name {:s}".format(data["name"]))
-                continue
-            print("Note: Successfully updated problem {:s}/{:s}".format(category, problem))
         else:
             # Otherwise, create new problem
             problem_obj = Problem(problem_title=data["name"],
@@ -100,6 +99,17 @@ for category in listdir(path):
         static_dir = STATIC + '/' + category + '/' + problem
 
         makedirs(static_dir, exist_ok=True)
+
+        if exists(problem_path + '/build.sh'):
+            print("build.sh found, building")
+            oldpath = getcwd()
+            chdir(problem_path)
+            try:
+                if system("./build.sh"):
+                    print("Build.sh for {:s} reported errors".format(problem))
+            except NameError:
+                print("Unable to build {:s}".format(problem))
+            chdir(oldpath)
 
         try:
             with open(problem_path + '/problem.json') as data_file:
