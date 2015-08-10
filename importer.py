@@ -42,6 +42,8 @@ for category in listdir(path):
 
     for problem in listdir(category_path):
         problem_path = category_path + '/' + problem
+        name = category + '/' + problem
+
         if not isdir(problem_path):
             continue
 
@@ -52,15 +54,19 @@ for category in listdir(path):
             print("Error: Failed to import problem {:s}/{:s}".format(category, problem))
             continue
 
-        data["text"] = pattern.sub("<a href=\"/static/problems/" + category + "/" + problem +
-                                   "/\\1\" target=\"_blank\">\\2</a>", data["text"])
-        data["hint"] = pattern.sub("<a href=\"/static/problems/" + category + "/" + problem +
-                                   "/\\1\" target=\"_blank\">\\2</a>", data["hint"])
+        data["title"] = data["name"]
+        del data["name"]
 
-        if Problem.objects.filter(problem_title=data["name"]).exists():
+        data["text"] = pattern.sub('<a href="/static/problems/' + name +
+                                   '/\\1" target="_blank">\\2</a>', data["text"])
+        data["hint"] = pattern.sub('<a href="/static/problems/' + name +
+                                   '/\\1" target="_blank">\\2</a>', data["hint"])
+
+        if Problem.objects.filter(problem_name=name).exists():
             # Update the problem if it already exists
             try:
-                problem_obj = Problem.objects.get(problem_title=data["name"])
+                problem_obj = Problem.objects.get(problem_name=name)
+                problem_obj.problem_title = data["title"]
                 problem_obj.problem_text = data["text"]
                 problem_obj.hint_text = data["hint"]
                 problem_obj.problem_value = data["value"]
@@ -68,12 +74,13 @@ for category in listdir(path):
                 # We can't update the name for obvious reasons
                 problem_obj.save()
 
-                print("Note: Successfully updated problem {:s}/{:s}".format(category, problem))
+                print("Note: Successfully updated problem {:s}".format(name))
             except MultipleObjectsReturned:
-                print("Error: Multiple problems exist with name {:s}".format(data["name"]))
+                print("Error: Multiple problems exist with name {:s}".format(name))
         else:
             # Otherwise, create new problem
-            problem_obj = Problem(problem_title=data["name"],
+            problem_obj = Problem(problem_name=name,
+                                  problem_title=data["title"],
                                   problem_text=data["text"],
                                   problem_value=data["value"],
                                   problem_category=category,
@@ -95,8 +102,10 @@ for category in listdir(path):
         if not isdir(problem_path):
             continue
 
+        name = category + '/' + problem
+
         # Create the static path if necessary
-        static_dir = STATIC + '/' + category + '/' + problem
+        static_dir = STATIC + '/' + name
 
         makedirs(static_dir, exist_ok=True)
 
@@ -106,9 +115,9 @@ for category in listdir(path):
             chdir(problem_path)
             try:
                 if system("./build.sh"):
-                    print("Build.sh for {:s} reported errors".format(problem))
+                    print("Build.sh for {:s} reported errors".format(name))
             except NameError:
-                print("Unable to build {:s}".format(problem))
+                print("Unable to build {:s}".format(name))
             chdir(oldpath)
 
         try:
@@ -124,4 +133,4 @@ for category in listdir(path):
                 if len(file) == 0 or not isfile(file_path):
                     continue
                 copyfile(file_path, static_path)
-                print("Note: Copying static file {:s} for problem {:s}/{:s}".format(file.strip(), category, problem))
+                print("Note: Copying static file {:s} for problem {:s}".format(file.strip(), name))

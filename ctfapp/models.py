@@ -7,15 +7,17 @@ import pickle
 
 
 class Problem(models.Model):
+    problem_name = models.CharField(max_length=200)
     problem_title = models.CharField(max_length=200)
-    problem_text = models.CharField(max_length=500)
+    problem_text = models.TextField()
     problem_value = models.IntegerField()
-    problem_category = models.CharField(max_length=30)
-    hint_text = models.CharField(max_length=200)
+    problem_category = models.CharField(max_length=50)
+    hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
 
     def __str__(self):
         return self.problem_title
+
 
 class Update(models.Model):
     update_title = models.CharField(max_length=200)
@@ -24,6 +26,7 @@ class Update(models.Model):
 
     def __str__(self):
         return self.update_list
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
