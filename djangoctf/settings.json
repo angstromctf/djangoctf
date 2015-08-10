@@ -1,0 +1,16 @@
+{
+    "secret_key": "supersecretsecurekey",
+    "debug": true,
+    "template_debug": true,
+    "allowed_hosts": [
+    ],
+    "signed_enabled": true,
+    "databases": {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "db.sqlite3",
+            "NAME_JOIN": true
+        }
+    },
+    "ssl": false
+}
