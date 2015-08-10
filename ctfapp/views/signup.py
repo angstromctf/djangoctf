@@ -12,7 +12,7 @@ def signup(request):
     View for the registration page.
     """
     parser = configparser.ConfigParser()
-    parser.read('../../djangoctf/secure.ini')
+    parser.read('../../djangoctf/settings.json')
 
     enabled = parser['secret'].getboolean('SignupEnabled')
 

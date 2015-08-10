@@ -12,17 +12,17 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-import configparser
+import json
 
 # Parse the secure configuration file
-parser = configparser.ConfigParser()
-parser.read('djangoctf/secure.ini')
+with open('djangoctf/settings.json') as config_file:
+    config = json.loads(config_file.read())
 
 # Read security options from the file
-SECRET_KEY = parser['secret']['SecretKey']
-DEBUG = parser['public'].getboolean('Debug')
-TEMPLATE_DEBUG = parser['public'].getboolean('TemplateDebug')
-ALLOWED_HOSTS = parser['public']['AllowedHosts'].split(",")
+SECRET_KEY = config['secret_key']
+DEBUG = config['debug']
+TEMPLATE_DEBUG = config['template_debug']
+ALLOWED_HOSTS = config['allowed_hosts']
 
 # Application definition
 
@@ -56,12 +56,11 @@ WSGI_APPLICATION = 'djangoctf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+for database in config['databases']:
+    if config['databases'][database]['NAME_JOIN']:
+        config['databases'][database]['NAME'] = os.path.join(BASE_DIR, config['databases'][database]['NAME'])
+
+DATABASES = config['databases']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -89,8 +88,8 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 # Security stuff
 
-CSRF_COOKIE_SECURE = parser['public'].getboolean('SSL')
-SESSION_COOKIE_SECURE = parser['public'].getboolean('SSL')
+CSRF_COOKIE_SECURE = config['ssl']
+SESSION_COOKIE_SECURE = config['ssl']
 
 CSRF_COOKIE_HTTPONLY = True
 
