@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% load extras %}
+{% load staticfiles %}
 
-{% block title %}angstromCTF{% endblock %}
+{% block title %} angstromCTF {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
@@ -8,6 +10,10 @@
 		<h1>Welcome to angstromCTF!</h1>
 	</div>
 </header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}

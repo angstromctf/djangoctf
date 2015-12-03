@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load extras %}
+{% load staticfiles %}
 
 {% block title %} About - angstromCTF {% endblock %}
 
@@ -9,6 +10,10 @@
 		<h1>About angstromCTF</h1>
 	</div>
 </header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/about.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
