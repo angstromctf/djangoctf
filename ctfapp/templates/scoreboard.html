@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load extras %}
+{% load staticfiles %}
 
 {% block title %} Scoreboard - angstromCTF {% endblock %}
 
@@ -9,6 +10,10 @@
 		<h1>Scoreboard</h1>	
 	</div>
 </header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/scoreboard.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}

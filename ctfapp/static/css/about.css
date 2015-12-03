@@ -1,0 +1,13 @@
+div.about-row {
+    margin: 3em auto 0 auto;
+}
+
+div.about-img {
+    margin: 0 auto;
+}
+
+div.about-caption {
+    padding-top: .5em;
+    margin-bottom: 2em;
+    text-align: center;
+}
