@@ -1,19 +1,16 @@
+# Import
 from django.shortcuts import render
-
 from ctfapp.models import Problem, UserProfile
-
 import pickle
-from collections import OrderedDict
+import collections
 
 def profile(request, user):
     # Find all problems
-    problems = Problem.objects.all()
+    problems = collections.OrderedDict()
+    for problem in Problem.objects.all()
+        problems[problem.id] = problem
     # ... and all the problems the user has solved
     problems_solved = pickle.loads(UserProfile.objects.get(user__username=user).solved)
-    # Create an array of all problems, set to unsolved
-    annotated_problems = OrderedDict()
-    for problem in problems:
-        annotated_problems[problem.id] = (problem.problem_title, problem.problem_value, False)
 
     # Now put all solved problems in the array
     for solved in problems_solved.items():
