@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 {% load extras %}
+{% load staticfiles %}
 
-{% block title %}angstromCTF: {{ user|capfirst|possession }} profile{% endblock %}
+{% block title %} {{ user|possession }} Profile - angstromCTF {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
 	<div class="container">
-		<h1>{{ user|capfirst|possession }} profile</h1>
+		<h1>{{ user|possession }} Profile</h1>
 	</div>
 </header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -22,10 +27,10 @@
 	</thead>
 	<tbody>
 	{% for problem in problems %}
-		<tr class="problem-{{ problem.status|color_solved }}">
+		<tr class="problem-{{ problem.status|yesno:"solved,unsolved" }}">
 			<td>{{ problem.name }}</td>
 			<td>{{ problem.value }}</td>
-			<td>{{ problem.status|solved }}</td>
+			<td>{{ problem.status|yesno:"Yes,No" }}</td>
 		</tr>
 	{% endfor %}
 	</tbody>

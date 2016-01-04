@@ -1,0 +1,50 @@
+{% load staticfiles %}
+{% load extras %}
+
+<div class="panel problem panel-{% if problem|is_solved:solved %}success{% else %}danger{% endif %}" id="panel{{ problem.id }}">
+    <div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
+        <h3 class="panel-title">
+            {{ problem.problem_title|safe }} ({{ problem.problem_category }}, {{ problem.problem_value }})
+            <span style="float: right;">
+                {% if problem|is_solved:solved %}
+                    Solved
+                {% else %}
+                    Unsolved
+                {% endif %}
+            </span>
+        </h3>
+    </div>
+
+    <div class="collapse {% if problem|is_solved:solved %}out{% else %}in{% endif %}" id="wrapper{{ problem.id }}">
+        <div class="panel-body">
+            <ul class="nav nav-tabs">
+                <li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
+                <li><a data-toggle="tab" href="#hint{{ problem.id }}">Hint</a></li>
+            </ul>
+
+            <br/>
+
+            <div class="tab-content">
+                <div id="problem{{ problem.id }}" class="tab-pane in active">
+                    {{ problem.problem_text|safe }}
+
+                    {% if not problem|is_solved:solved %}
+                        <br/>
+                        <br/>
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" onkeypress="check_press(event, {{ problem.id }});" placeholder="Problem submission" id="guess{{ problem.id }}" {% if guess %}value="{{ guess }}"{% endif %}>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" onclick="submit_problem({{ problem.id }});">Submit!</button>
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="hint{{ problem.id }}" class="tab-pane">
+                    {{ problem.hint_text }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
