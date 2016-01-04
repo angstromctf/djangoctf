@@ -12,20 +12,17 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+import json
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
+# Parse the secure configuration file
+with open('djangoctf/settings.json') as config_file:
+    config = json.loads(config_file.read())
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6v_^&wm@6!bo54@ys#m5fqf2r45wpbpow8!_15mc4prbccktpm'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
+# Read security options from the file
+SECRET_KEY = config['secret_key']
+DEBUG = config['debug']
+TEMPLATE_DEBUG = config['template_debug']
+ALLOWED_HOSTS = config['allowed_hosts']
 
 # Application definition
 
@@ -38,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 	'django.contrib.humanize',
     'ctfapp',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,12 +56,11 @@ WSGI_APPLICATION = 'djangoctf.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+for database in config['databases']:
+    if config['databases'][database]['NAME_JOIN']:
+        config['databases'][database]['NAME'] = os.path.join(BASE_DIR, config['databases'][database]['NAME'])
+
+DATABASES = config['databases']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -86,3 +83,14 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+
+CRISPY_TEMPLATE_PACK = "bootstrap3"
+
+# Security stuff
+
+CSRF_COOKIE_SECURE = config['ssl']
+SESSION_COOKIE_SECURE = config['ssl']
+
+CSRF_COOKIE_HTTPONLY = True
+
+X_FRAME_OPTIONS = "DENY"

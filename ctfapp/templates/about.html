@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load extras %}
+{% load staticfiles %}
 
 {% block title %} About - angstromCTF {% endblock %}
 
@@ -11,10 +12,14 @@
 </header>
 {% endblock %}
 
+{% block css %}
+    <link href="{% static 'css/about.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 	<h3>What is AngstromCTF?</h3>
 
-	<p>AngstromCTF is a capture-the-flag competition modeled after <a href="https://picoctf.com">picoCTF</a>
+	<p>AngstromCTF is a capture-the-flag competition modeled on <a href="https://picoctf.com/" target="_blank">picoCTF</a>
     and created at Montgomery Blair High School.  It is designed to teach high school students reverse engineering
     and other skills needed in computer security.</p>
 
@@ -25,7 +30,7 @@
         {% for person in people %}
             <div class="col-lg-4 col-sm-6 col-xs-12">
                 <div style="width: 20vh; height: 20vh;" class="about-img">
-                    <img class="circular about-img" src="{{ person.picture }}">
+                    <img class="circular" src="{{ person.picture }}">
                 </div>
 
                 <div class="about-caption">

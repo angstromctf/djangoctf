@@ -10,8 +10,7 @@ angstromCTF will consist of questions ranging from trivial to extremely difficul
 * Cryptography
 * Web exploitation
 * Forensics
-* Hardware
-* Combination
+* A combination of these
 
 This repository contains Django code for the public web interface of angstromCTF.
 Participants will login, read and answer questions, receive updates, and ask for help through this platform.
