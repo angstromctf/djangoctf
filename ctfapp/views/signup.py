@@ -28,12 +28,12 @@ def signup(request):
             # Create our new user
             user = User.objects.create_user(form.cleaned_data['username'],
                                             email=form.cleaned_data['email'],
-                                            password=form.cleaned_data['password'])
+                                            password=form.cleaned_data['password'],
+                                            first_name=form.cleaned_data['first_name'],
+                                            last_name=form.cleaned_data['last_name'])
 
             profile = UserProfile(user=user,
                                   school=form.cleaned_data['school'],
-                                  first_name=form.cleaned_data['first_name'],
-                                  last_name=form.cleaned_data['last_name'],
                                   eligible=form.cleaned_data['eligible'])
 
             if form.cleaned_data['gender']:

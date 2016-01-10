@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load extras %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} Account - angstromCTF {% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>{{ user.username }}'s Account</h1>
+	</div>
+</header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/about.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {% crispy change_password %}
+{% endblock %}

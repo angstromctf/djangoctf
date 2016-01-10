@@ -15,6 +15,35 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
+class ChangePasswordForm(forms.Form):
+    password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput())
+    new_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
+    confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(ChangePasswordForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
+
+        self.helper.layout = Layout(
+            Fieldset(
+                'Change password',
+                'password',
+                'new_password',
+                'confirm_password',
+                StrictButton('Change password', css_class='btn-success', type='submit')
+            )
+        )
+
+    def clean(self):
+        cleaned_data = super(ChangePasswordForm, self).clean()
+
+        if cleaned_data.get("password") != cleaned_data.get("confirm"):
+            raise ValidationError("Passwords do not match.")
 
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
