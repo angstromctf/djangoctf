@@ -7,7 +7,7 @@ import collections
 def profile(request, user):
     # Find all problems
     problems = collections.OrderedDict()
-    for problem in Problem.objects.all()
+    for problem in Problem.objects.all():
         problems[problem.id] = problem
     # ... and all the problems the user has solved
     problems_solved = pickle.loads(UserProfile.objects.get(user__username=user).solved)
