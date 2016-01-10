@@ -19,6 +19,10 @@ function change_password() {
 	            	exit: 'animated fadeOutRight'
 	            }
             });
+
+            $("#id_password").val('');
+            $("#id_new_password").val('');
+            $("#id_confirm_password").val('');
         },
 
         error : function(xhr,errmsg,err) {

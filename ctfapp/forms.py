@@ -14,9 +14,9 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
 class ChangePasswordForm(forms.Form):
-    password = forms.CharField(label='Current password', max_length=50, widget=forms.PasswordInput())
-    new_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
-    confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
+    password = forms.CharField(label='Current', max_length=50, widget=forms.PasswordInput())
+    new_password = forms.CharField(label='New', max_length=50, widget=forms.PasswordInput())
+    confirm_password = forms.CharField(label='Confirm', max_length=50, widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
