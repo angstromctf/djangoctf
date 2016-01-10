@@ -55,8 +55,6 @@ class UserProfile(models.Model):
     team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
 
     # Required information
-    first_name = models.CharField(max_length=40)
-    last_name = models.CharField(max_length=40)
     eligible = models.BooleanField(default=True)
     school = models.CharField(max_length=100)
 
