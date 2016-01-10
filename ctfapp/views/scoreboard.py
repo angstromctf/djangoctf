@@ -1,17 +1,17 @@
 from django.http import HttpRequest
 from django.shortcuts import render
 
-from ctfapp.models import Team, ProblemSolved
+from ctfapp.models import UserProfile, ProblemSolved
 
 
 def scoreboard(request: HttpRequest):
     """
     View for the scoreboard page.
     """
-    user_list = Team.objects.all().order_by('-score', 'score_lastupdate')
+    user_list = UserProfile.objects.all().order_by('-score', 'score_lastupdate')
     
     solutions_list = []
-    GRAPH_SIZE = min(5, len(Team.objects.all()))
+    GRAPH_SIZE = min(5, len(UserProfile.objects.all()))
     for x in range(GRAPH_SIZE):
         minor = ProblemSolved.objects.all().filter(team=user_list[x].user)
         
