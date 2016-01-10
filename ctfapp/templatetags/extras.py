@@ -7,6 +7,7 @@ register = template.Library()
 
 @register.filter
 def is_solved(problem, solved):
+    if len(solved) == 0: return False
     return (problem.id in solved) and solved[problem.id][0]
 
 
