@@ -4,17 +4,16 @@ from django.contrib.auth import login, authenticate
 from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile, ProblemSolved
 
-import configparser
+import json
 
 
 def signup(request):
     """
     View for the registration page.
     """
-    parser = configparser.ConfigParser()
-    parser.read('../../djangoctf/settings.json')
-
-    enabled = parser['secret'].getboolean('SignupEnabled')
+    with open('djangoctf/settings.json') as config_file:
+        config = json.loads(config_file.read())
+        enabled = config['registration_enabled']
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -27,19 +26,26 @@ def signup(request):
 
         if form.is_valid():
             # Create our new user
-            user = User.objects.create_user(form.cleaned_data['teamname'],
+            user = User.objects.create_user(form.cleaned_data['username'],
                                             email=form.cleaned_data['email'],
                                             password=form.cleaned_data['password'])
 
             profile = UserProfile(user=user,
-                                  school=form.cleaned_data['school'])
+                                  school=form.cleaned_data['school'],
+                                  first_name=form.cleaned_data['first_name'],
+                                  last_name=form.cleaned_data['last_name'],
+                                  eligible=form.cleaned_data['eligible'])
+
+            if form.cleaned_data['gender']:
+                profile.gender = form.cleaned_data['gender']
+
+            if form.cleaned_data['race']:
+                profile.race = form.cleaned_data['race']
+
             profile.save()
 
-            solved = ProblemSolved(team=user)
-            solved.save()
-
             # Authenticate and login our new user!
-            user = authenticate(username=form.cleaned_data['teamname'], password=form.cleaned_data['password'])
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
 
             return redirect("/")
