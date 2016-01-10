@@ -1,17 +1,16 @@
+from datetime import datetime
+import hashlib
+import pickle
+import json
+
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.utils import timezone
 
 from ctfapp.models import Problem, ProblemSolved
+from ctfapp.util.time import to_minutes, start_time
 
-from datetime import datetime
-import hashlib
-import pickle
-
-import json
-
-from ctfapp.time import to_minutes, start_time
 
 @login_required
 def submit_problem(request: HttpRequest):
@@ -21,7 +20,6 @@ def submit_problem(request: HttpRequest):
 
     # Load the user's solved dictionary using Pickle
     solved = pickle.loads(request.user.userprofile.solved)
-    alert = ""
 
     if request.method == "POST":
         pid = int(request.POST.get("problem"))

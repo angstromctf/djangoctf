@@ -1,12 +1,12 @@
 # Import
 import pickle
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from .time import to_minutes, start_time
+from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 
-from ctfapp.globals import GENDER_CHOICES, RACE_CHOICES
 
 # Define core models
 class Problem(models.Model):
