@@ -24,7 +24,7 @@ people = [
 def about(request: HttpRequest):
     """Create the about page."""
     # Compile the list of people and shuffle them 
-    people = [{"name": _[0], "picture": PICTURE_STATIC, "grade": _[2], "contributions": _[3]} for _ in people]
+    rand_people = [{"name": _[0], "picture": PICTURE_STATIC, "grade": _[2], "contributions": _[3]} for _ in people]
     random.shuffle(rand_people)
     # Return the render
     return render(request, "about.html", {"people": rand_people})
