@@ -9,3 +9,4 @@ from .submit_problem import submit_problem
 from .chat import chat
 from .score import score
 from .account import account
+from .change_password import change_password

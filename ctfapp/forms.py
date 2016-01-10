@@ -1,22 +1,20 @@
 from django import forms
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
-
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
-
 from crispy_forms.bootstrap import StrictButton, InlineRadios
 
 from ctfapp.validators import validate_unique_username
+from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 
-from ctfapp.globals import GENDER_CHOICES, RACE_CHOICES
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
 class ChangePasswordForm(forms.Form):
-    password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput())
+    password = forms.CharField(label='Current password', max_length=50, widget=forms.PasswordInput())
     new_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
     confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
@@ -35,15 +33,9 @@ class ChangePasswordForm(forms.Form):
                 'password',
                 'new_password',
                 'confirm_password',
-                StrictButton('Change password', css_class='btn-success', type='submit')
+                StrictButton('Change password', css_class='btn-success', type='button', onclick='change_password();')
             )
         )
-
-    def clean(self):
-        cleaned_data = super(ChangePasswordForm, self).clean()
-
-        if cleaned_data.get("password") != cleaned_data.get("confirm"):
-            raise ValidationError("Passwords do not match.")
 
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
