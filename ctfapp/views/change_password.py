@@ -14,14 +14,6 @@ def change_password(request: HttpRequest):
     alert_type = "danger"
     alert_class = "glyphicon glyphicon-remove-sign"
 
-    # if request.method == 'POST':
-    #         change_password = ChangePasswordForm(request.POST)
-    #
-    #         if change_password.is_valid():
-    #             #Authenticate the user
-    #             user = authenticate(username=request.user.get_username(), password=change_password.cleaned_data['password'])
-    #             user.set_password(change_password.cleaned_data['new_password'])
-
     if request.method == "POST":
         password = request.POST["old"]
 

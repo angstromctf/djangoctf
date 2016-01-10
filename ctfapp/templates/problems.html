@@ -7,7 +7,7 @@
 {% block pagetitle %}
 <header class="page-title">
 	<div class="container">
-		<h1>Problems</h1>	
+		<h1>Problems</h1>
 	</div>
 </header>
 {% endblock %}
@@ -19,6 +19,11 @@
 {% block content %}
 
 <form>{% csrf_token %}</form>
+
+{% if not solved and user.is_authenticated %}
+    Looks like you haven't joined a team yet!  Head over to <a href="/account">Account</a> to join one!
+    <br/><br/>
+{% endif %}
 
 {% for problem in problem_list %}
     <div id="outer{{ problem.id }}">
