@@ -3,11 +3,13 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Fieldset, HTML
 
-from crispy_forms.bootstrap import StrictButton
+from crispy_forms.bootstrap import StrictButton, InlineRadios
 
 from ctfapp.validators import validate_unique_username
+
+from ctfapp.globals import GENDER_CHOICES, RACE_CHOICES
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50)
@@ -15,14 +17,23 @@ class LoginForm(forms.Form):
 
 
 class CreateUserForm(forms.Form):
-    teamname = forms.CharField(label='Team name', max_length=50, required=True, validators=[validate_unique_username])
+    username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)
-    email = forms.CharField(label='Contact email', max_length=100, required=True, validators=[EmailValidator()])
+    first_name = forms.CharField(label='First name', max_length=50, required=True)
+    last_name = forms.CharField(label='Last name', max_length=50, required=True)
+    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
     school = forms.CharField(label='School', max_length=100, required=True)
+    eligible = forms.ChoiceField(label='Eligibility', required=True,
+                                         choices=(('Y','High school or middle school student in the US'),
+                                                  ('N','Ineligible to compete')))
+
+    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
+    race = forms.ChoiceField(choices=RACE_CHOICES, required=False)
 
     def __init__(self, *args, **kwargs):
         super(CreateUserForm, self).__init__(*args, **kwargs)
+        self.initial['eligible'] = 'Y'
 
         self.helper = FormHelper()
 
@@ -30,11 +41,27 @@ class CreateUserForm(forms.Form):
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
         self.helper.layout = Layout(
-            'teamname',
-            'password',
-            'confirm',
-            'email',
-            'school',
+            Fieldset(
+                'User information',
+                'username',
+                'password',
+                'confirm',
+                'first_name',
+                'last_name',
+                'email',
+                'school',
+                InlineRadios('eligible')
+            ),
+            Fieldset(
+                'Demographics',
+                HTML(
+                    """<span style='color: grey;'>All information in this section is completely optional.
+                    It will be used only for statistical purposes after the CTF is over
+                    and will not be disclosed to any other parties for any reason.</span>"""),
+                InlineRadios('gender'),
+                InlineRadios('race')
+            ),
+            HTML('<br/>'),
             StrictButton('Sign up!', css_class='btn-success', type='submit')
         )
 

@@ -2,7 +2,7 @@
 {% load humanize %}
 
 {% if user.is_authenticated %}
-<p class="navbar-text">Hi {{ user.username }}! ({{ user.userprofile.score }} points, {{ user|place|ordinal }} place)</p>
+<p class="navbar-text">Hi {{ user.username }}! ({{ user.userprofile.email }} points, {{ user.userprofile.email }} place)</p>
 <li><a href="{% url 'logout' %}">Logout</a></li>
 {% else %}
 <li><a href="{% url 'login' %}">Login</a></li>
