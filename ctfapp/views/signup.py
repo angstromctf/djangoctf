@@ -48,7 +48,7 @@ def signup(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
 
-            return redirect("/")
+            return redirect("/account")
         else:
             # The form didn't validate properly
             return render(request, 'signup.html', {'form': form, 'enabled': True})
