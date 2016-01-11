@@ -2,7 +2,12 @@
 {% load humanize %}
 
 {% if user.is_authenticated %}
-<p class="navbar-text">Hi {{ user.username }}! ({{ user.userprofile.email }} points, {{ user.userprofile.email }} place)</p>
+<p class="navbar-text">Hi {{ user.username }}!
+{% if user.userprofile.team %}
+    You have {{ user.userprofile.email }} points in {{ user|place|ordinal }} place</p>
+{% else %}
+    Head to <a href="{% url 'account' %}">Account</a> to join a team.
+{% endif %}
 <li><a href="{% url 'account' %}">Account</a></li>
 <li><a href="{% url 'logout' %}">Logout</a></li>
 {% else %}
