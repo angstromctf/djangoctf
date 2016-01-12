@@ -33,7 +33,6 @@ def signup(request):
                                             last_name=form.cleaned_data['last_name'])
 
             profile = UserProfile(user=user,
-                                  school=form.cleaned_data['school'],
                                   eligible=form.cleaned_data['eligible'])
 
             if form.cleaned_data['gender']:

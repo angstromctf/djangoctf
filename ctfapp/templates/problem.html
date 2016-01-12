@@ -1,12 +1,12 @@
 {% load staticfiles %}
 {% load extras %}
 
-<div class="panel problem panel-{% if solved %}{% if problem|is_solved:solved %}success{% else %}danger{% endif %}{% else %}info{% endif %}" id="panel{{ problem.id }}">
+<div class="panel problem panel-{% if answer %}{% if problem|is_solved:solved %}success{% else %}danger{% endif %}{% else %}info{% endif %}" id="panel{{ problem.id }}">
     <div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
         <h3 class="panel-title">
             {{ problem.problem_title|safe }} ({{ problem.problem_category }}, {{ problem.problem_value }})
             <span style="float: right;">
-                {% if solved %}
+                {% if answer %}
                     {% if problem|is_solved:solved %}
                         Solved
                     {% else %}
@@ -17,7 +17,7 @@
         </h3>
     </div>
 
-    <div class="collapse {% if problem|is_solved:solved %}out{% else %}in{% endif %}" id="wrapper{{ problem.id }}">
+    <div class="collapse {% if answer or not problem|is_solved:solved %}in{% else %}out{% endif %}" id="wrapper{{ problem.id }}">
         <div class="panel-body">
             <ul class="nav nav-tabs">
                 <li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
@@ -30,7 +30,7 @@
                 <div id="problem{{ problem.id }}" class="tab-pane in active">
                     {{ problem.problem_text|safe }}
 
-                    {% if solved %}
+                    {% if answer %}
                         {% if not problem|is_solved:solved %}
                             <br/>
                             <br/>

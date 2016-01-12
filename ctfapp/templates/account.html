@@ -18,12 +18,18 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            {% crispy change_password %}
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-            Hooray for HTML!
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {% crispy change_password %}
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                {% if user.userprofile.team %}
+                {% else %}
+                    {% crispy join_team %}
+                    {% crispy create_team %}
+                {% endif %}
+            </div>
         </div>
     </div>
 
