@@ -3,7 +3,7 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
-from crispy_forms.bootstrap import StrictButton, InlineRadios
+from crispy_forms.bootstrap import StrictButton, InlineRadios, Field
 
 from ctfapp.validators import validate_unique_username
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
@@ -30,9 +30,9 @@ class ChangePasswordForm(forms.Form):
         self.helper.layout = Layout(
             Fieldset(
                 'Change password',
-                'password',
-                'new_password',
-                'confirm_password',
+                Field('password', placeholder='Current password'),
+                Field('new_password', placeholder='New password'),
+                Field('confirm_password', placeholder='Confirm password'),
                 StrictButton('Change password', css_class='btn-success', type='button', onclick='change_password();')
             )
         )
@@ -64,13 +64,13 @@ class CreateUserForm(forms.Form):
         self.helper.layout = Layout(
             Fieldset(
                 'User information',
-                'username',
-                'password',
-                'confirm',
-                'first_name',
-                'last_name',
-                'email',
-                'school',
+                Field('username', placeholder='Username'),
+                Field('password', placeholder='Password'),
+                Field('confirm', placeholder='Confirm password'),
+                Field('first_name', placeholder='First name'),
+                Field('last_name', placeholder='Last name'),
+                Field('email', placeholder='Email'),
+                Field('school', placeholder='School'),
                 InlineRadios('eligible')
             ),
             Fieldset(
