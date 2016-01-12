@@ -18,18 +18,23 @@
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {% crispy change_password %}
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                {% if user.userprofile.team %}
-                {% else %}
-                    {% crispy join_team %}
-                    {% crispy create_team %}
-                {% endif %}
-            </div>
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% crispy change_password %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% if user.userprofile.team %}
+                <h3 style="margin-top: 0;">Team Information</h3>
+
+                You're a member of team {{ user.userprofile.team.name }}.  Your team code is
+                <samp style='color: blue;'>{{ user.userprofile.team.code }}</samp>.  Don't give it
+                out to anyone you don't want joining your team.
+
+                Your team has {{ user.userprofile.team.user_count }} out of 5 possible members.
+            {% else %}
+                {% crispy join_team %}
+                {% crispy create_team %}
+            {% endif %}
         </div>
     </div>
 

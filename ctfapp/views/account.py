@@ -16,13 +16,8 @@ def create_code():
 def account(request: HttpRequest):
     """Create the account page."""
 
-    render_params = {'change_password': ChangePasswordForm(),
-                     'create_team': CreateTeamForm(),
-                     'join_team': JoinTeamForm(),
-                     'user': request.user}
-
     if request.method == 'POST':
-        create_team = CreateTeamForm(request.POST)
+        create_team = CreateTeamForm(request.POST, prefix='create')
 
         if create_team.is_valid():
             code = create_code()
@@ -38,7 +33,22 @@ def account(request: HttpRequest):
 
             request.user.userprofile.team = team
             request.user.userprofile.save()
-        else:
-            render_params['create_team'] = create_team
+    else:
+        create_team = CreateTeamForm(prefix='create')
 
-    return render(request, 'account.html', render_params)
+    if request.method == 'POST' and not create_team.is_valid():
+        join_team = JoinTeamForm(request.POST, prefix='join')
+
+        if join_team.is_valid():
+            team = Team.objects.get(code=join_team.cleaned_data['code'])
+            team.user_count += 1
+
+            team.save()
+            team.users.add(request.user)
+    else:
+        join_team = JoinTeamForm(prefix='join')
+
+    return render(request, 'account.html', {'user': request.user,
+                                            'change_password': ChangePasswordForm(),
+                                            'join_team': join_team,
+                                            'create_team': create_team})
