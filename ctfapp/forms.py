@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
-from ctfapp.validators import validate_unique_username
+from ctfapp.validators import validate_unique_username, validate_team_code, validate_unique_team_name
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 
 
@@ -34,7 +34,7 @@ class ChangePasswordForm(forms.Form):
         )
 
 class CreateTeamForm(forms.Form):
-    name = forms.CharField(label='Team name', max_length=100)
+    name = forms.CharField(label='Team name', max_length=100, validators=[validate_unique_team_name])
     affiliation = forms.CharField(label='School or affiliation', max_length=50)
 
     def __init__(self, *args, **kwargs):
@@ -53,7 +53,7 @@ class CreateTeamForm(forms.Form):
 
 
 class JoinTeamForm(forms.Form):
-    code = forms.CharField(label='Team code', max_length=100)
+    code = forms.CharField(label='Team code', max_length=100, validators=[validate_team_code])
 
     def __init__(self, *args, **kwargs):
         super(JoinTeamForm, self).__init__(*args, **kwargs)
