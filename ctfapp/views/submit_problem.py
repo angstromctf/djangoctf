@@ -19,7 +19,7 @@ def submit_problem(request: HttpRequest):
     """
 
     # Load the user's solved dictionary using Pickle
-    solved = pickle.loads(request.user.userprofile.solved)
+    solved = pickle.loads(request.user.userprofile.team.solved)
 
     if request.method == "POST":
         pid = int(request.POST.get("problem"))
@@ -45,12 +45,12 @@ def submit_problem(request: HttpRequest):
             solved[pid] = (True, next_count, next_tries)
 
             # Update the user's score
-            request.user.userprofile.score += problem.problem_value
-            request.user.userprofile.score_lastupdate = datetime.now()
+            request.user.userprofile.team.score += problem.problem_value
+            request.user.userprofile.team.score_lastupdate = datetime.now()
 
             # Add a new Solution object corresponding to having solved the problem
             delta = timezone.now() - start_time
-            solution = ProblemSolved(team=request.user, new_score=request.user.userprofile.score, minutes=to_minutes(delta))
+            solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, minutes=to_minutes(delta))
             solution.save()
 
             alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
@@ -68,14 +68,15 @@ def submit_problem(request: HttpRequest):
             # We haven't solved the problem, the solution was bad
             solved[pid] = (False, next_count, next_tries)
 
-        request.user.userprofile.solved = pickle.dumps(solved)
-        request.user.userprofile.save()
+        request.user.userprofile.team.solved = pickle.dumps(solved)
+        request.user.userprofile.team.save()
 
         html = render(request, "problem.html", {
             'user': request.user,
             'problem': problem,
             'solved': solved,
             'guess': guess,
+            'answer': True
         }).content
 
         response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}

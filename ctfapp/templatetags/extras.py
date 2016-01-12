@@ -1,6 +1,6 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import ordinal
-from ctfapp.models import UserProfile
+from ctfapp.models import Team
 
 register = template.Library()
 
@@ -17,9 +17,9 @@ def try_count(problem, solved):
 
 
 @register.filter
-def place(user):
-    for index, item in enumerate(UserProfile.objects.all().order_by('-score', 'score_lastupdate')):
-        if item.user.id == user.id:
+def place(team):
+    for index, item in enumerate(Team.objects.all().order_by('-score', 'score_lastupdate')):
+        if item.id == team.id:
             return index+1
 
     return -1

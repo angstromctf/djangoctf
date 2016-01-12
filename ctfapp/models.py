@@ -56,7 +56,6 @@ class UserProfile(models.Model):
 
     # Required information
     eligible = models.BooleanField(default=True)
-    school = models.CharField(max_length=100)
 
     # Optional demographic information
     gender = models.IntegerField(null=True, choices=GENDER_CHOICES)
@@ -71,15 +70,18 @@ class UserProfile(models.Model):
 class Team(models.Model):
     """Model for a team registered with the CTF. Contains name,
     school, participation, solved problems, and score data."""
+    name = models.CharField(max_length=100)
     users = models.ManyToManyField(User)
     user_count = models.IntegerField(default=0)
 
-    school = models.CharField(max_length=100,null=True)
+    school = models.CharField(max_length=100)
 
     participating = models.BooleanField(default=True)
     solved = models.BinaryField(default=pickle.dumps({}))
 
-    # Score and last update of the player
+    code = models.CharField(max_length=20)
+
+    # Score and last update of the team
     score = models.IntegerField(default=0)
     score_lastupdate = models.DateTimeField(default=now())
 

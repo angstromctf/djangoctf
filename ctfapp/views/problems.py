@@ -12,7 +12,7 @@ def problems(request: HttpRequest):
     problem_list = Problem.objects.all().order_by("problem_value")
 
     # Create the context
-    context = {"user": request.user, "problem_list": problem_list}
+    context = {"user": request.user, "problem_list": problem_list, 'answer': False}
 
     if request.user.is_authenticated():
         # Load the user's solved dictionary using Pickle
@@ -20,6 +20,7 @@ def problems(request: HttpRequest):
 
         if team:
             context["solved"] = pickle.loads(team.solved)
+            context["answer"] = True
 
     context.update(csrf(request))
 

@@ -4,7 +4,7 @@
 {% if user.is_authenticated %}
 <p class="navbar-text">Hi {{ user.username }}!
 {% if user.userprofile.team %}
-    You have {{ user.userprofile.email }} points in {{ user|place|ordinal }} place</p>
+    You have {{ user.userprofile.team.score }} points in {{ user.userprofile.team|place|ordinal }} place.</p>
 {% else %}
     Head to <a href="{% url 'account' %}">Account</a> to join a team.
 {% endif %}
