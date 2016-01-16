@@ -2,8 +2,8 @@ from django.http import HttpRequest
 from django.shortcuts import render
 import random
 
-PICTURE_STATIC = "http://lorempixel.com/200/200/cats/"
-
+# PICTURE_STATIC = "http://lorempixel.com/200/200/cats/"
+PICTURE_STATIC = "http://i.imgur.com/yaXiDPP.jpg"
 # Name, picture, grade, contributions
 people = [
     ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and crypto problems, official team movitator"],
@@ -11,11 +11,11 @@ people = [
     ["Theo Tosini",     "theotosini.jpg",       10,     "Platform, deployment, problems"],
     ["Andrew Komo",     "andrewkomo.jpg",       10,     "ALL THE CRYPTO"],
     ["Arman Siddique",  "armansiddique.jpg",    10,     "Being god"],
-    ["Aaron Szabo",     "aaronszabo.jpg",       12,     "???"],
+    ["Aaron Szabo",     "aaronszabo.jpg",       12,     ""],
     ["Anthony Li",      "anthonyli.jpg",        12,     "Contest organizer"],
     ["Daniel Chen",     "danielchen.jpg",       11,     "PR and Outreach"],
     ["Chris Wang",      "chriswang.jpg",        10,     "Art, PR, and Outreach"],
-    ["Linden Yuan",     "lindenyuan.jpg",       11,     "???"],
+    ["Linden Yuan",     "lindenyuan.jpg",       11,     ""],
     ["Noah Levine",     "noahlevine.jpg",       12,     "Contest organizer"],
     ["Noah Kim",        "noahkim.jpg",          10,     "Website and platform design"]
 ]
