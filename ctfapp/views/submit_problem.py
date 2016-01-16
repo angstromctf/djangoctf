@@ -13,6 +13,8 @@ import json
 
 from ctfapp.time import to_minutes, start_time
 
+#This file handles problem grading and the display for grading.
+
 @login_required
 def submit_problem(request: HttpRequest):
     """

@@ -5,6 +5,9 @@ import pickle
 import collections
 
 def profile(request, user):
+    """
+    Loads a user's profile and the problems that the have solved. 
+    """
     # Find all problems
     problems = collections.OrderedDict()
     for problem in Problem.objects.all():

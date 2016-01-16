@@ -5,6 +5,8 @@ from django.shortcuts import render
 from django.template.context_processors import csrf
 from ctfapp.models import Problem
 import pickle
+#The problems page. Requires users to be logged in.
+
 
 # Handle the HTTP requst
 @login_required
