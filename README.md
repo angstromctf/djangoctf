@@ -12,5 +12,6 @@ angstromCTF will consist of questions ranging from trivial to extremely difficul
 * Forensics
 * A combination of these
 
-This repository contains Django code for the public web interface of angstromCTF.
+This platform was written for [angstromCTF](https://angstromctf.com), a high school cybersecurity competition created
+by students.
 Participants will login, read and answer questions, receive updates, and ask for help through this platform.
