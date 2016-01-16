@@ -6,15 +6,21 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 
 from crispy_forms.bootstrap import StrictButton
-
 from ctfapp.validators import validate_unique_username
 
+
 class LoginForm(forms.Form):
+    """
+    The forms class, used for the various forms users will interact with. 
+    Login Form - The form for logging in """
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
 
 class CreateUserForm(forms.Form):
+    """
+    The forms for making a new user.
+    """
     teamname = forms.CharField(label='Team name', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)

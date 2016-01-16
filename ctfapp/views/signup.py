@@ -5,7 +5,7 @@ from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile, ProblemSolved
 
 import configparser
-
+#This file handles signups and registration for users. 
 
 def signup(request):
     """
