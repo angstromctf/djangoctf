@@ -43,6 +43,8 @@ def signup(request):
 
             profile.save()
 
+            user.userprofile = profile
+
             # Authenticate and login our new user!
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)

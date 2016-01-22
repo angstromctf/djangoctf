@@ -5,9 +5,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
-from ctfapp.validators import validate_unique_username, validate_team_code, validate_unique_team_name
+from ctfapp.validators import validate_unique_username, validate_unique_team_name
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
-
+from ctfapp.models import Team
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50)
@@ -41,6 +41,7 @@ class CreateTeamForm(forms.Form):
         super(CreateTeamForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
+        self.helper.form_action = 'create_team'
 
         self.helper.layout = Layout(
             Fieldset(
@@ -53,12 +54,15 @@ class CreateTeamForm(forms.Form):
 
 
 class JoinTeamForm(forms.Form):
-    code = forms.CharField(label='Team code', max_length=100, validators=[validate_team_code])
+    code = forms.CharField(label='Team code', max_length=100)
 
     def __init__(self, *args, **kwargs):
         super(JoinTeamForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
+        self.helper.form_action = 'join_team'
+
+        self.user = kwargs.pop('user', None)
 
         self.helper.layout = Layout(
             Fieldset(
@@ -71,6 +75,25 @@ class JoinTeamForm(forms.Form):
                                  StrictButton('Join team', css_class='btn-success', type='submit'))
             )
         )
+
+    def clean_code(self):
+        # Get all teams with the specified team code
+        teams = Team.objects.all().filter(code=self.cleaned_data['code'])
+
+        # Throw an error if the team code wasn't found
+        if len(teams) != 1:
+            raise ValidationError("Team code not found.")
+
+        team = teams[0]
+
+        if team.user_count == 5:
+            raise ValidationError("Team is already full.")
+
+        if self.user in team.users.all():
+            raise ValidationError("Team member is already in this team.")
+
+        return self.cleaned_data['code']
+
 
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
