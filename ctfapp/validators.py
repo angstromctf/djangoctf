@@ -19,16 +19,3 @@ def validate_unique_team_name(tname):
     if len(teams) > 0:
         raise ValidationError("Team name already exists.")
 
-def validate_team_code(code):
-    """Check if a team code is valid."""
-    # Get all teams with the specified team code
-    teams = Team.objects.all().filter(code=code)
-
-    # Throw an error if the team code wasn't found
-    if len(teams) != 1:
-        raise ValidationError("Team code not found.")
-
-    team = teams.get(0)
-
-    if team.user_count == 5:
-        raise ValidationError("Team is already full.")
