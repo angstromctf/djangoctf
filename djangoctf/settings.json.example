@@ -1,0 +1,20 @@
+{
+    "secret_key": "supersecretsecurekey",
+    "debug": true,
+    "template_debug": true,
+    "allowed_hosts": [
+    ],
+    "signed_enabled": true,
+    "databases": {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "db.sqlite3",
+            "NAME_JOIN": true
+        }
+    },
+    "ssl": false,
+    "shell_ssh_key_path":"djangoctf/shell_privkey",
+    "registration_enabled": true,
+    "send_registration_emails": true,
+    "sendgrid_api_key":"redacted"
+}
