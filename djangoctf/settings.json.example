@@ -14,5 +14,7 @@
     },
     "ssl": false,
     "shell_ssh_key_path":"djangoctf/shell_privkey",
-    "registration_enabled": true
+    "registration_enabled": true,
+    "send_registration_emails": true,
+    "sendgrid_api_key":"redacted"
 }
