@@ -69,7 +69,8 @@ class UserProfile(models.Model):
 
 class Team(models.Model):
     """Model for a team registered with the CTF. Contains name,
-    school, participation, solved problems, and score data."""
+    school, participation, solved problems, score data, and shell
+    login info. """
     name = models.CharField(max_length=100)
     users = models.ManyToManyField(User)
     user_count = models.IntegerField(default=0)
@@ -84,6 +85,10 @@ class Team(models.Model):
     # Score and last update of the team
     score = models.IntegerField(default=0)
     score_lastupdate = models.DateTimeField(default=now())
+
+    # Shell username and password
+    shell_username = models.CharField(max_length=20, default="")
+    shell_password = models.CharField(max_length=50, default="")
 
 class ProblemSolved(models.Model):
     """A model that represents a set of solved problems."""

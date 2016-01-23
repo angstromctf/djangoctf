@@ -4,17 +4,29 @@ from django.contrib.auth.decorators import login_required
 
 from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import Team
-
+import paramiko
+import json
+import base64
 from random import choice
 
 # Create random team code
 def create_code():
     return "".join([choice("0123456789abcdef") for x in range(20)])
 
+# Generate shell username
+def create_shell_username():
+    return "team" + "".join([choice("0123456789") for x in range(5)])
+
+def create_shell_password():
+    return "".join([choice("0123456789abcdef") for x in range(12)])
+
 # Handle the HTTP request
 @login_required
 def create_team(request: HttpRequest):
     """Create the account page."""
+    with open('djangoctf/settings.json') as config_file:
+        config = json.loads(config_file.read())
+        ssh_priv_key_path = config['shell_ssh_key_path']
 
     if request.method == 'POST':
         create_team = CreateTeamForm(request.POST)
@@ -24,9 +36,25 @@ def create_team(request: HttpRequest):
             while len(Team.objects.filter(code=code))>0:
                 code = create_code()
 
+            shell_username = create_shell_username()
+            while len(Team.objects.filter(shell_username=shell_username))>0:
+                shell_username = create_shell_username()
+
+            shell_password = create_shell_password()
+
+            # SSH to shell server and create the account
+            pkey = paramiko.RSAKey.from_private_key_file(ssh_priv_key_path)
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
+            createuser_command = "addctfuser "+shell_username+" "+shell_password
+            stdin, stdout, stderr = ssh.exec_command(createuser_command)
+
             team = Team(name=create_team.cleaned_data['name'],
                         user_count=1,
                         school=create_team.cleaned_data['affiliation'],
+                        shell_username=shell_username,
+                        shell_password=shell_password,
                         code=code)
             team.save()
             team.users.add(request.user)

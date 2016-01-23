@@ -5,7 +5,7 @@ from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile, ProblemSolved
 
 import json
-
+import sendgrid
 
 def signup(request):
     """
@@ -14,6 +14,8 @@ def signup(request):
     with open('djangoctf/settings.json') as config_file:
         config = json.loads(config_file.read())
         enabled = config['registration_enabled']
+        sendgrid_api_key = config['sendgrid_api_key']
+        emails_enabled = config['send_registration_emails']
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -48,6 +50,23 @@ def signup(request):
             # Authenticate and login our new user!
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
+
+            # Send a welcome email through sendgrid
+            message_to_field = form.cleaned_data['first_name'] + " " + form.cleaned_data['last_name'] \
+            + "<" + form.cleaned_data['email'] + ">"
+
+            if emails_enabled:
+                sg = sendgrid.SendGridClient(sendgrid_api_key)
+                message = sendgrid.Mail()
+                message.add_substitution(':first_name', form.cleaned_data['first_name'])
+                message.smtpapi.add_to(message_to_field)
+                message.set_subject('Welcome to angstromCTF!')
+                message.set_html('<p>Hi :first_name, thank you for signing up for angstromCTF! This message confirms '
+                                 'that registration was successful.</p>')
+                message.set_text('Hi :first_name, thank you for signing up for angstromCTF! This message confirms '
+                                 'that registration was successful.')
+                message.set_from('angstromCTF team <contact@angstromctf.com>')
+                sg.send(message)
 
             return redirect("/account")
         else:
