@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^account/login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^account/logout/$', auth_views.logout, {'next_page': 'home'}, name='logout'),
     url(r'^account/signup/$', views.signup, name='signup'),
-    url(r'^profile/(?P<user>[a-zA-Z0-9]*)$', views.profile),
+    url(r'^profile/(?P<team>[a-zA-Z0-9]*)$', views.profile),
     url(r'^about/', views.about, name='about'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^score/', views.score, name='score')

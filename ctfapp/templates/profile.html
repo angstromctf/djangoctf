@@ -2,12 +2,12 @@
 {% load extras %}
 {% load staticfiles %}
 
-{% block title %} {{ user|possession }} Profile - angstromCTF {% endblock %}
+{% block title %} {{ team.name }} Profile - angstromCTF {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
 	<div class="container">
-		<h1>{{ user|possession }} Profile</h1>
+		<h1>{{ team.name }} Team Profile</h1>
 	</div>
 </header>
 {% endblock %}
@@ -17,6 +17,15 @@
 {% endblock %}
 
 {% block content %}
+    From {{ team.school }}.
+
+    <h3>Team Members:</h3>
+    <ul>
+    {% for member in team.users.all %}
+        <li>{{ member.username }}</li>
+    {% endfor %}
+    </ul>
+{% comment %}
 <table class="table">
 	<thead>
 		<tr>
@@ -35,4 +44,5 @@
 	{% endfor %}
 	</tbody>
 </table>
+{% endcomment %}
 {% endblock %}
