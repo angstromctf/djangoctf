@@ -32,7 +32,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'django.contrib.humanize',
+    'django.contrib.humanize',
+    'password_reset',
     'ctfapp',
     'crispy_forms',
 )
@@ -125,3 +126,10 @@ SESSION_COOKIE_SECURE = config['ssl']
 CSRF_COOKIE_HTTPONLY = True
 
 X_FRAME_OPTIONS = "DENY"
+
+# SMTP info
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = config['email']['username']
+EMAIL_HOST_PASSWORD = config['email']['password']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
