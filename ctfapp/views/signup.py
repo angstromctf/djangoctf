@@ -2,10 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 
 from ctfapp.forms import CreateUserForm
-from ctfapp.models import User, UserProfile, ProblemSolved
+from ctfapp.models import User, UserProfile
 
 import json
-import sendgrid
 
 def signup(request):
     """
@@ -14,8 +13,10 @@ def signup(request):
     with open('djangoctf/settings.json') as config_file:
         config = json.loads(config_file.read())
         enabled = config['registration_enabled']
-        sendgrid_api_key = config['sendgrid_api_key']
-        emails_enabled = config['send_registration_emails']
+        emails_enabled = config['email']['enabled']
+
+        if emails_enabled:
+            sendgrid_api_key = config['email']['sendgrid_api_key']
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -51,11 +52,13 @@ def signup(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             login(request, user)
 
-            # Send a welcome email through sendgrid
-            message_to_field = form.cleaned_data['first_name'] + " " + form.cleaned_data['last_name'] \
-            + "<" + form.cleaned_data['email'] + ">"
-
             if emails_enabled:
+                import sendgrid
+
+                # Send a welcome email through sendgrid
+                message_to_field = form.cleaned_data['first_name'] + " " + form.cleaned_data['last_name'] \
+                + "<" + form.cleaned_data['email'] + ">"
+
                 sg = sendgrid.SendGridClient(sendgrid_api_key)
                 message = sendgrid.Mail()
                 message.add_substitution(':first_name', form.cleaned_data['first_name'])

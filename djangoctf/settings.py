@@ -21,7 +21,6 @@ with open('djangoctf/settings.json') as config_file:
 # Read security options from the file
 SECRET_KEY = config['secret_key']
 DEBUG = config['debug']
-TEMPLATE_DEBUG = config['template_debug']
 ALLOWED_HOSTS = config['allowed_hosts']
 
 # Application definition
@@ -64,17 +63,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-        },
+        }
     },
 ]
-
-TEMPLATE_CONTEXT_PROCESSORS = ["django.contrib.auth.context_processors.auth",
-    "django.template.context_processors.debug",
-    "django.template.context_processors.i18n",
-    "django.template.context_processors.media",
-    "django.template.context_processors.static",
-    "django.template.context_processors.tz",
-    "django.contrib.messages.context_processors.messages"]
 
 
 AUTH_PASSWORD_VALIDATORS = [

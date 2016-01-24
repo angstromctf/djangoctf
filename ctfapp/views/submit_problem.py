@@ -10,9 +10,10 @@ from django.utils import timezone
 
 from ctfapp.models import Problem, ProblemSolved
 from ctfapp.util.time import to_minutes, start_time
-
+from ctfapp.decorators import team_required
 
 @login_required
+@team_required
 def submit_problem(request: HttpRequest):
     """
     View for submitting a problem through AJAX.  Login is required.
