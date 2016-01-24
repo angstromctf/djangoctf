@@ -19,6 +19,9 @@
     },
     "email": {
         "enabled": false,
-        "sendgrid_api_key": "redacted"
+        "sendgrid_api_key": "redacted",
+        "username": "redacted",
+        "password": "redacted"
+
     }
 }

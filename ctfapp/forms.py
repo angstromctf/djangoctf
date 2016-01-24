@@ -95,6 +95,7 @@ class JoinTeamForm(forms.Form):
         return self.cleaned_data['code']
 
 
+
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
@@ -144,3 +145,26 @@ class CreateUserForm(forms.Form):
 
         if cleaned_data.get("password") != cleaned_data.get("confirm"):
             raise ValidationError("Passwords do not match.")
+
+class ResetPasswordForm(forms.Form):
+
+    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
+
+    def __init__(self, *args, **kwargs):
+        super(ResetPasswordForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.layout = Layout(
+            Fieldset(
+                Field('email', placeholder='Enter email'),
+
+            ),
+
+            HTML('<br/>'),
+            StrictButton('Send reset email', css_class='btn-success', type='submit')
+        )
+
+    def clean(self):
+        cleaned_data = super(ResetPasswordForm, self).clean()
+
+
