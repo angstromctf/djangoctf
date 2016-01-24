@@ -38,7 +38,7 @@ class Update(models.Model):
     # Outline child models
     update_title = models.CharField(max_length=200)
     update_text = models.CharField(max_length=500)
-    date = models.DateTimeField(default=now())
+    date = models.DateTimeField(default=now)
 
     # Magic methods
     def __str__(self):
@@ -77,14 +77,14 @@ class Team(models.Model):
 
     school = models.CharField(max_length=100)
 
-    participating = models.BooleanField(default=True)
+    eligible = models.BooleanField(default=True)
     solved = models.BinaryField(default=pickle.dumps({}))
 
     code = models.CharField(max_length=20)
 
     # Score and last update of the team
     score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=now())
+    score_lastupdate = models.DateTimeField(default=now)
 
     # Shell username and password
     shell_username = models.CharField(max_length=20, default="")

@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 
 from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import Team
-import paramiko
+from ctfapp.decorators import team_required
+
 import json
-import base64
+
 from random import choice
 
 # Create random team code
@@ -22,11 +23,16 @@ def create_shell_password():
 
 # Handle the HTTP request
 @login_required
+@team_required(invert=True)
 def create_team(request: HttpRequest):
     """Create the account page."""
     with open('djangoctf/settings.json') as config_file:
         config = json.loads(config_file.read())
-        ssh_priv_key_path = config['shell_ssh_key_path']
+
+        shell_enabled = config['shell']['enabled']
+
+        if shell_enabled:
+            ssh_priv_key_path = config['shell']['ssh_key_path']
 
     if request.method == 'POST':
         create_team = CreateTeamForm(request.POST)
@@ -42,20 +48,24 @@ def create_team(request: HttpRequest):
 
             shell_password = create_shell_password()
 
-            # SSH to shell server and create the account
-            pkey = paramiko.RSAKey.from_private_key_file(ssh_priv_key_path)
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
-            createuser_command = "addctfuser "+shell_username+" "+shell_password
-            stdin, stdout, stderr = ssh.exec_command(createuser_command)
+            if shell_enabled:
+                import paramiko
+
+                # SSH to shell server and create the account
+                pkey = paramiko.RSAKey.from_private_key_file(ssh_priv_key_path)
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
+                createuser_command = "addctfuser "+shell_username+" "+shell_password
+                stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
             team = Team(name=create_team.cleaned_data['name'],
                         user_count=1,
                         school=create_team.cleaned_data['affiliation'],
                         shell_username=shell_username,
                         shell_password=shell_password,
-                        code=code)
+                        code=code,
+                        eligible=request.user.userprofile.eligible)
             team.save()
             team.users.add(request.user)
 

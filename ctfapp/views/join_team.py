@@ -4,9 +4,11 @@ from django.contrib.auth.decorators import login_required
 
 from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import Team
+from ctfapp.decorators import team_required
 
 # Handle the HTTP request
 @login_required
+@team_required(invert=True)
 def join_team(request: HttpRequest):
     """Create the account page."""
 
@@ -14,9 +16,9 @@ def join_team(request: HttpRequest):
         join_team = JoinTeamForm(request.POST)
 
         if join_team.is_valid():
-            print("CODE: ", join_team.cleaned_data['code'])
             team = Team.objects.get(code=join_team.cleaned_data['code'])
             team.user_count += 1
+            team.eligible = team.eligible and request.user.userprofile.eligible
 
             team.save()
             team.users.add(request.user)
