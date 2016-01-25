@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
-from ctfapp.validators import validate_unique_username, validate_unique_team_name
+from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 from ctfapp.models import Team
 
@@ -102,7 +102,7 @@ class CreateUserForm(forms.Form):
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)
     first_name = forms.CharField(label='First name', max_length=50, required=True)
     last_name = forms.CharField(label='Last name', max_length=50, required=True)
-    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
+    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator(), validate_unique_email])
     eligible = forms.ChoiceField(label='Eligibility', required=True,
                                          choices=(('Y','High school or middle school student in the US'),
                                                   ('N','Ineligible to compete')))
