@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^$', views.index, name='home'),
     url(r'^problems/$', views.problems, name='problems'),
+    url(r'^shelld/$', views.shelld, name='shelld'),
     url(r'^problems/submit_problem/$', views.submit_problem, name='submit_problem'),
     url(r'^updates/$', views.updates, name='updates'),
     url(r'^scoreboard/$', views.scoreboard, name='scoreboard'),
