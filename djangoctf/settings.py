@@ -94,3 +94,9 @@ SESSION_COOKIE_SECURE = config['ssl']
 CSRF_COOKIE_HTTPONLY = True
 
 X_FRAME_OPTIONS = "DENY"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_HOST = 'db.angstromctf.com'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+SESSION_REDIS_PREFIX = 'session'
