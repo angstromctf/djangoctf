@@ -55,7 +55,7 @@ WSGI_APPLICATION = 'djangoctf.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'ctfapp/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,3 +133,4 @@ EMAIL_HOST_USER = config['email']['username']
 EMAIL_HOST_PASSWORD = config['email']['password']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
