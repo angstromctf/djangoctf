@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
-from ctfapp.validators import validate_unique_username, validate_unique_team_name
+from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 from ctfapp.models import Team
 
@@ -95,13 +95,14 @@ class JoinTeamForm(forms.Form):
         return self.cleaned_data['code']
 
 
+
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)
     first_name = forms.CharField(label='First name', max_length=50, required=True)
     last_name = forms.CharField(label='Last name', max_length=50, required=True)
-    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
+    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator(), validate_unique_email])
     eligible = forms.ChoiceField(label='Eligibility', required=True,
                                          choices=(('Y','High school or middle school student in the US'),
                                                   ('N','Ineligible to compete')))
@@ -144,3 +145,26 @@ class CreateUserForm(forms.Form):
 
         if cleaned_data.get("password") != cleaned_data.get("confirm"):
             raise ValidationError("Passwords do not match.")
+
+class ResetPasswordForm(forms.Form):
+
+    email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
+
+    def __init__(self, *args, **kwargs):
+        super(ResetPasswordForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
+        self.helper.layout = Layout(
+            Fieldset(
+                Field('email', placeholder='Enter email'),
+
+            ),
+
+            HTML('<br/>'),
+            StrictButton('Send reset email', css_class='btn-success', type='submit')
+        )
+
+    def clean(self):
+        cleaned_data = super(ResetPasswordForm, self).clean()
+
+

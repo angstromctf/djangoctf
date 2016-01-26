@@ -19,3 +19,12 @@ def validate_unique_team_name(tname):
     if len(teams) > 0:
         raise ValidationError("Team name already exists.")
 
+def validate_unique_email(email_address):
+    """Check if an email address is unique."""
+    # Get all users with the specified email address
+    users = User.objects.all().filter(email=email_address)
+    # Throw an error if there are any
+    if len(users) > 0:
+        raise ValidationError("Email address already registered.")
+
+

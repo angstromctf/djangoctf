@@ -32,7 +32,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'django.contrib.humanize',
+    'django.contrib.humanize',
+    'password_reset',
     'ctfapp',
     'crispy_forms',
 )
@@ -54,7 +55,7 @@ WSGI_APPLICATION = 'djangoctf.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'ctfapp/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,7 +90,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': 'db.angstromctf.com:6379',
+    },
+}
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
@@ -108,3 +114,17 @@ SESSION_COOKIE_SECURE = config['ssl']
 CSRF_COOKIE_HTTPONLY = True
 
 X_FRAME_OPTIONS = "DENY"
+
+# SMTP info
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = config['email']['username']
+EMAIL_HOST_PASSWORD = config['email']['password']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
+
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_HOST = 'db.angstromctf.com'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+SESSION_REDIS_PREFIX = 'session'
