@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load extras %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block title %} Account - angstromCTF {% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>{{ user.username }}'s Account</h1>
+	</div>
+</header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/about.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% crispy change_password %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% if user.userprofile.team %}
+                <h3 style="margin-top: 0;">Team Information</h3>
+
+                <p>You're a member of team {{ user.userprofile.team.name }}.  Your team code is
+                <samp style='color: blue;'>{{ user.userprofile.team.code }}</samp>.  Don't give it
+                out to anyone you don't want joining your team.</p>
+
+                <p>Your team has {{ user.userprofile.team.user_count }} out of 5 possible members.</p>
+                {% for team_member in team_member_list %}
+                <li>{{ team_member.user.first_name }}&nbsp;{{ team_member.user.last_name }}</li>
+                {% endfor %}
+
+                <p>Your shell account username and default password are below:</p>
+                Username: <samp style='color: blue;'>{{ user.userprofile.team.shell_username }}</samp><br>
+                Password: <samp style='color: blue;'>{{ user.userprofile.team.shell_password }}</samp>
+            {% else %}
+                {% crispy join_team %}
+                {% crispy create_team %}
+            {% endif %}
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="{% static "js/change_password.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/csrf.js" %}"></script>
+{% endblock %}

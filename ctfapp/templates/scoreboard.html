@@ -28,10 +28,10 @@
 			<th>Score</th>
 		</tr>
 	</thead>
-	{% for team in user_list %}
-		<tr onclick="document.location = '/profile/{{ team.user.get_username }}';">
+	{% for team in team_list %}
+		<tr onclick="document.location = '/profile/{{ team.name }}';">
 			<td>{{ forloop.counter }}</td>
-			<td>{{ team.user.get_username }}</td>
+			<td>{{ team.name }}</td>
 			<td>{{ team.school }}</td>
 			<td>{{ team.score }}</td>
 		</tr>

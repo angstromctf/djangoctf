@@ -8,7 +8,7 @@ for administrator access.
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import UserProfile, ProblemSolved, Problem
+from .models import UserProfile, ProblemSolved, Problem, Team
 
 
 # Define user models
@@ -34,3 +34,4 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Problem)
 admin.site.register(UserProfile)
 admin.site.register(ProblemSolved)
+admin.site.register(Team)

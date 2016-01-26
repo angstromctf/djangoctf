@@ -39,9 +39,13 @@
 		<div class="form-group">
 			<div class="col-sm-offset-2 col-sm-10">
 				<button class="btn btn-success" type="submit">Login</button>
+                <br/><br/>
+				<a href="{% url 'password_reset' %}">Forgot your password?</a>
 			</div>
 		</div>
 		<input type="hidden" name="next" value="{{ next }}" />
+
 	</form>
+
 </div>
 {% endblock %}
