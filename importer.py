@@ -1,7 +1,7 @@
 from django import setup
 from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
-from djangoctf.settings import DATABASES, TIME_ZONE
+from djangoctf.settings import DATABASES, TIME_ZONE, INSTALLED_APPS
 
 from os import listdir, makedirs, system, getcwd, chdir
 from os.path import isdir, isfile, realpath, exists
@@ -21,8 +21,9 @@ args = parser.parse_args()
 path = args.problems_directory
 
 # Configure settings
-settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE)
+settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE, INSTALLED_APPS=INSTALLED_APPS)
 setup()
+
 from ctfapp.models import *
 
 STATIC = '/'.join(realpath(__file__).replace('\\', '/').split('/')[:-1]) + '/ctfapp/static/problems'

@@ -1,10 +1,11 @@
 {
     "secret_key": "supersecretsecurekey",
     "debug": true,
-    "template_debug": true,
     "allowed_hosts": [
+
     ],
-    "signed_enabled": true,
+    "cache_enabled": true,
+    "registration_enabled": true,
     "databases": {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -13,5 +14,14 @@
         }
     },
     "ssl": false,
-    "registration_enabled": true
+    "shell": {
+        "enabled": true,
+        "ssh_key_path": "djangoctf/shell_privkey"
+    },
+    "email": {
+        "enabled": false,
+        "sendgrid_api_key": "redacted",
+        "username": "redacted",
+        "password": "redacted"
+    }
 }

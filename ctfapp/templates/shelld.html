@@ -2,12 +2,12 @@
 {% load staticfiles %}
 {% load extras %}
 
-{% block title %} Problems - angstromCTF {% endblock %}
+{% block title %} Shell - angstromCTF {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
 	<div class="container">
-		<h1>Problems</h1>
+		<h1>Shell</h1>
 	</div>
 </header>
 {% endblock %}
@@ -18,20 +18,16 @@
 
 {% block content %}
 
-<form>{% csrf_token %}</form>
 
 {% if user.is_authenticated and not user.userprofile.team %}
     Looks like you haven't joined a team yet!  Head over to <a href="/account">Account</a> to join one!
     <br/><br/>
 {% endif %}
 
-{% for problem in problem_list %}
-    <div id="outer{{ problem.id }}">
-	    {% include "problem.html" with problem=problem solved=solved %}
-    </div>
-{% endfor %}
+<div class="jumbotron" style="min-height: 400px;">
 
-<script type="text/javascript" src="{% static "js/problems.js" %}"></script>
-<script type="text/javascript" src="{% static "js/csrf.js" %}"></script>
+    <iframe src="https://angstromctf.com/shell" style="border:none; min-height: 400px;" width="100%"></iframe>
+</div>
+
 
 {% endblock %}

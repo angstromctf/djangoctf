@@ -1,6 +1,5 @@
 # Import
 from django.http import HttpRequest
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.context_processors import csrf
 from ctfapp.models import Problem
@@ -9,14 +8,23 @@ import pickle
 
 
 # Handle the HTTP requst
-@login_required
 def problems(request: HttpRequest):
     """View for the problems page.  Login is required."""
-    # Load the user"s solved dictionary using Pickle
-    solved = pickle.loads(request.user.userprofile.solved)
+
     problem_list = Problem.objects.all().order_by("problem_value")
+
     # Create the context
-    context = {"user": request.user, "problem_list": problem_list, "solved": solved}
+    context = {"user": request.user, "problem_list": problem_list, 'answer': False}
+
+    if request.user.is_authenticated():
+        # Load the user's solved dictionary using Pickle
+        team = request.user.userprofile.team
+
+        if team:
+            context["solved"] = pickle.loads(team.solved)
+            context["answer"] = True
+
     context.update(csrf(request))
+
     # Render the page
     return render(request, "problems.html", context)

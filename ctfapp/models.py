@@ -1,9 +1,12 @@
 # Import
 import pickle
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
-from .time import to_minutes, start_time
+
+from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
+
 
 # Define core models
 class Problem(models.Model):
@@ -35,7 +38,7 @@ class Update(models.Model):
     # Outline child models
     update_title = models.CharField(max_length=200)
     update_text = models.CharField(max_length=500)
-    date = models.DateTimeField(default=now())
+    date = models.DateTimeField(default=now)
 
     # Magic methods
     def __str__(self):
@@ -49,24 +52,50 @@ class UserProfile(models.Model):
     
     # Outline child models
     user = models.OneToOneField(User)
-    school = models.CharField(max_length=100)
-    participating = models.BooleanField(default=True)
-    solved = models.BinaryField(default=pickle.dumps({}))
-    # Score and last update of the player
-    score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=now())
+
+    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
+
+    # Required information
+    eligible = models.BooleanField(default=True)
+
+    # Optional demographic information
+    gender = models.IntegerField(null=True, choices=GENDER_CHOICES)
+
+    race = models.IntegerField(null=True, choices=RACE_CHOICES)
 
     # Magic methods
     def __str__(self):
         """Represent the user as a string."""
         return self.user.username
 
+class Team(models.Model):
+    """Model for a team registered with the CTF. Contains name,
+    school, participation, solved problems, score data, and shell
+    login info. """
+    name = models.CharField(max_length=100)
+    users = models.ManyToManyField(User)
+    user_count = models.IntegerField(default=0)
+
+    school = models.CharField(max_length=100)
+
+    eligible = models.BooleanField(default=True)
+    solved = models.BinaryField(default=pickle.dumps({}))
+
+    code = models.CharField(max_length=20)
+
+    # Score and last update of the team
+    score = models.IntegerField(default=0)
+    score_lastupdate = models.DateTimeField(default=now)
+
+    # Shell username and password
+    shell_username = models.CharField(max_length=20, default="")
+    shell_password = models.CharField(max_length=50, default="")
 
 class ProblemSolved(models.Model):
     """A model that represents a set of solved problems."""
-    
+
     # Outline child models
-    team = models.ForeignKey(User)
+    team = models.ForeignKey(Team)
     new_score = models.IntegerField(default=0)
     minutes = models.IntegerField(default=0)
 
