@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load extras %}
+{% load staticfiles %}
+
+{% block title %} Rules - angstromCTF {% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h1>angstromCTF Rules</h1>
+	</div>
+</header>
+{% endblock %}
+
+{% block content %}
+<h3>Eligibility</h3>
+Anyone can participate in angstromCTF, however, due to various reasons, we can only give prizes to teams from the United States.
+All team members must be affiliated with either a public or private middle or high school in the US, or they may be home-schooled. Students and adults from around the world can still participate, however they will be unable to win any prizes.
+
+<h3>Rules and Restrictions</h3>
+<ol>
+    <li><strong>You may use any tool</strong>, subject to the restrictions below, at your disposal to attempt to solve the problems. We especially encourage the use of free and open-source tools. The Prime Directive of CTFs is <i>Google Is Your Friend</i>.
+    <li>We're fine with you asking non-team members (or posting on sites like StackOverflow) for technical assistance with pre-existing software while solving problems. For example, getting help from a teacher installing Python on your computer is allowed.  However, <strong>only team members may make substantial contributions to solving a problem</strong>.  You can't just reword a problem and post it on an online forum to get help.</li>
+    <li>Each member of the team must have an account and have a valid email. Each member may only have one account.</li>
+    <li><strong>Each team is limited to five members.</strong></li>
+    <li><strong>No flag or hint sharing</strong>.  Don't accept hints from anyone except potentially angstromCTF staff.</li>
+    <li><strong>Do not attempt to attack or interfere with other teams or any servers used in this competition that are not explicitly designated for being hacked in a problem</strong>. Doing so will get you IP banned and disqualified from the competition. We will notify your school as well.</li>
+    <li>Finally, have fun and try and learn something new!</li>
+</ol>
+
+<h3>Scoring</h3>
+<ol>
+    <li>Each problem has a point value listed. The team who earns the most points wins the competition. If two teams tie, the submission times will be used to judge.</li>
+    <li>The prize winning teams will be contacted by us after the contest ends. More information will be included in the email.</li>
+    <li>In the event that a team that is ineligible for prizes wins a prize, the next US team will recieve that prize.</li>
+</ol>
+
+Anyone who violates these rules will be disqualified. <strong>All decisions made by angstromCTF are final.</strong>
+<br/><br/>
+Questions? Email us at <a href="mailto:contact@angstromctf.com">contact@angstromctf.com</a>, or ask on the <a href="{% url 'about' %}">IRC channel</a> (#angstromctf on Freenode).
+{% endblock %}

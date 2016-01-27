@@ -13,7 +13,7 @@ class Problem(models.Model):
     """Model for a CTF question. Contains name, title, text, value,
     category, hint, and flag."""
     
-    # Outline child models
+    # Outline fields
     problem_name = models.CharField(max_length=200)
     problem_title = models.CharField(max_length=200)
     problem_text = models.TextField()
@@ -21,6 +21,7 @@ class Problem(models.Model):
     problem_category = models.CharField(max_length=50)
     hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
+    update_time = models.BooleanField(default=True)
     
     # Convenience
     solved = False
@@ -35,7 +36,7 @@ class Update(models.Model):
     """Model for an update message for the CTF. Contains title, text,
     and date."""
     
-    # Outline child models
+    # Outline fields
     update_title = models.CharField(max_length=200)
     update_text = models.CharField(max_length=500)
     date = models.DateTimeField(default=now)
@@ -50,7 +51,7 @@ class UserProfile(models.Model):
     """Model for a user registered with the CTF. Contains name,
     school, participation, solved problems, and score data."""
     
-    # Outline child models
+    # Outline fields
     user = models.OneToOneField(User)
 
     team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
@@ -72,6 +73,7 @@ class Team(models.Model):
     """Model for a team registered with the CTF. Contains name,
     school, participation, solved problems, score data, and shell
     login info. """
+
     name = models.CharField(max_length=100)
     users = models.ManyToManyField(User)
     user_count = models.IntegerField(default=0)
@@ -94,10 +96,10 @@ class Team(models.Model):
 class ProblemSolved(models.Model):
     """A model that represents a set of solved problems."""
 
-    # Outline child models
+    # Outline fields
     team = models.ForeignKey(Team)
     new_score = models.IntegerField(default=0)
-    minutes = models.IntegerField(default=0)
+    seconds = models.IntegerField(default=0)
 
     # Magic methods
     def __str__(self):
