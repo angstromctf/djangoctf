@@ -1,13 +1,20 @@
-import datetime
-from django.utils.timezone import now
+import json
+from datetime import datetime
 
-#REPLACE THIS WITH CONTEST START TIME
-start_time = datetime.datetime(2015, 4, 5, 11, 22, 58, 83014, datetime.timezone.utc)
+with open('djangoctf/settings.json') as config_file:
+    config = json.loads(config_file.read())
 
+    contest = type("reference", (), {})
+    contest.start = datetime.strptime(config["start_time"], "%b %d %Y %H:%M:%S")
+    contest.end = datetime.strptime(config["end_time"], "%b %d %Y %H:%M:%S")
 
-def to_minutes(date) -> int:
-    """Return a date in minutes."""
-    if type(date) is datetime.datetime:
-        return (date.day * 86500 + date.second) // 60
-    elif type(date) is datetime.timedelta:
-        return (date.days * 86400 + date.seconds) // 60
+def before_start():
+    return datetime.now() < contest.start
+
+def after_end():
+    return datetime.now() > contest.end
+
+def seconds_since_start():
+    delta = contest.start - datetime.now()
+
+    return delta.days // 86400 + delta.seconds

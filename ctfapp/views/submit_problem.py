@@ -6,19 +6,18 @@ import json
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from ctfapp.models import Problem, ProblemSolved
-from ctfapp.util.time import to_minutes, start_time
-from ctfapp.decorators import team_required
-
+from ctfapp.decorators import team_required, lock_before_contest
+from ctfapp.util.time import seconds_since_start
 
 #This file handles problem grading and the display for grading.
 
 @login_required
 @team_required
 @require_POST
+@lock_before_contest
 def submit_problem(request: HttpRequest):
     """
     View for submitting a problem through AJAX.  Login is required.
@@ -51,11 +50,12 @@ def submit_problem(request: HttpRequest):
 
         # Update the user's score
         request.user.userprofile.team.score += problem.problem_value
-        request.user.userprofile.team.score_lastupdate = datetime.now()
+
+        if problem.update_time:
+            request.user.userprofile.team.score_lastupdate = datetime.now()
 
         # Add a new Solution object corresponding to having solved the problem
-        delta = timezone.now() - start_time
-        solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, minutes=to_minutes(delta))
+        solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, seconds=seconds_since_start())
         solution.save()
 
         alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
