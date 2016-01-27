@@ -5,7 +5,7 @@ from django.shortcuts import render
 import random
 
 # PICTURE_STATIC = "http://lorempixel.com/200/200/cats/"
-PICTURE_STATIC = "http://i.imgur.com/yaXiDPP.jpg"
+PICTURE_STATIC = "https://res.cloudinary.com/dhktkzan6/raw/upload/v1453843489/yaXiDPP_iwhxus.jpg"
 # Name, picture, grade, contributions
 people = [
     ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and crypto problems, official team movitator"],
