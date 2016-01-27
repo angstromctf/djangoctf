@@ -1,6 +1,6 @@
 from django.core.exceptions import PermissionDenied
 from ctfapp.util.time import before_start, after_end
-
+from django.shortcuts import render
 def team_required(invert=False):
     def decorator(view):
         def wrap(request, *args, **kwargs):
@@ -19,7 +19,7 @@ def team_required(invert=False):
 def lock_before_contest(view):
     def wrap(request, *args, **kwargs):
         if before_start() and not request.user.is_staff:
-            raise PermissionDenied
+            return render(request, 'denied.html', {})
         else:
             return view(request, *args, **kwargs)
 
