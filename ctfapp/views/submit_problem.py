@@ -50,7 +50,9 @@ def submit_problem(request: HttpRequest):
 
         # Update the user's score
         request.user.userprofile.team.score += problem.problem_value
-        request.user.userprofile.team.score_lastupdate = datetime.now()
+
+        if problem.update_time:
+            request.user.userprofile.team.score_lastupdate = datetime.now()
 
         # Add a new Solution object corresponding to having solved the problem
         solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, seconds=seconds_since_start())
