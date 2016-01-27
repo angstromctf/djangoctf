@@ -32,6 +32,10 @@ div.container {
     display: block;
 }
 
+div#main-container {
+    padding-bottom: 2em;
+}
+
 nav.navbar {
 	margin-bottom: 0;
 }
