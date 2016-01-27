@@ -4,10 +4,11 @@ from django.shortcuts import render
 from django.template.context_processors import csrf
 from ctfapp.models import Problem
 import pickle
-#The problems page. Requires users to be logged in.
-
+from ctfapp.decorators import lock_before_contest
+#The problems page.
 
 # Handle the HTTP requst
+@lock_before_contest
 def problems(request: HttpRequest):
     """View for the problems page.  Login is required."""
 

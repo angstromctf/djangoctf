@@ -97,7 +97,7 @@ class ProblemSolved(models.Model):
     # Outline child models
     team = models.ForeignKey(Team)
     new_score = models.IntegerField(default=0)
-    minutes = models.IntegerField(default=0)
+    seconds = models.IntegerField(default=0)
 
     # Magic methods
     def __str__(self):
