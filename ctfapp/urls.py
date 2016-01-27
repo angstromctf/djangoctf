@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^account/signup/$', views.signup, name='signup'),
     url(r'^profile/(?P<team>[a-zA-Z0-9]*)$', views.profile),
     url(r'^about/', views.about, name='about'),
+    url(r'^rules/', views.rules, name='rules'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^score/', views.score, name='score'),
     url(r'^resetpassword/$',  'django.contrib.auth.views.password_reset',

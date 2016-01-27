@@ -6,6 +6,9 @@
     ],
     "cache_enabled": true,
     "registration_enabled": true,
+    "start_time": "Feb 13 2016 00:00:00",
+    "end_time": "Feb 20 2016 00:00:00",
+    "end_time": ""
     "databases": {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
