@@ -14,4 +14,3 @@ from .join_team import join_team
 from .create_team import create_team
 from .shelld import shelld
 from .rules import rules
-from .activation import activation
