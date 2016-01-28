@@ -1,6 +1,8 @@
 from django.core.exceptions import PermissionDenied
 from ctfapp.util.time import before_start, after_end
 from django.shortcuts import render
+
+
 def team_required(invert=False):
     def decorator(view):
         def wrap(request, *args, **kwargs):
@@ -15,6 +17,7 @@ def team_required(invert=False):
 
         return wrap
     return decorator
+
 
 def lock_before_contest(view):
     def wrap(request, *args, **kwargs):

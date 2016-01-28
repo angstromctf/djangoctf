@@ -3,7 +3,8 @@ from django.contrib.auth import login, authenticate
 
 from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile
-
+import hashlib
+import random
 import json
 
 def signup(request):
@@ -29,50 +30,36 @@ def signup(request):
         form = CreateUserForm(request.POST)
 
         if form.is_valid():
-            # Create our new user
-            user = User.objects.create_user(form.cleaned_data['username'],
-                                            email=form.cleaned_data['email'],
-                                            password=form.cleaned_data['password'],
-                                            first_name=form.cleaned_data['first_name'],
-                                            last_name=form.cleaned_data['last_name'])
+            datas = {}
+            datas['username'] = form.cleaned_data['username']
+            datas['email'] = form.cleaned_data['email']
+            datas['password'] = form.cleaned_data['password']
+            datas['first_name'] = form.cleaned_data['first_name']
+            datas['last_name'] = form.cleaned_data['last_name']
+            datas['eligible'] = form.cleaned_data['eligible']
+            datas['gender'] = form.cleaned_data['gender']
+            datas['race'] = form.cleaned_data['race']
+            # Generate activation key
+            salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
+            usernamesalt = datas['username']
+            usernamesalt = usernamesalt.encode('utf8')
+            datas['activation_key'] = hashlib.sha1(salt+usernamesalt).hexdigest()
 
-            profile = UserProfile(user=user,
-                                  eligible=form.cleaned_data['eligible'])
 
-            if form.cleaned_data['gender']:
-                profile.gender = form.cleaned_data['gender']
 
-            if form.cleaned_data['race']:
-                profile.race = form.cleaned_data['race']
-
-            profile.save()
-
-            user.userprofile = profile
 
             # Authenticate and login our new user!
-            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            login(request, user)
+            # user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            # login(request, user)
 
-            if emails_enabled:
-                import sendgrid
+            # Send activation email
+            form.sendEmail(datas)
+            form.save(datas)
 
-                # Send a welcome email through sendgrid
-                message_to_field = form.cleaned_data['first_name'] + " " + form.cleaned_data['last_name'] \
-                + "<" + form.cleaned_data['email'] + ">"
-
-                sg = sendgrid.SendGridClient(sendgrid_api_key)
-                message = sendgrid.Mail()
-                message.add_substitution(':first_name', form.cleaned_data['first_name'])
-                message.smtpapi.add_to(message_to_field)
-                message.set_subject('Welcome to angstromCTF!')
-                message.set_html('<p>Hi :first_name, thank you for signing up for angstromCTF! This message confirms '
-                                 'that registration was successful.</p>')
-                message.set_text('Hi :first_name, thank you for signing up for angstromCTF! This message confirms '
-                                 'that registration was successful.')
-                message.set_from('angstromCTF team <contact@angstromctf.com>')
-                sg.send(message)
-
-            return redirect("/account")
+            email_sent_message = """An activation link was sent to the address you provided. Click the email
+                                    link to activate your account."""
+            # Direct user to activation email sent page
+            return render(request, 'message_generic.html', {'message': email_sent_message})
         else:
             # The form didn't validate properly
             return render(request, 'signup.html', {'form': form, 'enabled': True})
