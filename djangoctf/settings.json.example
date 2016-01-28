@@ -1,14 +1,12 @@
 {
     "secret_key": "supersecretsecurekey",
     "debug": true,
+    "cache_enabled":false,
     "allowed_hosts": [
 
     ],
-    "cache_enabled": true,
     "registration_enabled": true,
-    "start_time": "Feb 13 2016 00:00:00",
-    "end_time": "Feb 20 2016 00:00:00",
-    "end_time": ""
+    "use_loadbalanced_databases": false,
     "databases": {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -16,6 +14,8 @@
             "NAME_JOIN": true
         }
     },
+    "start_time": "Feb 13 2016 00:00:00",
+    "end_time": "Feb 20 2016 00:00:00",
     "ssl": false,
     "shell": {
         "enabled": true,
@@ -26,5 +26,6 @@
         "sendgrid_api_key": "redacted",
         "username": "redacted",
         "password": "redacted"
+
     }
 }
