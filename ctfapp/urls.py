@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^rules/', views.rules, name='rules'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^score/', views.score, name='score'),
+    url(r'^activate/(?P<key>.+)$', views.activation, name='activation'),
     url(r'^resetpassword/$',  'django.contrib.auth.views.password_reset',
         {'post_reset_redirect' : 'passwordsent/',
          'template_name': 'registration/password_reset_form.html'}, name='password_reset'),

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block title %} Shell - angstromCTF {% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h3>Activation Complete!</h3>
+	</div>
+</header>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/problems.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="span9" style="min-height: 400px;">
+
+    <p>You can now <a href="{% url 'login' %}">log in.</a></p>
+</div>
+
+
+{% endblock %}

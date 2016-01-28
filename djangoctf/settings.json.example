@@ -22,7 +22,7 @@
         "ssh_key_path": "djangoctf/shell_privkey"
     },
     "email": {
-        "enabled": false,
+        "enabled": true,
         "sendgrid_api_key": "redacted",
         "username": "redacted",
         "password": "redacted"
