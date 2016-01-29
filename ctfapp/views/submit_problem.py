@@ -32,6 +32,8 @@ def submit_problem(request: HttpRequest):
         alert = "<strong>Hmm?</strong> You've already solved this."
         alert_type = "info"
         alert_class = "glyphicon glyphicon-info-sign"
+
+        solved = True
     elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag_sha512_hash:
         # We have now solved the problem because the solution was correct
         team.solved.add(problem)
@@ -51,6 +53,8 @@ def submit_problem(request: HttpRequest):
         alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
         alert_type = "success"
         alert_class = "glyphicon glyphicon-ok-sign"
+
+        solved = True
     else:
         alert = "<strong>Sorry.</strong> That was incorrect."
 
@@ -62,12 +66,14 @@ def submit_problem(request: HttpRequest):
 
         alert_type = "danger"
         alert_class = "glyphicon glyphicon-remove-sign"
+        solved = False
 
     html = render(request, "problem.html", {
         'user': request.user,
         'problem': problem,
         'guess': guess,
-        'enable_submission': True
+        'enable_submission': True,
+        'solved': solved
     }).content
 
     response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}
