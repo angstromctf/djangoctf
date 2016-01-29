@@ -1,30 +1,31 @@
-from django.core.exceptions import PermissionDenied
-from ctfapp.util.time import before_start, after_end
+from functools import wraps
+from django.utils.decorators import available_attrs
 
-def team_required(invert=False):
+from django.core.exceptions import PermissionDenied
+from ctfapp.utils.time import before_start
+
+def team_required(function=None, invert=False):
     def decorator(view):
+        @wraps(view, assigned=available_attrs(view))
         def wrap(request, *args, **kwargs):
             if (request.user.userprofile.team is not None) == invert:
                 raise PermissionDenied
             else:
                 return view(request, *args, **kwargs)
-
-        wrap.__name__ = view.__name__
-        wrap.__dict__ = view.__dict__
-        wrap.__doc__ = view.__doc__
-
         return wrap
-    return decorator
+
+    if function:
+        return decorator(function)
+    else:
+        return decorator
+
 
 def lock_before_contest(view):
+    @wraps(view, assigned=available_attrs(view))
     def wrap(request, *args, **kwargs):
         if before_start() and not request.user.is_staff:
             raise PermissionDenied
         else:
             return view(request, *args, **kwargs)
-
-    wrap.__name__ = view.__name__
-    wrap.__dict__ = view.__dict__
-    wrap.__doc__ = view.__doc__
 
     return wrap

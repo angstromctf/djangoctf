@@ -72,7 +72,7 @@ def signup(request):
                 message.set_from('angstromCTF team <contact@angstromctf.com>')
                 sg.send(message)
 
-            return redirect("/account")
+            return redirect("/account/")
         else:
             # The form didn't validate properly
             return render(request, 'signup.html', {'form': form, 'enabled': True})

@@ -27,7 +27,7 @@
 
 {% for problem in problem_list %}
     <div id="outer{{ problem.id }}">
-	    {% include "problem.html" with problem=problem solved=solved %}
+	    {% include "problem.html" with solved=problem|is_solved:user %}
     </div>
 {% endfor %}
 

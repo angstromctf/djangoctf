@@ -1,11 +1,9 @@
 # Import
-import pickle
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
 
 
 # Define core models
@@ -13,7 +11,7 @@ class Problem(models.Model):
     """Model for a CTF question. Contains name, title, text, value,
     category, hint, and flag."""
     
-    # Outline fields
+    # Standard information about the problem
     problem_name = models.CharField(max_length=200)
     problem_title = models.CharField(max_length=200)
     problem_text = models.TextField()
@@ -21,10 +19,10 @@ class Problem(models.Model):
     problem_category = models.CharField(max_length=50)
     hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
+
+    # Whether solving this problem should update a team's "last submitted" time
+    # Only should be off for things like survey problems
     update_time = models.BooleanField(default=True)
-    
-    # Convenience
-    solved = False
 
     # Magic methods
     def __str__(self):
@@ -36,10 +34,10 @@ class Update(models.Model):
     """Model for an update message for the CTF. Contains title, text,
     and date."""
     
-    # Outline fields
+    # Information about an update
     update_title = models.CharField(max_length=200)
     update_text = models.CharField(max_length=500)
-    date = models.DateTimeField(default=now)
+    time = models.DateTimeField(default=now)
 
     # Magic methods
     def __str__(self):
@@ -51,9 +49,10 @@ class UserProfile(models.Model):
     """Model for a user registered with the CTF. Contains name,
     school, participation, solved problems, and score data."""
     
-    # Outline fields
+    # Which user this belongs to
     user = models.OneToOneField(User)
 
+    # The user's team
     team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
 
     # Required information
@@ -61,7 +60,6 @@ class UserProfile(models.Model):
 
     # Optional demographic information
     gender = models.IntegerField(null=True, choices=GENDER_CHOICES)
-
     race = models.IntegerField(null=True, choices=RACE_CHOICES)
 
     # Magic methods
@@ -74,15 +72,19 @@ class Team(models.Model):
     school, participation, solved problems, score data, and shell
     login info. """
 
-    name = models.CharField(max_length=100)
+    # Link to team members
     users = models.ManyToManyField(User)
+
+    # Which problems this team has solved
+    solved = models.ManyToManyField(Problem)
+
+    # Information about team
+    name = models.CharField(max_length=100)
     user_count = models.IntegerField(default=0)
-
     school = models.CharField(max_length=100)
-
     eligible = models.BooleanField(default=True)
-    solved = models.BinaryField(default=pickle.dumps({}))
 
+    # Code for team registration
     code = models.CharField(max_length=20)
 
     # Score and last update of the team
@@ -93,15 +95,34 @@ class Team(models.Model):
     shell_username = models.CharField(max_length=20, default="")
     shell_password = models.CharField(max_length=50, default="")
 
-class ProblemSolved(models.Model):
-    """A model that represents a set of solved problems."""
+class CorrectSubmission(models.Model):
+    """A model that represents a correct submission for a problem."""
 
-    # Outline fields
+    # Link to team and problem
     team = models.ForeignKey(Team)
+    problem = models.ForeignKey(Problem)
+
+    # Team's score at that time
     new_score = models.IntegerField(default=0)
-    seconds = models.IntegerField(default=0)
+    time = models.DateTimeField(default=now)
 
     # Magic methods
     def __str__(self):
         """Represent the solved problem as a string."""
-        return "%s solved at %s" % (str(self.team), str(self.minutes))
+        return "%s solved %s at %s" % (str(self.team), str(self.problem), str(self.time))
+
+class IncorrectSubmission(models.Model):
+    """A model that represents an incorrect submission for a problem."""
+
+    # Link to team and problem
+    team = models.ForeignKey(Team)
+    problem = models.ForeignKey(Problem)
+
+    # Time and contents of submission
+    guess = models.CharField(max_length=64)
+    time = models.DateTimeField(default=now)
+
+    # Magic methods
+    def __str__(self):
+        """Represent the solved problem as a string."""
+        return "%s incorrectly submitted %s at %s" % (str(self.team), str(self.problem), str(self.time))

@@ -82,7 +82,7 @@ DATABASES = config['databases']
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/New York'
 
 USE_I18N = True
 

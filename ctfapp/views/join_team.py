@@ -1,5 +1,5 @@
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
@@ -26,6 +26,8 @@ def join_team(request: HttpRequest):
 
         request.user.userprofile.team = team
         request.user.userprofile.save()
+
+        return redirect('/account/')
 
     return render(request, 'account.html', {'user': request.user,
                                             'change_password': ChangePasswordForm(),
