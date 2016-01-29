@@ -53,7 +53,11 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     # The user's team
-    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL, default=None)
+
+    # Activation information for this user
+    activation_key = models.CharField(max_length=40, default="")
+    key_expires = models.DateTimeField(default=now, blank=True)
 
     # Required information
     eligible = models.BooleanField(default=True)
