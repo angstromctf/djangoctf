@@ -12,7 +12,8 @@ from ctfapp.models import Problem, ProblemSolved
 from ctfapp.decorators import team_required, lock_before_contest
 from ctfapp.util.time import seconds_since_start
 
-#This file handles problem grading and the display for grading.
+# This file handles problem grading and the display for grading.
+
 
 @login_required
 @team_required
@@ -55,10 +56,12 @@ def submit_problem(request: HttpRequest):
             request.user.userprofile.team.score_lastupdate = datetime.now()
 
         # Add a new Solution object corresponding to having solved the problem
-        solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, seconds=seconds_since_start())
+        solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score,
+                                 seconds=seconds_since_start())
         solution.save()
 
-        alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
+        alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" \
+                + str(problem.problem_value) + " points)"
         alert_type = "success"
         alert_class = "glyphicon glyphicon-ok-sign"
     else:
