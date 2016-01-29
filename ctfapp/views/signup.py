@@ -1,9 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.shortcuts import render
 from ctfapp.views.activation import generate_activation_key
 from ctfapp.forms import CreateUserForm
-from ctfapp.models import User, UserProfile
 import json
+
 
 def signup(request):
     """
@@ -13,10 +12,6 @@ def signup(request):
     with open('djangoctf/settings.json') as config_file:
         config = json.loads(config_file.read())
         enabled = config['registration_enabled']
-        emails_enabled = config['email']['enabled']
-
-        if emails_enabled:
-            sendgrid_api_key = config['email']['sendgrid_api_key']
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -39,11 +34,6 @@ def signup(request):
             datas['race'] = form.cleaned_data['race']
             # Generate activation key
             datas['activation_key'] = generate_activation_key(datas['username'])
-
-
-            # Authenticate and login our new user!
-            # user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            # login(request, user)
 
             # Send activation email
             form.sendEmail(datas, request)
