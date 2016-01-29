@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^profile/(?P<team>[a-zA-Z0-9]*)$', views.profile),
     url(r'^about/', views.about, name='about'),
     url(r'^rules/', views.rules, name='rules'),
+    url(r'^learn/', views.learn, name='learn'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^score/', views.score, name='score'),
     url(r'^activate/(?P<key>.+)$', views.activation, name='activation'),
