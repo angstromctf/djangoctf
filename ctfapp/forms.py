@@ -11,6 +11,7 @@ from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 from ctfapp.models import Team, UserProfile
 from django.template import Context
 from django.template import Template
+
 import json
 class LoginForm(forms.Form):
     """
@@ -175,8 +176,10 @@ class CreateUserForm(forms.Form):
             emails_enabled = config['email']['enabled']
             sendgrid_api_key = config['email']['sendgrid_api_key']
 
-        link = "http://angstromctf.com/activate/"+datas['activation_key']
-        c = Context({'link': link, 'username': datas['username']})
+
+        activation_key = datas['activation_key']
+
+        c = Context({'activation_key': activation_key, 'username': datas['username']})
         f = open('ctfapp/templates/activation_email_template.txt', 'r')
         t = Template(f.read())
         f.close()

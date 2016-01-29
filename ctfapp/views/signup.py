@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-
+from ctfapp.views.activation import generate_activation_key
 from ctfapp.forms import CreateUserForm
 from ctfapp.models import User, UserProfile
-import hashlib
-import random
 import json
 
 def signup(request):
@@ -40,12 +38,9 @@ def signup(request):
             datas['gender'] = form.cleaned_data['gender']
             datas['race'] = form.cleaned_data['race']
             # Generate activation key
-            salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
-            usernamesalt = datas['username']
-            usernamesalt = usernamesalt.encode('utf8')
-            datas['activation_key'] = hashlib.sha1(salt+usernamesalt).hexdigest()
 
 
+            datas['activation_key'] = generate_activation_key(datas['username'])
 
 
             # Authenticate and login our new user!
