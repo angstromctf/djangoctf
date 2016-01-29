@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 from ctfapp.models import Team, UserProfile
+from django.contrib.sites.shortcuts import get_current_site
 from django.template import Context
 from django.template import Template
 
@@ -170,16 +171,18 @@ class CreateUserForm(forms.Form):
         profile.save()
         return u
 
-    def sendEmail(self, datas):
+    def sendEmail(self, datas, request=None, use_https=False):
         with open('djangoctf/settings.json') as config_file:
             config = json.loads(config_file.read())
             emails_enabled = config['email']['enabled']
             sendgrid_api_key = config['email']['sendgrid_api_key']
-
+            use_https = config['ssl']
 
         activation_key = datas['activation_key']
-
-        c = Context({'activation_key': activation_key, 'username': datas['username']})
+        current_site = get_current_site(request)
+        link_protocol = 'https' if use_https else 'http'
+        c = Context({'activation_key': activation_key, 'username': datas['username'],
+                     'domain': current_site.domain, 'protocol': link_protocol})
         f = open('ctfapp/templates/activation_email_template.txt', 'r')
         t = Template(f.read())
         f.close()

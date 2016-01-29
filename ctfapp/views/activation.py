@@ -50,7 +50,7 @@ def new_activation_link(request, user_id):
         expire_date = datetime.now() + timedelta(days=2)
         profile.key_expires = datetime.strftime(expire_date, "%Y-%m-%d %H:%M:%S")
         profile.save()
-        form.sendEmail(datas)
+        form.sendEmail(datas, request)
         request.session['new_link'] = True
         new_link_sent = True
     return render(request, 'activation.html', {'new_link_sent': new_link_sent})

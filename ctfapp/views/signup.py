@@ -38,8 +38,6 @@ def signup(request):
             datas['gender'] = form.cleaned_data['gender']
             datas['race'] = form.cleaned_data['race']
             # Generate activation key
-
-
             datas['activation_key'] = generate_activation_key(datas['username'])
 
 
@@ -48,7 +46,7 @@ def signup(request):
             # login(request, user)
 
             # Send activation email
-            form.sendEmail(datas)
+            form.sendEmail(datas, request)
             form.save(datas)
 
             email_sent_message = """An activation link was sent to the address you provided. Click the email
