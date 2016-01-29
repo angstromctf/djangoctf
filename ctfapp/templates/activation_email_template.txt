@@ -2,4 +2,4 @@ Hi {{ username }},
 
 Welcome to angstromCTF! Click the link below to activate your account:
 
-{{ link }}
+angstromctf.com/activate/{{ activation_key }}

@@ -54,7 +54,7 @@ class UserProfile(models.Model):
     # Outline fields
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, default="")
-    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL)
+    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL, default=None)
     key_expires = models.DateTimeField(default=timezone.now(), blank=True)
     # Required information
     eligible = models.BooleanField(default=True)
