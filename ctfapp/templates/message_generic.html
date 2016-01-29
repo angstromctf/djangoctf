@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block title %} angstromCTF {% endblock %}
+
+{% block pagetitle %}
+<header class="page-title">
+	<div class="container">
+		<h3>Note:</h3>
+	</div>
+</header>
+{% endblock %}
+
+{% block content %}
+
+<div class="span9" style="min-height: 400px;">
+    {{ message }}
+</div>
+
+
+{% endblock %}

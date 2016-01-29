@@ -104,6 +104,9 @@ if config['cache_enabled']:
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PREFIX = 'session'
 
+if config['use_loadbalanced_databases']:
+    DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)
+    SLAVE_DATABASES = ['shadow-1']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
