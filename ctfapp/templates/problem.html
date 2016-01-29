@@ -4,7 +4,7 @@
 <div class="panel problem panel-{% if enable_submission %}{% if solved %}success{% else %}danger{% endif %}{% else %}info{% endif %}" id="panel{{ problem.id }}">
     <div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
         <h3 class="panel-title">
-            {{ problem.problem_title|safe }} ({{ problem.problem_category }}, {{ problem.problem_value }})
+            {{ problem.title|safe }} ({{ problem.category }}, {{ problem.value }})
             <span style="float: right;">
                 {% if enable_submission %}
                     {% if solved %}
@@ -28,7 +28,7 @@
 
             <div class="tab-content">
                 <div id="problem{{ problem.id }}" class="tab-pane in active">
-                    {{ problem.problem_text|safe }}
+                    {{ problem.text|safe }}
 
                     {% if enable_submission %}
                         {% if not solved %}

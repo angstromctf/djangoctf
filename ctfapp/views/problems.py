@@ -10,7 +10,7 @@ from ctfapp.decorators import lock_before_contest
 def problems(request: HttpRequest):
     """View for the problems page.  Login is required."""
 
-    problem_list = Problem.objects.all().order_by("problem_value")
+    problem_list = Problem.objects.all().order_by("value")
 
     # Create the context
     context = {"user": request.user, "problem_list": problem_list, "enable_submission": False}
