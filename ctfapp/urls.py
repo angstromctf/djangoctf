@@ -1,7 +1,8 @@
 from django.conf.urls import url
+from django.contrib.auth import views as auth_views
 
 from . import views
-from django.contrib.auth import views as auth_views
+
 #URL patterns used by django to load views. 
 urlpatterns = [
     url(r'^$', views.index, name='home'),
@@ -22,11 +23,11 @@ urlpatterns = [
     url(r'^rules/', views.rules, name='rules'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^score/', views.score, name='score'),
-    url(r'^resetpassword/$',  'django.contrib.auth.views.password_reset',
+    url(r'^resetpassword/$', auth_views.password_reset,
         {'post_reset_redirect' : 'passwordsent/',
          'template_name': 'registration/password_reset_form.html'}, name='password_reset'),
-    url(r'^resetpassword/passwordsent/',  'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  'django.contrib.auth.views.password_reset_confirm', {'post_reset_redirect' : '/reset/done/'}, name='password_reset_confirm'),
-    url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='password_reset_complete')
+    url(r'^resetpassword/passwordsent/', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  auth_views.password_reset_confirm, {'post_reset_redirect' : '/reset/done/'}, name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete')
 
 ]

@@ -8,16 +8,13 @@ import random
 PICTURE_STATIC = "https://res.cloudinary.com/dhktkzan6/raw/upload/v1453843489/yaXiDPP_iwhxus.jpg"
 # Name, picture, grade, contributions
 people = [
-    ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and crypto problems, official team movitator"],
+    ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and crypto problems"],
     ["George Klees",    "georgeklees.jpg",      10,     "RE and binary problems"],
     ["Theo Tosini",     "theotosini.jpg",       10,     "Platform, deployment, problems"],
-    ["Andrew Komo",     "andrewkomo.jpg",       10,     "Crypto"],
-    ["Arman Siddique",  "armansiddique.jpg",    10,     ""],
-    ["Aaron Szabo",     "aaronszabo.jpg",       12,     ""],
+    ["Andrew Komo",     "andrewkomo.jpg",       10,     "Crypto problems"],
     ["Anthony Li",      "anthonyli.jpg",        12,     "Contest organizer"],
     ["Daniel Chen",     "danielchen.jpg",       11,     "PR and Outreach"],
-    ["Chris Wang",      "chriswang.jpg",        10,     "Art, PR, and Outreach"],
-    ["Linden Yuan",     "lindenyuan.jpg",       11,     ""],
+    ["Chris Wang",      "chriswang.jpg",        10,     "Art, PR, and outreach"],
     ["Noah Levine",     "noahlevine.jpg",       12,     "Contest organizer"],
     ["Noah Kim",        "noahkim.jpg",          10,     "Website and platform design"]
 ]

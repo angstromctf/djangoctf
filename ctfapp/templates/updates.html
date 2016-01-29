@@ -13,7 +13,7 @@
 {% block content %}
 
 {% for update in updates_list %}
-	<h1>{{ update.update_title }} <small>{{ update.date|date:"n/d/Y H:i O" }}</small></h1>
+	<h3>{{ update.update_title }} <small>{{ update.time|time:"n/d/Y H:i O" }}</small></h3>
 	
 	<p>{{ update.update_text }}</p>
 {% endfor %}

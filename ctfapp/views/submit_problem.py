@@ -1,18 +1,15 @@
-from datetime import datetime
 import hashlib
-import pickle
 import json
 
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from django.utils.timezone import now
 
-from ctfapp.models import Problem, ProblemSolved
+from ctfapp.models import Problem, CorrectSubmission, IncorrectSubmission
 from ctfapp.decorators import team_required, lock_before_contest
-from ctfapp.util.time import seconds_since_start
 
-#This file handles problem grading and the display for grading.
 
 @login_required
 @team_required
@@ -23,39 +20,32 @@ def submit_problem(request: HttpRequest):
     View for submitting a problem through AJAX.  Login is required.
     """
 
-    # Load the user's solved dictionary using Pickle
-    solved = pickle.loads(request.user.userprofile.team.solved)
-
     pid = int(request.POST.get("problem"))
     guess = request.POST.get("guess").strip()
 
     problem = Problem.objects.get(id=pid)
 
-    # Check if the submission was correct
-    guess_hash = hashlib.sha512(guess.encode()).hexdigest()
-    correct = guess_hash == problem.flag_sha512_hash
+    team = request.user.userprofile.team
 
-    # The number of tries to display
-    next_count = solved[pid][1] + 1 if pid in solved else 1
-    next_tries = list(set(solved[pid][2] + [guess_hash])) if pid in solved else [guess_hash]
-
-    if pid in solved and solved[pid][0]:
+    if problem in team.solved.all():
         # We've already solved the problem
         alert = "<strong>Hmm?</strong> You've already solved this."
         alert_type = "info"
         alert_class = "glyphicon glyphicon-info-sign"
-    elif correct:
+    elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag_sha512_hash:
         # We have now solved the problem because the solution was correct
-        solved[pid] = (True, next_count, next_tries)
+        team.solved.add(problem)
 
-        # Update the user's score
-        request.user.userprofile.team.score += problem.problem_value
+        # Update the team's score
+        team.score += problem.problem_value
 
         if problem.update_time:
-            request.user.userprofile.team.score_lastupdate = datetime.now()
+            team.score_lastupdate = now()
 
-        # Add a new Solution object corresponding to having solved the problem
-        solution = ProblemSolved(team=request.user.userprofile.team, new_score=request.user.userprofile.team.score, seconds=seconds_since_start())
+        team.save()
+
+        # Add a new CorrectSubmission object corresponding to having solved the problem
+        solution = CorrectSubmission(team=team, problem=problem, new_score=team.score)
         solution.save()
 
         alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
@@ -64,24 +54,20 @@ def submit_problem(request: HttpRequest):
     else:
         alert = "<strong>Sorry.</strong> That was incorrect."
 
-        if pid in solved and guess_hash in solved[pid][2]:
+        if IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
             alert = "<strong>Oops!</strong> You've already tried this solution."
+        else:
+            solution = IncorrectSubmission(team=team, problem=problem, guess=guess)
+            solution.save()
 
         alert_type = "danger"
         alert_class = "glyphicon glyphicon-remove-sign"
 
-        # We haven't solved the problem, the solution was bad
-        solved[pid] = (False, next_count, next_tries)
-
-    request.user.userprofile.team.solved = pickle.dumps(solved)
-    request.user.userprofile.team.save()
-
     html = render(request, "problem.html", {
         'user': request.user,
         'problem': problem,
-        'solved': solved,
         'guess': guess,
-        'answer': True
+        'enable_submission': True
     }).content
 
     response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}

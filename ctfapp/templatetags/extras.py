@@ -6,14 +6,8 @@ register = template.Library()
 
 
 @register.filter
-def is_solved(problem, solved):
-    if len(solved) == 0: return False
-    return (problem.id in solved) and solved[problem.id][0]
-
-
-@register.filter
-def try_count(problem, solved):
-    return solved[problem.id][1] if problem.id in solved else 1
+def is_solved(problem, user):
+    return user.is_authenticated() and problem in user.userprofile.team.solved.all()
 
 
 @register.filter
