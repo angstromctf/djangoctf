@@ -39,7 +39,7 @@ def submit_problem(request: HttpRequest):
         team.solved.add(problem)
 
         # Update the team's score
-        team.score += problem.problem_value
+        team.score += problem.value
 
         if problem.update_time:
             team.score_lastupdate = now()
@@ -50,7 +50,7 @@ def submit_problem(request: HttpRequest):
         solution = CorrectSubmission(team=team, problem=problem, new_score=team.score)
         solution.save()
 
-        alert = "<strong>Good job!</strong> You've solved " + problem.problem_title.strip() + "! (+" + str(problem.problem_value) + " points)"
+        alert = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)"
         alert_type = "success"
         alert_class = "glyphicon glyphicon-ok-sign"
 

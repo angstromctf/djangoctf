@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load extras %}
 {% load staticfiles %}
+{% load humanize %}
 
 {% block title %} {{ team.name }} Profile - angstromCTF {% endblock %}
 
@@ -17,32 +18,40 @@
 {% endblock %}
 
 {% block content %}
-    From {{ team.school }}.
+    <strong>Score:</strong> {{ team.score }} ({{ user.userprofile.team|place|ordinal }} place)
+    <br/>
+    <strong>Affiliation:</strong> {{ team.school }}
 
-    <h3>Team Members:</h3>
+    <h3>Team Members</h3>
     <ul>
     {% for member in team.users.all %}
         <li>{{ member.username }}</li>
     {% endfor %}
     </ul>
-{% comment %}
-<table class="table">
-	<thead>
-		<tr>
-			<th>Problem</th>
-			<th>Point value</th>
-			<th>Status</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for problem in problems %}
-		<tr class="problem-{{ problem.status|yesno:"solved,unsolved" }}">
-			<td>{{ problem.name }}</td>
-			<td>{{ problem.value }}</td>
-			<td>{{ problem.status|yesno:"Yes,No" }}</td>
-		</tr>
-	{% endfor %}
-	</tbody>
-</table>
-{% endcomment %}
+
+    <h3>Solved Problems</h3>
+    {% if ordered_solves|length == 0 %}
+        None yet.
+    {% else %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Value</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solution in ordered_solves %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ solution.problem.title|safe }}</td>
+                        <td>{{ solution.problem.value }}</td>
+                        <td>{{ solution.time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

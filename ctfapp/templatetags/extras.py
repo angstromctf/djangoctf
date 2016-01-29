@@ -1,6 +1,6 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import ordinal
-from ctfapp.models import Team
+from ctfapp.models import Team, CorrectSubmission
 
 register = template.Library()
 

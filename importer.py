@@ -63,14 +63,14 @@ for category in listdir(path):
         data["hint"] = pattern.sub('<a href="/static/problems/' + name +
                                    '/\\1" target="_blank">\\2</a>', data["hint"])
 
-        if Problem.objects.filter(problem_name=name).exists():
+        if Problem.objects.filter(name=name).exists():
             # Update the problem if it already exists
             try:
-                problem_obj = Problem.objects.get(problem_name=name)
-                problem_obj.problem_title = data["title"]
-                problem_obj.problem_text = data["text"]
+                problem_obj = Problem.objects.get(name=name)
+                problem_obj.title = data["title"]
+                problem_obj.text = data["text"]
+                problem_obj.value = data["value"]
                 problem_obj.hint_text = data["hint"]
-                problem_obj.problem_value = data["value"]
                 problem_obj.flag_sha512_hash = sha512(data["flag"].encode()).hexdigest()
                 # We can't update the name for obvious reasons
                 problem_obj.save()
@@ -80,11 +80,11 @@ for category in listdir(path):
                 print("Error: Multiple problems exist with name {:s}".format(name))
         else:
             # Otherwise, create new problem
-            problem_obj = Problem(problem_name=name,
-                                  problem_title=data["title"],
-                                  problem_text=data["text"],
-                                  problem_value=data["value"],
-                                  problem_category=category,
+            problem_obj = Problem(name=name,
+                                  title=data["title"],
+                                  text=data["text"],
+                                  value=data["value"],
+                                  category=category,
                                   hint_text=data["hint"],
                                   flag_sha512_hash=sha512(data["flag"].encode()).hexdigest())
             problem_obj.save()

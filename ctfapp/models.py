@@ -12,11 +12,11 @@ class Problem(models.Model):
     category, hint, and flag."""
     
     # Standard information about the problem
-    problem_name = models.CharField(max_length=200)
-    problem_title = models.CharField(max_length=200)
-    problem_text = models.TextField()
-    problem_value = models.IntegerField()
-    problem_category = models.CharField(max_length=50)
+    name = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    value = models.IntegerField()
+    category = models.CharField(max_length=50)
     hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
 
@@ -27,7 +27,7 @@ class Problem(models.Model):
     # Magic methods
     def __str__(self):
         """Represent the problem as a string."""
-        return "Problem[" + self.problem_title + "]"
+        return "Problem[" + self.title + "]"
 
 
 class Update(models.Model):
@@ -35,8 +35,8 @@ class Update(models.Model):
     and date."""
     
     # Information about an update
-    update_title = models.CharField(max_length=200)
-    update_text = models.CharField(max_length=500)
+    title = models.CharField(max_length=200)
+    text = models.CharField(max_length=500)
     time = models.DateTimeField(default=now)
 
     # Magic methods
@@ -94,6 +94,11 @@ class Team(models.Model):
     # Shell username and password
     shell_username = models.CharField(max_length=20, default="")
     shell_password = models.CharField(max_length=50, default="")
+
+    # Magic methods
+    def __str__(self):
+        """Represent the problem as a string."""
+        return "Team[" + self.name + "]"
 
 class CorrectSubmission(models.Model):
     """A model that represents a correct submission for a problem."""
