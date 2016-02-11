@@ -12,7 +12,7 @@ def scoreboard(request: HttpRequest):
     team_list = Team.objects.all().order_by('-score', 'score_lastupdate')
     
     solutions_list = []
-    graph_size = min(5, len(Team.objects.all()))
+    graph_size = min(5, Team.objects.all().count())
 
     for x in range(graph_size):
         submissions = CorrectSubmission.objects.all().filter(team=team_list[x])

@@ -44,11 +44,11 @@ def create_team(request: HttpRequest):
 
     if create_team_form.is_valid():
         code = create_code()
-        while len(Team.objects.filter(code=code)) > 0:
+        while Team.objects.filter(code=code).count() > 0:
             code = create_code()
 
         shell_username = create_shell_username()
-        while len(Team.objects.filter(shell_username=shell_username)) > 0:
+        while Team.objects.filter(shell_username=shell_username).count() > 0:
             shell_username = create_shell_username()
 
         shell_password = create_shell_password()
@@ -61,7 +61,7 @@ def create_team(request: HttpRequest):
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
-            createuser_command = "addctfuser "+shell_username+" "+shell_password
+            createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
         team = Team(name=create_team_form.cleaned_data['name'],
