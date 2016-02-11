@@ -16,20 +16,18 @@ def activation(request, key):
     already_active = False
     activation_success = False
     resend_userid = ""
-    profil = get_object_or_404(UserProfile, activation_key=key)
-    if profil.user.is_active == False:
-        if timezone.now() > profil.key_expires:
-            activation_expired = True #Display : offer to user to have another activation link (a link in template sending to the view new_activation_link)
-            id_user = profil.user.id
+    profile = get_object_or_404(UserProfile, activation_key=key)
+    if not profile.user.is_active:
+        if timezone.now() > profile.key_expires:
+            activation_expired = True
+            id_user = profile.user.id
             resend_userid = str(id_user)
-        else: #Activation successful
-            profil.user.is_active = True
+        else:
+            profile.user.is_active = True
             activation_success = True
-            profil.user.save()
-
-    #If user is already active, simply display error message
+            profile.user.save()
     else:
-        already_active = True #Display : error message
+        already_active = True
     return render(request, 'activation.html', {'activation_expired': activation_expired,
                                                'already_active': already_active,
                                                'activation_success': activation_success,
@@ -38,26 +36,24 @@ def activation(request, key):
 
 def new_activation_link(request, user_id):
     form = CreateUserForm()
-    datas={}
+    datas = {}
     user = User.objects.get(id=user_id)
     new_link_sent = False
     if user is not None and not user.is_active and not request.user.is_authenticated():
-        datas['username']=user.username
-        datas['email']=user.email
+        datas['username'] = user.username
+        datas['email'] = user.email
         datas['activation_key'] = generate_activation_key(datas['username'])
         profile = UserProfile.objects.get(user=user)
         profile.activation_key = datas['activation_key']
         expire_date = datetime.now() + timedelta(days=2)
         profile.key_expires = datetime.strftime(expire_date, "%Y-%m-%d %H:%M:%S")
         profile.save()
-        form.sendEmail(datas)
+        form.sendEmail(datas, request)
         request.session['new_link'] = True
         new_link_sent = True
     return render(request, 'activation.html', {'new_link_sent': new_link_sent})
 
 
 def generate_activation_key(username):
-        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
-        usernamesalt = username
-        usernamesalt = usernamesalt.encode('utf8')
-        return hashlib.sha1(salt+usernamesalt).hexdigest()
+    salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
+    return hashlib.sha1(salt+username.encode('utf8')).hexdigest()

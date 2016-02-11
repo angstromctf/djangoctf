@@ -1,9 +1,14 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.utils.timezone import now
+
 from ctfapp.views.activation import generate_activation_key
 from ctfapp.forms import CreateUserForm
-from ctfapp.models import User, UserProfile
+from ctfapp.models import UserProfile
+
 import json
+import sendgrid
+
 
 def signup(request):
     """
@@ -15,8 +20,6 @@ def signup(request):
         enabled = config['registration_enabled']
         emails_enabled = config['email']['enabled']
 
-        if emails_enabled:
-            sendgrid_api_key = config['email']['sendgrid_api_key']
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -28,35 +31,66 @@ def signup(request):
         form = CreateUserForm(request.POST)
 
         if form.is_valid():
-            datas = {}
-            datas['username'] = form.cleaned_data['username']
-            datas['email'] = form.cleaned_data['email']
-            datas['password'] = form.cleaned_data['password']
-            datas['first_name'] = form.cleaned_data['first_name']
-            datas['last_name'] = form.cleaned_data['last_name']
-            datas['eligible'] = form.cleaned_data['eligible']
-            datas['gender'] = form.cleaned_data['gender']
-            datas['race'] = form.cleaned_data['race']
-
             # Generate activation key
-            datas['activation_key'] = generate_activation_key(datas['username'])
+            key = generate_activation_key(form.cleaned_data['username'])
 
-            # Authenticate and login our new user!
-            # user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            # login(request, user)
+            user = User.objects.create_user(form.cleaned_data['username'],
+                                     email=form.cleaned_data['email'],
+                                     password=form.cleaned_data['password'],
+                                     first_name=form.cleaned_data['first_name'],
+                                     last_name=form.cleaned_data['last_name'])
+            user.is_active = False
 
-            # Send activation email
-            form.sendEmail(datas)
-            form.save(datas)
+            profile = UserProfile(user=user,
+                                      eligible=form.cleaned_data['eligible'])
 
-<<<<<<< HEAD
-            return redirect("/account/")
-=======
+            if form.cleaned_data['gender']:
+                profile.gender = form.cleaned_data['gender']
+            if form.cleaned_data['race']:
+                profile.race = form.cleaned_data['race']
+
+            user.userprofile = profile
+
+            profile.activation_key = generate_activation_key(user.get_username())
+            profile.generated = now()
+
+            user.save()
+            profile.save()
+
+            if emails_enabled:
+                send_email(form.cleaned_data)
+
             email_sent_message = """An activation link was sent to the address you provided. Click the email
-                                    link to activate your account."""
+                                        link to activate your account."""
             # Direct user to activation email sent page
             return render(request, 'message_generic.html', {'message': email_sent_message})
->>>>>>> 5d2b7d9d5da94f045f49566ee6dd7965d4a1e1ad
         else:
             # The form didn't validate properly
             return render(request, 'signup.html', {'form': form, 'enabled': True})
+
+
+def send_email(data, request=None, use_https=False):
+    with open('djangoctf/settings.json') as config_file:
+        config = json.loads(config_file.read())
+        sendgrid_api_key = config['email']['sendgrid_api_key']
+        use_https = config['ssl']
+
+    activation_key = data['activation_key']
+    current_site = get_current_site(request)
+    link_protocol = 'https' if use_https else 'http'
+    c = Context({'activation_key': activation_key, 'username': data['username'],
+                 'domain': current_site.domain, 'protocol': link_protocol})
+    f = open('ctfapp/templates/activation_email_template.txt', 'r')
+    t = Template(f.read())
+    f.close()
+
+    message_text = t.render(c)
+    # Send an activation email through sendgrid
+    message_to_field = data['email']
+    sg = sendgrid.SendGridClient(sendgrid_api_key)
+    message = sendgrid.Mail()
+    message.smtpapi.add_to(message_to_field)
+    message.set_subject('Activation link for angstromCTF')
+    message.set_text(message_text)
+    message.set_from('angstromCTF team <contact@angstromctf.com>')
+    sg.send(message)

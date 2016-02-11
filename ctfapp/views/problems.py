@@ -5,6 +5,8 @@ from django.template.context_processors import csrf
 from ctfapp.models import Problem
 from ctfapp.decorators import lock_before_contest
 
+
+# The problems page.
 # Handle the HTTP requst
 @lock_before_contest
 def problems(request: HttpRequest):
