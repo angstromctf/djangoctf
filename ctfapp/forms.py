@@ -86,7 +86,7 @@ class JoinTeamForm(forms.Form):
         teams = Team.objects.all().filter(code=self.cleaned_data['code'])
 
         # Throw an error if the team code wasn't found
-        if len(teams) != 1:
+        if teams.count() != 1:
             raise ValidationError("Team code not found.")
 
         team = teams[0]
