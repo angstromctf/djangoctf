@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from ctfapp.models import Update
 
+
 def updates(request: HttpRequest):
     """
     View for the updates page.

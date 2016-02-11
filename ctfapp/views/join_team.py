@@ -7,6 +7,7 @@ from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import Team
 from ctfapp.decorators import team_required
 
+
 # Handle the HTTP request
 @login_required
 @team_required(invert=True)
@@ -14,10 +15,10 @@ from ctfapp.decorators import team_required
 def join_team(request: HttpRequest):
     """Create the account page."""
 
-    join_team = JoinTeamForm(request.POST)
+    join_team_form = JoinTeamForm(request.POST)
 
-    if join_team.is_valid():
-        team = Team.objects.get(code=join_team.cleaned_data['code'])
+    if join_team_form.is_valid():
+        team = Team.objects.get(code=join_team_form.cleaned_data['code'])
         team.user_count += 1
         team.eligible = team.eligible and request.user.userprofile.eligible
 
@@ -31,5 +32,5 @@ def join_team(request: HttpRequest):
 
     return render(request, 'account.html', {'user': request.user,
                                             'change_password': ChangePasswordForm(),
-                                            'join_team': join_team,
+                                            'join_team': join_team_form,
                                             'create_team': CreateTeamForm()})

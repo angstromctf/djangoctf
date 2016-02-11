@@ -19,6 +19,7 @@ people = [
     ["Noah Kim",        "noahkim.jpg",          10,     "Website and platform design"]
 ]
 
+
 # Handle the HTTP request
 def about(request: HttpRequest):
     """Create the about page."""

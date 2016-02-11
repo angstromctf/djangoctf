@@ -10,6 +10,7 @@ from django.utils.timezone import now
 from ctfapp.models import Problem, CorrectSubmission, IncorrectSubmission
 from ctfapp.decorators import team_required, lock_before_contest
 
+# This file handles problem grading and the display for grading.
 
 @login_required
 @team_required

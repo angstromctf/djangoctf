@@ -53,18 +53,18 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     # The user's team
-    team = models.ForeignKey('Team', null=True, on_delete=models.SET_NULL, default=None)
+    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True, default=None)
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, default="")
-    key_expires = models.DateTimeField(default=now, blank=True)
+    generated = models.DateTimeField(default=now)
 
     # Required information
     eligible = models.BooleanField(default=True)
 
     # Optional demographic information
-    gender = models.IntegerField(null=True, choices=GENDER_CHOICES)
-    race = models.IntegerField(null=True, choices=RACE_CHOICES)
+    gender = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
+    race = models.IntegerField(blank=True, choices=RACE_CHOICES, null=True)
 
     # Magic methods
     def __str__(self):

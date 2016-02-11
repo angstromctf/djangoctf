@@ -6,6 +6,7 @@ from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import UserProfile
 # Handle the HTTP request
 
+
 @login_required
 def account(request: HttpRequest):
     """Create the account page."""

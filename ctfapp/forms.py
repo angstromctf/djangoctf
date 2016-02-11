@@ -1,23 +1,16 @@
 from django import forms
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+
+from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
+from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.models import Team
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
-from datetime import datetime, timedelta
-from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
-<<<<<<< HEAD
-from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
-from ctfapp.models import Team
-=======
-from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
-from ctfapp.models import Team, UserProfile
-from django.template import Context
-from django.template import Template
->>>>>>> 5d2b7d9d5da94f045f49566ee6dd7965d4a1e1ad
 
-import json
+
 class LoginForm(forms.Form):
     """
     A form for users to login to the site.
@@ -151,57 +144,6 @@ class CreateUserForm(forms.Form):
             StrictButton('Sign up!', css_class='btn-success', type='submit')
         )
 
-    def save(self, datas):
-        u = User.objects.create_user(datas['username'],
-                                     email=datas['email'],
-                                     password=datas['password'],
-                                     first_name=datas['first_name'],
-                                     last_name=datas['last_name']
-
-                                     )
-        u.is_active = False
-        u.save()
-
-        profile = UserProfile(user=u,
-                                  eligible=datas['eligible'])
-        if datas['gender']:
-            profile.gender = datas['gender']
-        if datas['race']:
-            profile.race = datas['race']
-        u.userprofile = profile
-        profile.activation_key = datas['activation_key']
-        expire_date = datetime.now() + timedelta(days=2)
-        profile.key_expires = datetime.strftime(expire_date, "%Y-%m-%d %H:%M:%S")
-        profile.save()
-        return u
-
-    def sendEmail(self, datas):
-        with open('djangoctf/settings.json') as config_file:
-            config = json.loads(config_file.read())
-            emails_enabled = config['email']['enabled']
-            sendgrid_api_key = config['email']['sendgrid_api_key']
-
-
-        activation_key = datas['activation_key']
-
-        c = Context({'activation_key': activation_key, 'username': datas['username']})
-        f = open('ctfapp/templates/activation_email_template.txt', 'r')
-        t = Template(f.read())
-        f.close()
-
-        if emails_enabled:
-                import sendgrid
-                message_text = t.render(c)
-                # Send an activation email through sendgrid
-                message_to_field = datas['email']
-                sg = sendgrid.SendGridClient(sendgrid_api_key)
-                message = sendgrid.Mail()
-                message.smtpapi.add_to(message_to_field)
-                message.set_subject('Activation link for angstromCTF')
-                message.set_text(message_text)
-                message.set_from('angstromCTF team <contact@angstromctf.com>')
-                sg.send(message)
-
     def clean(self):
         cleaned_data = super(CreateUserForm, self).clean()
 
@@ -216,11 +158,7 @@ class ResetPasswordForm(forms.Form):
         self.helper = FormHelper()
 
         self.helper.layout = Layout(
-            Fieldset(
-                Field('email', placeholder='Enter email'),
-
-            ),
-
+            Field('email', placeholder='Enter email'),
             HTML('<br/>'),
             StrictButton('Send reset email', css_class='btn-success', type='submit')
         )
