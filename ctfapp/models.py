@@ -6,13 +6,14 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.utils import timezone
 from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
+"""
+Various core models for angstrom
+"""
 
-
-# Define core models
 class Problem(models.Model):
     """Model for a CTF question. Contains name, title, text, value,
     category, hint, and flag."""
-    
+
     # Outline fields
     problem_name = models.CharField(max_length=200)
     problem_title = models.CharField(max_length=200)
@@ -22,7 +23,7 @@ class Problem(models.Model):
     hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
     update_time = models.BooleanField(default=True)
-    
+
     # Convenience
     solved = False
 
@@ -35,7 +36,7 @@ class Problem(models.Model):
 class Update(models.Model):
     """Model for an update message for the CTF. Contains title, text,
     and date."""
-    
+
     # Outline fields
     update_title = models.CharField(max_length=200)
     update_text = models.CharField(max_length=500)
@@ -50,7 +51,7 @@ class Update(models.Model):
 class UserProfile(models.Model):
     """Model for a user registered with the CTF. Contains name,
     school, participation, solved problems, and score data."""
-    
+
     # Outline fields
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, default="")
