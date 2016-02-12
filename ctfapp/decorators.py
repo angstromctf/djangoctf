@@ -1,7 +1,10 @@
 from django.core.exceptions import PermissionDenied
 from ctfapp.util.time import before_start, after_end
 from django.shortcuts import render
+"""
+Decorators file. Does some checking stuff
 
+"""
 
 def team_required(invert=False):
     def decorator(view):

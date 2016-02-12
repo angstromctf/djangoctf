@@ -2,7 +2,9 @@ from django.conf.urls import url
 
 from . import views
 from django.contrib.auth import views as auth_views
-#URL patterns used by django to load views. 
+"""
+URL patterns used by django to load views.
+"""
 urlpatterns = [
     url(r'^$', views.index, name='home'),
     url(r'^problems/$', views.problems, name='problems'),
