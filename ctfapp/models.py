@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
 
 """
 Various core database models for angstrom.

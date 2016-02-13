@@ -26,10 +26,12 @@
                 <samp style='color: blue;'>{{ user.userprofile.team.code }}</samp>.  Don't give it
                 out to anyone you don't want joining your team.</p>
 
-                <p>Your team has {{ user.userprofile.team.user_count }} out of 5 possible members.</p>
-                {% for team_member in team_member_list %}
-                <li>{{ team_member.user.first_name }}&nbsp;{{ team_member.user.last_name }}</li>
-                {% endfor %}
+                <p>Your team has {{ user.userprofile.team.user_count }} out of 5 possible members:</p>
+                <ul>
+                    {% for team_member in team_member_list %}
+                    <li>{{ team_member.user.first_name }}&nbsp;{{ team_member.user.last_name }}</li>
+                    {% endfor %}
+                </ul>
 
                 <p>Your shell account username and default password are below:</p>
                 Username: <samp style='color: blue;'>{{ user.userprofile.team.shell_username }}</samp><br>
