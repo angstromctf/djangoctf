@@ -18,6 +18,8 @@
 {% endblock %}
 
 {% block content %}
+    <div id="chart-div"></div>
+
     <strong>Score:</strong> {{ team.score }} ({{ user.userprofile.team|place|ordinal }} place)
     <br/>
     <strong>Affiliation:</strong> {{ team.school }}
@@ -54,4 +56,20 @@
             </tbody>
         </table>
     {% endif %}
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    google.load('visualization', '1', {packages: ['corechart', 'line']});
+    google.setOnLoadCallback(drawBasic);
+
+    function drawBasic() {
+        var data = google.visualization.arrayToDataTable({{ data|safe }});
+
+        var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true, legend: {position:  'bottom'}};
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart-div'));
+
+        chart.draw(data, options);
+    }
+    </script>
 {% endblock %}
