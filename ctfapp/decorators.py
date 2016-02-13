@@ -1,10 +1,14 @@
-from functools import wraps
-
 from django.utils.decorators import available_attrs
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 
 from ctfapp.utils.time import before_start
+
+from functools import wraps
+
+"""
+Various authentication checks as decorators.
+"""
 
 def team_required(function=None, invert=False):
     def decorator(view):

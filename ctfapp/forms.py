@@ -10,6 +10,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
+"""
+All of the forms used in the site.
+"""
 
 class LoginForm(forms.Form):
     """
@@ -19,6 +22,9 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
 class ChangePasswordForm(forms.Form):
+    """
+    Form to change password
+    """
     password = forms.CharField(label='Current password', max_length=50, widget=forms.PasswordInput())
     new_password = forms.CharField(label='New password', max_length=50, widget=forms.PasswordInput())
     confirm_password = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput())
@@ -39,6 +45,9 @@ class ChangePasswordForm(forms.Form):
         )
 
 class CreateTeamForm(forms.Form):
+    """
+    Form to create a new team
+    """
     name = forms.CharField(label='Team name', max_length=100, validators=[validate_unique_team_name])
     affiliation = forms.CharField(label='School or affiliation', max_length=50)
 
@@ -59,6 +68,9 @@ class CreateTeamForm(forms.Form):
 
 
 class JoinTeamForm(forms.Form):
+    """
+    Form to join a team
+    """
     code = forms.CharField(label='Team code', max_length=100)
 
     def __init__(self, *args, **kwargs):
@@ -102,6 +114,9 @@ class JoinTeamForm(forms.Form):
 
 
 class CreateUserForm(forms.Form):
+    """
+    Signup form to create new user.
+    """
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)
@@ -151,6 +166,9 @@ class CreateUserForm(forms.Form):
             raise ValidationError("Passwords do not match.")
 
 class ResetPasswordForm(forms.Form):
+    """
+    Resets password if it is forgotten.
+    """
     email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
 
     def __init__(self, *args, **kwargs):
