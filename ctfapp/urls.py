@@ -3,7 +3,11 @@ from django.contrib.auth import views as auth_views
 
 from . import views
 
-#URL patterns used by django to load views. 
+from django.contrib.auth import views as auth_views
+
+"""
+URL patterns used by django to load views.
+"""
 urlpatterns = [
     url(r'^$', views.index, name='home'),
     url(r'^shelld/$', views.shelld, name='shelld'),

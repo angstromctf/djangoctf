@@ -3,10 +3,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.util.globals import GENDER_CHOICES, RACE_CHOICES
 
+"""
+Various core database models for angstrom.
+"""
 
-# Define core models
 class Problem(models.Model):
     """Model for a CTF question. Contains name, title, text, value,
     category, hint, and flag."""
@@ -17,6 +19,7 @@ class Problem(models.Model):
     text = models.TextField()
     value = models.IntegerField()
     category = models.CharField(max_length=50)
+
     hint_text = models.TextField()
     flag_sha512_hash = models.CharField(max_length=128)
 
