@@ -1,4 +1,6 @@
-var START = 1456808400;
+/*Javascript for index page. Handles the countdown clock. */
+
+var START = 1456808400; //Start date of the competition, in seconds since epoch
 
 function renderTime() {
     var canvas = document.getElementById("clock");
@@ -9,8 +11,8 @@ function renderTime() {
 
     var seconds = Math.abs(Date.now()/1000 - START);
 
-    var dividers = [60, 24, 60, 60];
-    var units = ["DAY", "HOUR", "MINUTE", "SECOND"];
+    var dividers = [60, 24, 60, 60];//Days, hours, minutes, seconds
+    var units = ["DAY", "HOUR", "MINUTE", "SECOND"];//units
     var times = new Array(4);
 
     var l = 1;
@@ -20,9 +22,9 @@ function renderTime() {
     }
 
     ctx.lineWidth = 15;
-    ctx.strokeStyle = "firebrick";
+    ctx.strokeStyle = "firebrick";//colour of the wheels
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) {//circles
         ctx.beginPath();
         ctx.arc(canvas.width * (2*i+1)/8, canvas.height/2, canvas.height/2.75, -Math.PI*.5,Math.PI*2*times[i]/dividers[i]-Math.PI*.5);
         ctx.stroke();
@@ -30,7 +32,7 @@ function renderTime() {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.font = "25pt Lato";
+    ctx.font = "25pt Lato";//font
     for (i = 0; i < 4; i++) {
         ctx.fillText(times[i], canvas.width * (2*i+1)/8, canvas.height/2);
     }
@@ -40,13 +42,13 @@ function renderTime() {
     for (i = 0; i < 4; i++) {
         var unit = units[i];
 
-        if (times[i] != 1) unit += "S";
+        if (times[i] != 1) unit += "S";//plural units
 
         ctx.fillText(unit, canvas.width * (2*i+1)/8, canvas.height/2);
     }
 }
 
 var canvas = document.getElementById("clock");
-window.setInterval(renderTime, 1000);
+window.setInterval(renderTime, 1000);//rerenders at set intervals
 
 renderTime();
