@@ -1,12 +1,19 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
+from django.utils import timezone
+from django.contrib.sites.shortcuts import get_current_site
+from django.template import Template, Context
+
 from ctfapp.models import UserProfile
 from ctfapp.forms import CreateUserForm
-from django.contrib.auth.models import User
+
+from datetime import timedelta
 import hashlib
 import random
-from django.utils import timezone
-from datetime import datetime, timedelta
+import json
+import sendgrid
 
+EXPIRATION = timedelta(days=2)
 
 def activation(request, key):
     """
@@ -17,8 +24,9 @@ def activation(request, key):
     activation_success = False
     resend_userid = ""
     profile = get_object_or_404(UserProfile, activation_key=key)
+
     if not profile.user.is_active:
-        if timezone.now() > profile.key_expires:
+        if timezone.now() - profile.key_generated > EXPIRATION:
             activation_expired = True
             id_user = profile.user.id
             resend_userid = str(id_user)
@@ -28,6 +36,7 @@ def activation(request, key):
             profile.user.save()
     else:
         already_active = True
+
     return render(request, 'activation.html', {'activation_expired': activation_expired,
                                                'already_active': already_active,
                                                'activation_success': activation_success,
@@ -35,25 +44,56 @@ def activation(request, key):
 
 
 def new_activation_link(request, user_id):
-    form = CreateUserForm()
-    datas = {}
+    data = {}
     user = User.objects.get(id=user_id)
     new_link_sent = False
+
     if user is not None and not user.is_active and not request.user.is_authenticated():
-        datas['username'] = user.username
-        datas['email'] = user.email
-        datas['activation_key'] = generate_activation_key(datas['username'])
+        data['username'] = user.username
+        data['email'] = user.email
+
         profile = UserProfile.objects.get(user=user)
-        profile.activation_key = datas['activation_key']
-        expire_date = datetime.now() + timedelta(days=2)
-        profile.key_expires = datetime.strftime(expire_date, "%Y-%m-%d %H:%M:%S")
+        profile.activation_key = generate_activation_key(user.username)
+        profile.key_expires = timezone.now()
         profile.save()
-        form.sendEmail(datas, request)
+
+        send_email(data, profile.activation_key)
+
         request.session['new_link'] = True
         new_link_sent = True
+
     return render(request, 'activation.html', {'new_link_sent': new_link_sent})
 
 
 def generate_activation_key(username):
     salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
     return hashlib.sha1(salt+username.encode('utf8')).hexdigest()
+
+def send_email(data, key, request=None, use_https=False):
+    with open('djangoctf/settings.json') as config_file:
+        config = json.loads(config_file.read())
+        sendgrid_api_key = config['email']['sendgrid_api_key']
+        use_https = config['ssl']
+
+    current_site = get_current_site(request)
+    link_protocol = 'https' if use_https else 'http'
+
+    with open('ctfapp/templates/activation_email_template.txt', 'r') as template_file:
+        template = Template(template_file.read())
+
+    context = Context({'activation_key': key,
+                                    'username': data['username'],
+                                    'domain': current_site.domain,
+                                    'protocol': link_protocol})
+
+    message_text = template.render(context)
+
+    # Send an activation email through sendgrid
+    message_to_field = data['email']
+    sg = sendgrid.SendGridClient(sendgrid_api_key)
+    message = sendgrid.Mail()
+    message.smtpapi.add_to(message_to_field)
+    message.set_subject('Activation link for angstromCTF')
+    message.set_text(message_text)
+    message.set_from('angstromCTF team <contact@angstromctf.com>')
+    sg.send(message)

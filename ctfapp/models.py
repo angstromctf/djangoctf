@@ -60,7 +60,7 @@ class UserProfile(models.Model):
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, default="")
-    generated = models.DateTimeField(default=now)
+    key_generated = models.DateTimeField(default=now)
 
     # Required information
     eligible = models.BooleanField(default=True)
