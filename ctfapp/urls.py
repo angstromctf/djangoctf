@@ -38,6 +38,6 @@ urlpatterns = [
     url(r'^resetpassword/passwordsent/', auth_views.password_reset_done, name='password_reset_done'),
     url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  auth_views.password_reset_confirm, {'post_reset_redirect' : '/reset/done/'}, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
-    url(r'^activate/(?P<key>.+)$', views.activation, name='activation'),
+    url(r'^activate/(?P<key>.+)/$', views.activation, name='activation'),
     url(r'^new-activation-link/(?P<user_id>\d+)/$', views.new_activation_link, name='new_link'),
 ]

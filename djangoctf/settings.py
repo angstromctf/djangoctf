@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
     'password_reset',
     'ctfapp',
     'crispy_forms',
@@ -107,6 +108,9 @@ if config['cache_enabled']:
 if config['use_loadbalanced_databases']:
     DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)
     SLAVE_DATABASES = ['shadow-1']
+
+SITE_ID = 1
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
