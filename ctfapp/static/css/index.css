@@ -23,3 +23,9 @@
     font-size: 5em;
     margin: 0 auto;
 }
+
+canvas#clock {
+    margin: 0 auto;
+    padding: 0;
+    display: block;
+}
