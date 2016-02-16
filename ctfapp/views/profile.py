@@ -18,13 +18,12 @@ def profile(request, team):
     solutions_list = []
     graph_size = min(5, Team.objects.all().count())
 
-    for x in range(graph_size):
-        submissions = CorrectSubmission.objects.all().filter(team=team)
+    submissions = CorrectSubmission.objects.all().filter(team=team)
 
-        for sub in submissions:
-            delta = sub.time - contest_start
+    for sub in submissions:
+        delta = sub.time - contest_start
 
-            solutions_list.append([minutes(delta)] + [-1] * x + [sub.new_score] + [-1] * (graph_size-1-x))
+        solutions_list.append([minutes(delta), sub.new_score])
 
 
     solutions_list.sort()
@@ -37,5 +36,5 @@ def profile(request, team):
     return render(request, 'profile.html', {
         'team': team,
         'ordered_solves': ordered_solves,
-        'data': str(solutions_list).replace('-1', 'null').replace('(', '[').replace(')', ']'),
+        'data': str(solutions_list).replace('(', '[').replace(')', ']'),
     })

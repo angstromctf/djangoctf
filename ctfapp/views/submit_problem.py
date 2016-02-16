@@ -31,7 +31,6 @@ def submit_problem(request: HttpRequest):
     if problem in team.solved.all():
         # We've already solved the problem
         alert = "<strong>Hmm?</strong> You've already solved this."
-        alert_type = "info"
         alert_class = "glyphicon glyphicon-info-sign"
 
         solved = True
@@ -52,7 +51,6 @@ def submit_problem(request: HttpRequest):
         solution.save()
 
         alert = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)"
-        alert_type = "success"
         alert_class = "glyphicon glyphicon-ok-sign"
 
         solved = True
@@ -65,7 +63,6 @@ def submit_problem(request: HttpRequest):
             solution = IncorrectSubmission(team=team, problem=problem, guess=guess)
             solution.save()
 
-        alert_type = "danger"
         alert_class = "glyphicon glyphicon-remove-sign"
         solved = False
 
