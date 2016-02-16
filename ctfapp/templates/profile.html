@@ -20,7 +20,7 @@
 {% block content %}
     <div id="chart-div"></div>
 
-    <strong>Score:</strong> {{ team.score }} ({{ user.userprofile.team|place|ordinal }} place)
+    <strong>Score:</strong> {{ team.score }} ({{ team|place|ordinal }} place)
     <br/>
     <strong>Affiliation:</strong> {{ team.school }}
 

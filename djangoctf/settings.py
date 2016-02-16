@@ -139,4 +139,3 @@ if config['email']['enabled']:
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
-

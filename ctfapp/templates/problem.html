@@ -17,7 +17,7 @@
         </h3>
     </div>
 
-    <div class="collapse {% if enable_submission or not solved %}in{% else %}out{% endif %}" id="wrapper{{ problem.id }}">
+    <div class="collapse {% if not enable_submission or not solved %}in{% else %}out{% endif %}" id="wrapper{{ problem.id }}">
         <div class="panel-body">
             <ul class="nav nav-tabs">
                 <li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
@@ -46,7 +46,7 @@
                 </div>
 
                 <div id="hint{{ problem.id }}" class="tab-pane">
-                    {{ problem.hint_text }}
+                    {{ problem.hint_text|safe }}
                 </div>
             </div>
         </div>

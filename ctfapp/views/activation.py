@@ -54,12 +54,11 @@ def new_activation_link(request, user_id):
 
         profile = UserProfile.objects.get(user=user)
         profile.activation_key = generate_activation_key(user.username)
-        profile.key_expires = timezone.now()
+        profile.key_generated = timezone.now()
         profile.save()
 
         send_email(data, profile.activation_key)
 
-        request.session['new_link'] = True
         new_link_sent = True
 
     return render(request, 'activation.html', {'new_link_sent': new_link_sent})

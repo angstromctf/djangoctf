@@ -7,12 +7,14 @@ register = template.Library()
 
 @register.filter
 def is_solved(problem, user):
-    return user.is_authenticated() and problem in user.userprofile.team.solved.all()
+    return user.is_authenticated() and user.userprofile.team and problem in user.userprofile.team.solved.all()
 
 
 @register.filter
 def place(team):
+    print(type(team))
     for index, item in enumerate(Team.objects.all().order_by('-score', 'score_lastupdate')):
+        print(type(item), type(team))
         if item.id == team.id:
             return index+1
 
