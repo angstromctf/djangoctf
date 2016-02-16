@@ -12,7 +12,7 @@ function submit_problem(num) {
                 icon: json.alert_class,
                 message: json.alert
             }, {
-                type: json.alert_type,
+                type: 'info',
                 animate: {
 	            	enter: 'animated fadeInRight',
 	            	exit: 'animated fadeOutRight'
