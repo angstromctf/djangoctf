@@ -1,8 +1,8 @@
 from django.http import HttpRequest
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 
 def index(request: HttpRequest):
     """Create the index page."""
 
-    return render_to_response("index.html", {"user": request.user})
+    return render(request, "index.html", {"user": request.user})

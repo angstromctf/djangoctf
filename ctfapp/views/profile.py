@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from ctfapp.models import Team
 from django.http import Http404
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ctfapp.models import CorrectSubmission
 from ctfapp.utils.time import contest_start, minutes
@@ -30,7 +30,7 @@ def profile(request, team):
     solutions_list.insert(0, [0, 0])
     solutions_list.insert(0, ['X', team.name])
 
-    delta = now() - contest_start
+    delta = timezone.now() - contest_start
     solutions_list.append([minutes(delta), team.score])
 
     return render(request, 'profile.html', {

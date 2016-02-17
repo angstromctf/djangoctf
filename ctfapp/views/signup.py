@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ctfapp.views.activation import generate_activation_key, send_email
 from ctfapp.forms import CreateUserForm
@@ -49,7 +49,7 @@ def signup(request):
             user.userprofile = profile
 
             profile.activation_key = generate_activation_key(user.get_username())
-            profile.key_generated = now()
+            profile.key_generated = timezone.now()
 
             user.save()
             profile.save()

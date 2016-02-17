@@ -40,9 +40,9 @@ def create_team(request: HttpRequest):
         if shell_enabled:
             ssh_priv_key_path = config['shell']['ssh_key_path']
 
-    create_team_form = CreateTeamForm(request.POST)
+    form = CreateTeamForm(request.POST)
 
-    if create_team_form.is_valid():
+    if form.is_valid():
         code = create_code()
         while Team.objects.filter(code=code).count() > 0:
             code = create_code()
@@ -64,9 +64,9 @@ def create_team(request: HttpRequest):
             createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
-        team = Team(name=create_team_form.cleaned_data['name'],
+        team = Team(name=form.cleaned_data['name'],
                     user_count=1,
-                    school=create_team_form.cleaned_data['affiliation'],
+                    school=form.cleaned_data['affiliation'],
                     shell_username=shell_username,
                     shell_password=shell_password,
                     code=code,
@@ -80,6 +80,6 @@ def create_team(request: HttpRequest):
         return redirect('/account/')
 
     return render(request, 'account.html', {'user': request.user,
-                                            'change_password': ChangePasswordForm(),
-                                            'join_team': JoinTeamForm(),
-                                            'create_team': create_team_form})
+                                            'change_password': ChangePasswordForm(user=request.user),
+                                            'join_team': JoinTeamForm(user=request.user),
+                                            'create_team': form})

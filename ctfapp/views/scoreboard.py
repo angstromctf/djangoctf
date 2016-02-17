@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 from django.shortcuts import render
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ctfapp.models import Team, CorrectSubmission
 from ctfapp.utils.time import contest_start, minutes
@@ -22,7 +22,7 @@ def scoreboard(request: HttpRequest):
 
             solutions_list.append([minutes(delta)] + [-1] * x + [sub.new_score] + [-1] * (graph_size-1-x))
 
-    delta = now() - contest_start
+    delta = timezone.now() - contest_start
     solutions_list.append([minutes(delta)] + [team_list[x].score for x in range(graph_size)])
     
     solutions_list.sort()
