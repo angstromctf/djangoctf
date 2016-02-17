@@ -12,6 +12,7 @@ def updates(request: HttpRequest):
     """
 
     updates_list = Update.objects.all().order_by('time')
+
     return render(request, 'updates.html', {
         'user': request.user,
         'updates_list': updates_list

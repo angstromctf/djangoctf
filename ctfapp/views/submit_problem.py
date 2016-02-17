@@ -5,16 +5,16 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ctfapp.models import Problem, CorrectSubmission, IncorrectSubmission
 from ctfapp.decorators import team_required, lock_before_contest
 
 # This file handles problem grading and the display for grading.
 
+@require_POST
 @login_required
 @team_required
-@require_POST
 @lock_before_contest
 def submit_problem(request: HttpRequest):
     """
@@ -42,7 +42,7 @@ def submit_problem(request: HttpRequest):
         team.score += problem.value
 
         if problem.update_time:
-            team.score_lastupdate = now()
+            team.score_lastupdate = timezone.now()
 
         team.save()
 
@@ -74,5 +74,5 @@ def submit_problem(request: HttpRequest):
         'solved': solved
     }).content
 
-    response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_type": alert_type, "alert_class": alert_class}
+    response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_class": alert_class}
     return HttpResponse(json.dumps(response_data), content_type="application/json")

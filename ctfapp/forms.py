@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
+from django.contrib.auth import authenticate
 
 from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
 from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
@@ -30,9 +31,11 @@ class ChangePasswordForm(forms.Form):
     confirm_password = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
+        self.helper.form_action = 'change_password'
 
         self.helper.layout = Layout(
             Fieldset(
@@ -40,9 +43,26 @@ class ChangePasswordForm(forms.Form):
                 Field('password', placeholder='Current password'),
                 Field('new_password', placeholder='New password'),
                 Field('confirm_password', placeholder='Confirm password'),
-                StrictButton('Change password', css_class='btn-success', type='button', onclick='change_password();')
+                StrictButton('Change password', css_class='btn-success', type='submit')
             )
         )
+
+    def clean_password(self):
+        user = authenticate(username=self.user.get_username(), password=self.cleaned_data['password'])
+
+        if not user:
+            raise ValidationError('Incorrect password')
+
+        return self.cleaned_data['password']
+
+    def clean(self):
+        cleaned_data = super(ChangePasswordForm, self).clean()
+
+        if cleaned_data.get('new_password') != cleaned_data.get('confirm_password'):
+            raise ValidationError('Passwords do not match')
+
+        return cleaned_data
+
 
 class CreateTeamForm(forms.Form):
     """
@@ -74,12 +94,11 @@ class JoinTeamForm(forms.Form):
     code = forms.CharField(label='Team code', max_length=100)
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
         super(JoinTeamForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_action = 'join_team'
-
-        self.user = kwargs.pop('user', None)
 
         self.helper.layout = Layout(
             Fieldset(
@@ -180,6 +199,3 @@ class ResetPasswordForm(forms.Form):
             HTML('<br/>'),
             StrictButton('Send reset email', css_class='btn-success', type='submit')
         )
-
-    def clean(self):
-        cleaned_data = super(ResetPasswordForm, self).clean()

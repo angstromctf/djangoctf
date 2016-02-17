@@ -1,7 +1,7 @@
 # Import
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import now
+from django.utils import timezone
 
 from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
 
@@ -40,12 +40,12 @@ class Update(models.Model):
     # Information about an update
     title = models.CharField(max_length=200)
     text = models.CharField(max_length=500)
-    time = models.DateTimeField(default=now)
+    time = models.DateTimeField(default=timezone.now)
 
     # Magic methods
     def __str__(self):
         """Represent the update as a string."""
-        return repr(self.update_list)
+        return "Update[" + self.title + "]"
 
 
 class UserProfile(models.Model):
@@ -60,7 +60,7 @@ class UserProfile(models.Model):
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, default="")
-    key_generated = models.DateTimeField(default=now)
+    key_generated = models.DateTimeField(default=timezone.now)
 
     # Required information
     eligible = models.BooleanField(default=True)
@@ -96,7 +96,7 @@ class Team(models.Model):
 
     # Score and last update of the team
     score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=now)
+    score_lastupdate = models.DateTimeField(default=timezone.now)
 
     # Shell username and password
     shell_username = models.CharField(max_length=20, default="")
@@ -116,7 +116,7 @@ class CorrectSubmission(models.Model):
 
     # Team's score at that time
     new_score = models.IntegerField(default=0)
-    time = models.DateTimeField(default=now)
+    time = models.DateTimeField(default=timezone.now)
 
     # Magic methods
     def __str__(self):
@@ -132,7 +132,7 @@ class IncorrectSubmission(models.Model):
 
     # Time and contents of submission
     guess = models.CharField(max_length=64)
-    time = models.DateTimeField(default=now)
+    time = models.DateTimeField(default=timezone.now)
 
     # Magic methods
     def __str__(self):

@@ -1,9 +1,9 @@
-import json
-
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest
+from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 
 
 @login_required
@@ -13,32 +13,18 @@ def change_password(request: HttpRequest):
     View for changing a password through AJAX.  Login is required.
     """
 
-    alert_type = "danger"
-    alert_class = "glyphicon glyphicon-remove-sign"
 
-    password = request.POST["old"]
+    form = ChangePasswordForm(request.POST, user=request.user)
 
-    user = authenticate(username=request.user.get_username(), password=password)
+    if form.is_valid():
+        user = authenticate(username=request.user.get_username(), password=form.cleaned_data['password'])
 
-    if user:
-        if request.POST["new"] == request.POST["confirm"]:
-            new = request.POST["new"]
+        user.set_password(form.cleaned_data["new_password"])
+        user.save()
 
-            if new:
-                user.set_password(new)
-                user.save()
+        login(request, user)
 
-                login(request, user)
-
-                alert = "<strong>Yay!</strong> Password change successful!"
-                alert_type = "success"
-                alert_class = "glyphicon glyphicon-ok-sign"
-            else:
-                alert = "<strong>Oops!</strong> Password may not be empty."
-        else:
-            alert = "<strong>Oops!</strong> Passwords must match."
-    else:
-        alert = "<strong>Oops!</strong> Incorrect password."
-
-    response_data = {"alert": alert, "alert_type": alert_type, "alert_class": alert_class}
-    return HttpResponse(json.dumps(response_data), content_type="application/json")
+    return render(request, 'account.html', {'user': request.user,
+                                            'change_password': form,
+                                            'join_team': JoinTeamForm(user=request.user),
+                                            'create_team': CreateTeamForm()})
