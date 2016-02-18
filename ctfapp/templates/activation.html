@@ -10,7 +10,7 @@
 		{% if already_active %}
 		<h3>Account already active!</h3>
 		{% elif activation_expired %}
-		<h3>Error.</h3>
+		<h3>Oops!</h3>
 		{% elif new_link_sent %}
 		<h3>New link sent!</h3>
 		{% elif activation_success %}
@@ -30,7 +30,7 @@
 	{% if already_active %}
 	<p>This account has already been activated! Proceed to <a href="{% url 'login' %}">login.</a></p>
 	{% elif activation_expired %}
-	<p>The activation link you clicked has expired. Click <a href="/new-activation-link/{{ resend_userid }}">here</a> to resend email.</p>
+	<p>Oops! It seems the activation link you clicked has expired. Click <a href="/new-activation-link/{{ resend_userid }}">here</a> to resend email.</p>
 	{% elif new_link_sent %}
 	<p>A new activation link has been sent to your account.</p>
 	{% elif activation_success %}
