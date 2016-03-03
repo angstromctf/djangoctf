@@ -21,7 +21,7 @@ function renderTime() {
         l *= dividers[i];
     }
 
-    ctx.lineWidth = 15;
+    ctx.lineWidth = canvas.height/20;
     ctx.strokeStyle = "firebrick";//colour of the wheels
 
     for (i = 0; i < 4; i++) {//circles
@@ -32,13 +32,13 @@ function renderTime() {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.font = "25pt Lato";//font
+    ctx.font = "2em Lato";//font
     for (i = 0; i < 4; i++) {
         ctx.fillText(times[i], canvas.width * (2*i+1)/8, canvas.height/2);
     }
 
     ctx.textBaseline = "top";
-    ctx.font = "15pt Lato";
+    ctx.font = "1.25em Lato";
     for (i = 0; i < 4; i++) {
         var unit = units[i];
 
