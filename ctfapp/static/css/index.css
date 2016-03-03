@@ -29,3 +29,7 @@ canvas#clock {
     padding: 0;
     display: block;
 }
+
+h2 {
+    text-align: center;
+}

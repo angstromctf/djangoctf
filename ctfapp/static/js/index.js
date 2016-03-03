@@ -1,6 +1,6 @@
 /*Javascript for index page. Handles the countdown clock. */
 
-var START = 1456808400; //Start date of the competition, in seconds since epoch
+var START = 1997593702; //Start date of the competition, in seconds since epoch
 
 function renderTime() {
     var canvas = document.getElementById("clock");
@@ -22,7 +22,7 @@ function renderTime() {
     }
 
     ctx.lineWidth = canvas.height/20;
-    ctx.strokeStyle = "firebrick";//colour of the wheels
+    ctx.strokeStyle = "#AE73AE";//colour of the wheels
 
     for (i = 0; i < 4; i++) {//circles
         ctx.beginPath();
