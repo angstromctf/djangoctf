@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-
+{% load extras %}
+{% load staticfiles%}
 {% block title %} Our Sponsors - angstromCTF {% endblock %}
 
 {% block pagetitle %}
@@ -12,5 +13,14 @@
 
 {% block content %}
 This contest would not have been possible without our generous and glorious sponsors. We thank them for all of their support. 
+<br></br>
+
+<h1>DigitalOcean</h1>
+<br></br>
+
+<p>
+<img src="{% static 'images/DO_Logo_Horizontal_Blue-a2b16fb8.png' %}" style="float:left;width:400px;height:62px;">
+DigitalOcean is one of the world's best hosting platforms, providing easily deployable and scalable hosting, providing affordable and reliable hosting to companies both big and small. angstromCTF is proud to partner with DigitalOcean to bring you this competition, and we're proud to host this website on DigitalOcean servers. Learn more about DigitalOcean at <a href="https://digitalocean.com">digitalocean.com</a>.
+</p>
 
 {% endblock %}
