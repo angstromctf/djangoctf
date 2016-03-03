@@ -85,9 +85,11 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/New_York'
 
+DATETIME_FORMAT = 'l, F j, Y, g:i A O'
+
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
