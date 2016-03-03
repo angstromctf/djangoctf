@@ -16,3 +16,4 @@ from .shelld import shelld
 from .rules import rules
 from .learn import learn
 from .activation import activation, new_activation_link
+from .sponsors import sponsors
