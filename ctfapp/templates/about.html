@@ -17,28 +17,83 @@
 {% endblock %}
 
 {% block content %}
-	<h3>What is AngstromCTF?</h3>
+    <div class="row">
+        <nav class="col-sm-2">
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="#rules">Rules</a></li>
+                <li><a href="#sponsors">Sponsors</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </nav>
 
-	<p>AngstromCTF is a capture-the-flag competition modeled on <a href="https://picoctf.com/" target="_blank">picoCTF</a>
-    and created at Montgomery Blair High School.  It is designed to teach high school students reverse engineering
-    and other skills needed in computer security.</p>
+        <div class="col-sm-10">
+            <div id="rules">
+                <h2>Rules</h2>
+                <h4>Eligibility</h4>
+                Anyone can participate in angstromCTF, however, due to various reasons, we can only give prizes to teams from the United States.
+                Sending money from the US to other countries is a terrible pain and is mired in all sorts of legal issues.
+                All team members must be affiliated with either a public or private middle or high school in the US, or they may be home-schooled. Students and adults from around the world can still participate, however, they will be unable to win any prizes.
 
-	<h3>Who is AngstromCTF?</h3>
-    <p>AngstromCTF is created by several students, all at MBHS. In no particular order, they are:</p>
+                <h4>Rules and Restrictions</h4>
+                <ol>
+                    <li><strong>You may use any tool</strong>, subject to the restrictions below, at your disposal to attempt to solve the problems. We especially encourage the use of free and open-source tools. The Prime Directive of CTFs is <i>Google Is Your Friend</i>.
+                    <li>We're fine with you asking non-team members (or posting on sites like StackOverflow) for technical assistance with pre-existing software while solving problems. For example, getting help from a teacher installing Python on your computer is allowed.  However, <strong>only team members may make substantial contributions to solving a problem</strong>.  You can't just reword a problem and post it on an online forum to get help.</li>
+                    <li>Each member of the team must have an account and have a valid email. Each member may only have one account.</li>
+                    <li><strong>Each team is limited to five members. No exceptions.</strong></li>
+                    <li><strong>No flag or hint sharing</strong>.  Don't accept hints from anyone except potentially angstromCTF staff.</li>
+                    <li><strong>Do not attempt to attack or interfere with other teams or any servers used in this competition that are not explicitly designated for being hacked in a problem</strong>. Doing so will get you IP banned and disqualified from the competition. We will notify your school as well.</li>
+                    <li><strong>No brute-force guessing flags.</strong> Feel free to try several flags if you're not sure, but don't try any sort of brute forcing on the flags.  We're tracking all of your submissions.</li>
+                    <li>Finally, have fun and try and learn something new!</li>
+                </ol>
 
-    <div class="row about-row">
-        {% for person in people %}
-            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
-                <div style="width: 70%; height: 70%;" class="about-img">
-                    <img class="circular" src="{{ person.picture }}">
-                </div>
+                <h4>Scoring</h4>
+                <ol>
+                    <li>Each problem has a point value listed. The team who earns the most points wins the competition. If two teams tie, the submission times will be used to judge.</li>
+                    <li>The prize winning teams will be contacted by us after the contest ends. More information will be included in the email.</li>
+                    <li>In the event that a team that is ineligible for prizes wins a prize, the next US team will recieve that prize.</li>
+                </ol>
 
-                <div class="about-caption">
-                    {{ person.name }}, {{ person.grade|grade_to_name }}
-                    <br/>
-                    <span style="font-style: italic;">{{ person.contributions }}</span>
+                Anyone who violates these rules will be disqualified. <strong>All decisions made by angstromCTF are final.</strong>
+                <br/><br/>
+                Questions? Email us at <a href="mailto:contact@angstromctf.com">contact@angstromctf.com</a>, or ask on the <a href="{% url 'about' %}">IRC channel</a> (#angstromctf on Freenode).
+            </div>
+
+            <div id="sponsors">
+                <h2>Sponsors</h2>
+                We're endlessly thankful for the support of our sponsors! angstromCTF wouldn't be possible without them!
+
+                <h4>DigitalOcean</h4>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <img src="{% static 'images/DO_Logo_Horizontal_Blue-a2b16fb8.png' %}" style="width: 100%;">
+                    </div>
+                    <div class="col-lg-8">
+                        DigitalOcean is a versatile web infrastructure service, providing easily deployable and scalabe hosting to organizations both big and small. angstromCTF is proud to partner with DigitalOcean to provide DigitalOcean credit to participants and host this website on DigitalOcean servers. Learn more about DigitalOcean at <a href="https://digitalocean.com" target="_blank">digitalocean.com</a>.
+                    </div>
                 </div>
             </div>
-        {% endfor %}
+
+            <div id="team">
+                <h2>Team</h2>
+
+                AngstromCTF is created by several students, all at MBHS. In no particular order, they are:
+
+                <div class="row about-row">
+                    {% for person in people %}
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                            <div style="width: 70%; height: 70%;" class="about-img">
+                                <img class="circular" src="{{ person.picture }}">
+                            </div>
+
+                            <div class="about-caption">
+                                {{ person.name }}, {{ person.grade|grade_to_name }}
+                                <br/>
+                                <span style="font-style: italic;">{{ person.contributions }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

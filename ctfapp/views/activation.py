@@ -36,11 +36,10 @@ def activation(request, key):
             profile.user.save()
     else:
         already_active = True
-
     return render(request, 'activation.html', {'activation_expired': activation_expired,
-                                               'already_active': already_active,
-                                               'activation_success': activation_success,
-                                               'resend_userid': resend_userid})
+                                           'already_active': already_active,
+                                           'activation_success': activation_success,
+                                           'resend_userid': resend_userid})
 
 
 def new_activation_link(request, user_id):
