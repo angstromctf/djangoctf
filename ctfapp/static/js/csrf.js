@@ -13,4 +13,4 @@ function setup_csrf(csrftoken) {
     });
 }
 
-setup_csrf(document.getElementsByName("csrfmiddlewaretoken")[0].value);
+//setup_csrf(document.getElementsByName("csrfmiddlewaretoken")[0].value);
