@@ -10,7 +10,7 @@ from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 @require_POST
 def change_password(request: HttpRequest):
     """
-    View for changing a password through AJAX.  Login is required.
+    View for changing a password.  Login is required.
     """
 
 

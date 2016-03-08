@@ -1,6 +1,6 @@
 /*Javascript for index page. Handles the countdown clock. */
 
-var START = 1457067600; //Start date of the competition, in seconds since epoch
+var START = 1456981200; //Start date of the competition, in seconds since epoch
 var END = 1997593702; //End date of the competition, in seconds since epoch
 
 function renderTime() {
@@ -17,7 +17,7 @@ function renderTime() {
     } else if (Date.now()/1000 < END) {
         var seconds = END - cur_time;
     } else {
-        return;
+        var seconds = 0;
     }
 
     var dividers = [60, 24, 60, 60];//Days, hours, minutes, seconds
@@ -56,10 +56,10 @@ function renderTime() {
         ctx.fillText(unit, canvas.width * (2*i+1)/8, canvas.height/2);
     }
 
-    ctx.textBaseline = "bottom";
-    if (cur_time < START) ctx.fillText("Time remaining until competition start", canvas.width/2, canvas.height);
-    else if (cur_time < end) ctx.fillText("Time remaining until competition end", canvas.width/2, canvas.height);
-    else ctx.fillText("Competition ended!", canvas.width/2, canvas.height);
+    var head = document.getElementById("time");
+    if (cur_time < START) head.innerHTML = "Competition has not yet started! Time remaining:";
+    else if (cur_time < END) head.innerHTML = "Competition has begun! Time remaining:";
+    else head.innerHTML = "Competition is over!";
 }
 
 var canvas = document.getElementById("clock");
