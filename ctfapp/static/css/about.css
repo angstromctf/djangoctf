@@ -15,5 +15,6 @@ div.about-caption {
 }
 
 ul.nav-pills {
+    padding-top: 5em;
     position: fixed;
 }
