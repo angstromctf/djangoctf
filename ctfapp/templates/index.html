@@ -16,7 +16,19 @@
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
 {% endblock %}
 
+
+ 
 {% block content %}
+ 
+ <div style="text-align: center;">
+            <h4>Start: {{ start }}</h4>
+            <h4>End: {{ end }}</h4>
+        </div>
+  
+        <h4 style="text-align: center;" id="time"></h4>
+        <canvas id="clock">Lol, you don't have HTML5.</canvas>
+     
+
 
     Welcome to angstromCTF, a new capture-the-flag (CTF) competition hosted and written by high school students!
     CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity
@@ -25,7 +37,6 @@
     challenges.</strong> After we saw the great success of high-school CTF games (especially
     <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called
     angstromCTF.
-
 
 
     Students will compete in <strong>teams of up to five members</strong>. Points are given for answering each question
@@ -89,13 +100,7 @@
         </div-->
     </div>
 
-    <div style="text-align: center;">
-        <h4>Start: {{ start }}</h4>
-        <h4>End: {{ end }}</h4>
-    </div>
-
-    <h4 style="text-align: center;" id="time"></h4>
-    <canvas id="clock"/>
+    
 
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
     <script src="{% static 'js/index.js' %}"></script>
