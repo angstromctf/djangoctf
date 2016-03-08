@@ -5,11 +5,11 @@
 {% block title %} angstromCTF {% endblock %}
 
 {% block pagetitle %}
-<header class="page-title">
-	<div class="container">
-		<h1>Welcome to angstromCTF!</h1>
-	</div>
-</header>
+    <header class="page-title">
+        <div class="container">
+            <h1>Welcome to angstromCTF!</h1>
+        </div>
+    </header>
 {% endblock %}
 
 {% block css %}
@@ -18,72 +18,85 @@
 
 {% block content %}
 
-Welcome to angstromCTF, a new capture-the-flag (CTF) competition hosted and written by high school students!
-CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity students.
-These competitions are designed to <strong>educate and inspire high school students through interactive hacking
-challenges.</strong> After we saw the great success of high-school CTF games (especially <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called angstromCTF.
+    Welcome to angstromCTF, a new capture-the-flag (CTF) competition hosted and written by high school students!
+    CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity
+    students.
+    These competitions are designed to <strong>educate and inspire high school students through interactive hacking
+    challenges.</strong> After we saw the great success of high-school CTF games (especially
+    <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called
+    angstromCTF.
 
-<div style="text-align: center;">
-    <h4>Start: {{ start }}</h4>
-    <h4>End: {{ end }}</h4>
-</div>
 
-Students will compete in <strong>teams of up to five members</strong>. Points are given for answering each question (entering the flag). Prizes will be awarded to the top-scoring US high-school teams. angstromCTF is meant for <strong>both beginners and experienced CTFers</strong> and consists of questions ranging from simple to extremely difficult in various categories:<br/><br/>
 
-<div class="row categories-row">
-    <div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightgrey;"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></div>
-        <h4 class="category">Cryptography</h4>
+    Students will compete in <strong>teams of up to five members</strong>. Points are given for answering each question
+    (entering the flag). Prizes will be awarded to the top-scoring US high-school teams. angstromCTF is meant for
+    <strong>both beginners and experienced CTFers</strong> and consists of questions ranging from simple to extremely
+    difficult in various categories:<br/><br/>
 
-        Crack codes and ciphers, ranging from the simple (Caesar cipher, Vigen&egrave;re cipher) to the complex
-        (RSA, elliptic curves).  Do cryptanalysis, use deduction, and get the flags!
+    <div class="row categories-row">
+        <div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightgrey;"><span class="glyphicon glyphicon-pencil"
+                                                                                  aria-hidden="true"></span></div>
+            <h4 class="category">Cryptography</h4>
+
+            Crack codes and ciphers, ranging from the simple (Caesar cipher, Vigen&egrave;re cipher) to the complex
+            (RSA, elliptic curves). Do cryptanalysis, use deduction, and get the flags!
+        </div>
+        <div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightblue;"><span class="glyphicon glyphicon-wrench"
+                                                                                  aria-hidden="true"></span></div>
+            <h4 class="category">Binary Exploitation</h4>
+
+            Apply a range of skills to exploit security vulnerabilities in programs, including buffer overflows,
+            arithmetic overflows, format string bugs, and use-after-frees.
+            Force these binaries to run your own code and read the flag!
+        </div>
+        <div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightgreen;"><span class="glyphicon glyphicon-globe"
+                                                                                   aria-hidden="true"></span></div>
+            <h4 class="category">Web Exploitation</h4>
+
+            Find various vulnerabilities in web pages, and use them to get access to areas you shouldn't.
+            This topic covers a wide range of vulnerabilities, including SQL injection and mistakes in using
+            scripting languages. Use your new-found access to recover the flag!
+        </div>
     </div>
-    <div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightblue;"><span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></div>
-        <h4 class="category">Binary Exploitation</h4>
+    <div class="row categories-row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightsteelblue;"><span class="glyphicon glyphicon-cog"
+                                                                                       aria-hidden="true"></span></div>
+            <h4 class="category">Reverse Engineering</h4>
 
-        Apply a range of skills to exploit security vulnerabilities in programs, including buffer overflows,
-        arithmetic overflows, format string bugs, and use-after-frees.
-        Force these binaries to run your own code and read the flag!
+            Examine programs given to you and find out their code, from simple Java apps to more difficult ELF binaries.
+            Figure out their inner workings and use the information you gather to find the flag!
+        </div>
+        <div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightslategray;"><span
+                    class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
+            <h4 class="category">Forensics</h4>
+
+            Explore the art of digital forensics, which is all about uncovering hidden data within a
+            large swath of information. Solve challenging puzzles in areas such as stenography,
+            memory forensics, data recovery, and system examination. You can find the flag if you look carefully enough!
+        </div>
+        <div class="lg-col-2"></div>
+        <!--div class="col-lg-4">
+            <div class="category-icon" style="background-color: lightseagreen;"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span></div>
+            <h4 class="category">Hardware</h4>
+            Explore your computer at a lower level by creating and hacking hardware, from transistors all the way
+            to entire processors.  Design, simplify, and exploit circuits to retrieve the flag!
+        </div-->
     </div>
-    <div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightgreen;"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span></div>
-        <h4 class="category">Web Exploitation</h4>
 
-        Find various vulnerabilities in web pages, and use them to get access to areas you shouldn't.
-        This topic covers a wide range of vulnerabilities, including SQL injection and mistakes in using
-        scripting languages. Use your new-found access to recover the flag!
+    <div style="text-align: center;">
+        <h4>Start: {{ start }}</h4>
+        <h4>End: {{ end }}</h4>
     </div>
-</div>
-<div class="row categories-row">
-<div class="col-lg-2"></div>   
- <div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightsteelblue;"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></div>
-        <h4 class="category">Reverse Engineering</h4>
 
-        Examine programs given to you and find out their code, from simple Java apps to more difficult ELF binaries.
-        Figure out their inner workings and use the information you gather to find the flag!
-    </div>
-    <div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightslategray;"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></div>
-        <h4 class="category">Forensics</h4>
+    <h4 style="text-align: center;" id="time"></h4>
+    <canvas id="clock"/>
 
-        Explore the art of digital forensics, which is all about uncovering hidden data within a
-        large swath of information. Solve challenging puzzles in areas such as stenography,
-        memory forensics, data recovery, and system examination. You can find the flag if you look carefully enough!
-    </div>
-<div class="lg-col-2"></div>
-    <!--div class="col-lg-4">
-        <div class="category-icon" style="background-color: lightseagreen;"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span></div>
-        <h4 class="category">Hardware</h4>
-        Explore your computer at a lower level by creating and hacking hardware, from transistors all the way
-        to entire processors.  Design, simplify, and exploit circuits to retrieve the flag!
-    </div-->
-</div>
-
-<h4 style="text-align: center;" id="time"></h4>
-<canvas id="clock"/>
-
-<link href="{% static 'css/index.css' %}" rel="stylesheet">
-<script src="{% static 'js/index.js' %}"></script>
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}
