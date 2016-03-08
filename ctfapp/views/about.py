@@ -8,12 +8,12 @@ import random
 PICTURE_STATIC = "https://res.cloudinary.com/dhktkzan6/raw/upload/v1453843489/yaXiDPP_iwhxus.jpg"
 # Name, picture, grade, contributions
 people = [
-    ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and crypto problems"],
+    ["Noah Singer",     "noahsinger.jpg",       10,     "Platform and problems"],
     ["George Klees",    "georgeklees.jpg",      10,     "RE and binary problems"],
     ["Theo Tosini",     "theotosini.jpg",       10,     "Platform, deployment, problems"],
     ["Andrew Komo",     "andrewkomo.jpg",       10,     "Crypto problems"],
     ["Anthony Li",      "anthonyli.jpg",        12,     "Contest organizer"],
-    ["Daniel Chen",     "danielchen.jpg",       11,     "PR and Outreach"],
+    ["Daniel Chen",     "danielchen.jpg",       11,     "PR and outreach"],
     ["Chris Wang",      "chriswang.jpg",        10,     "Art, PR, and outreach"],
     ["Noah Levine",     "noahlevine.jpg",       12,     "Contest organizer"],
     ["Noah Kim",        "noahkim.jpg",          10,     "Website and platform design"]
@@ -25,7 +25,7 @@ def about(request: HttpRequest):
     """Create the about page."""
 
     # Compile the list of people and shuffle them 
-    rand_people = [{"name": _[0], "picture": PICTURE_STATIC, "grade": _[2], "contributions": _[3]} for _ in people]
+    rand_people = [{"name": _[0], "picture": "/static/images/people/"+_[1], "grade": _[2], "contributions": _[3]} for _ in people]
     random.shuffle(rand_people)
 
     # Return the render
