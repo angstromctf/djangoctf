@@ -13,3 +13,8 @@ div.about-caption {
     margin-bottom: 2em;
     text-align: center;
 }
+
+ul.nav-pills {
+    padding-top: 5em;
+    position: fixed;
+}
