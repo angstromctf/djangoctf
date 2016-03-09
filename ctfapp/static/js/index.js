@@ -1,7 +1,7 @@
 /*Javascript for index page. Handles the countdown clock. */
 
-var START = 1456981200; //Start date of the competition, in seconds since epoch
-var END = 1997593702; //End date of the competition, in seconds since epoch
+var START = 1470758400; //Start date of the competition, in seconds since epoch
+var END = 1471406400; //End date of the competition, in seconds since epoch
 
 function renderTime() {
     var canvas = document.getElementById("clock");
@@ -57,9 +57,13 @@ function renderTime() {
     }
 
     var head = document.getElementById("time");
-    if (cur_time < START) head.innerHTML = "Competition has not yet started! Time remaining:";
-    else if (cur_time < END) head.innerHTML = "Competition has begun! Time remaining:";
-    else head.innerHTML = "Competition is over!";
+    if (cur_time < START) {
+        head.innerHTML = "Competition has not yet started! Time until start:";
+    } else if (cur_time < END) {
+        head.innerHTML = "Competition has begun! Time remaining:";
+    } else {
+        head.innerHTML = "Competition is over!";
+    }
 }
 
 var canvas = document.getElementById("clock");

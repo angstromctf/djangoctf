@@ -1,6 +1,7 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import ordinal
-from ctfapp.models import Team, CorrectSubmission
+from ctfapp.models import Team
+from ctfapp.utils.time import before_start
 
 register = template.Library()
 
@@ -32,3 +33,8 @@ def grade_to_name(grade):
         return ['freshman', 'sophomore', 'junior', 'senior'][grade - 9]
     except IndexError:
         return ordinal(grade) + " Grade"
+
+
+@register.simple_tag
+def contest_started():
+    return not before_start()
