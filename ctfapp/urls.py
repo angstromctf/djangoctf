@@ -13,7 +13,6 @@ urlpatterns = [
     url(r'^shelld/$', views.shelld, name='shelld'),
     url(r'^updates/$', views.updates, name='updates'),
     url(r'^about/', views.about, name='about'),
-    url(r'^rules/', views.rules, name='rules'),
     url(r'^learn/', views.learn, name='learn'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^sponsors/', views.sponsors, name='sponsors'),

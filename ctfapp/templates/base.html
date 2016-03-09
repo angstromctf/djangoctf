@@ -61,12 +61,12 @@
                     <div id="navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav navbar-left">
                             <li><a href="{% url 'about' %}">About</a></li>
+                            <li><a href="{% url 'sponsors' %}">Sponsors</a></li>
+                            {% contest_started as started %}
+                            {% if started %}<li><a href="{% url 'problems' %}">Problems</a></li>{% endif %}
                             <li><a href="{% url 'updates' %}">Updates</a></li>
-                            <li><a href="{% url 'rules' %}">Rules</a></li>
-                            <li><a href="{% url 'problems' %}">Problems</a></li>
                             <li><a href="{% url 'scoreboard' %}">Scoreboard</a></li>
                             <li><a href="{% url 'chat' %}">Chat</a></li>
-                            <li><a href="{% url 'sponsors' %}">Sponsors</a></li>
                         </ul>
                         <ul id="score" class="nav navbar-nav navbar-right">
                             {% include "score.html" with user=user %}
