@@ -40,6 +40,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Value</th>
                     <th>Time</th>
                 </tr>
@@ -49,6 +50,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ solution.problem.title|safe }}</td>
+                        <td>{{ solution.problem.category }}</td>
                         <td>{{ solution.problem.value }}</td>
                         <td>{{ solution.time }}</td>
                     </tr>
