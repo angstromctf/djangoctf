@@ -81,3 +81,8 @@ img.circular {
 .asteriskField {
     display: none;
 }
+
+div#footer-div {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
