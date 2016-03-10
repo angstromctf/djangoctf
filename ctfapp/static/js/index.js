@@ -41,13 +41,13 @@ function renderTime() {
 
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
-    ctx.font = "2em Lato";//font
+    ctx.font = Math.floor(canvas.height/10).toString() + "pt Lato";//font
     for (i = 0; i < 4; i++) {
         ctx.fillText(times[i], canvas.width * (2*i+1)/8, canvas.height/2);
     }
 
     ctx.textBaseline = "top";
-    ctx.font = "1.25em Lato";
+    ctx.font = Math.floor(canvas.height/15).toString() + "pt Lato";
     for (i = 0; i < 4; i++) {
         var unit = units[i];
 
