@@ -3,7 +3,7 @@ db.sqlite3
 *.old
 
 # Static folder, used for local testing of server
-static/
+# static/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
