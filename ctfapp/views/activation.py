@@ -56,7 +56,7 @@ def new_activation_link(request, user_id):
         profile.key_generated = timezone.now()
         profile.save()
 
-        send_email(data, profile.activation_key)
+        send_email(data, profile.activation_key, request=request)
 
         new_link_sent = True
 
@@ -91,7 +91,7 @@ def send_email(data, key, request=None, use_https=False):
     sg = sendgrid.SendGridClient(sendgrid_api_key)
     message = sendgrid.Mail()
     message.smtpapi.add_to(message_to_field)
-    message.set_subject('Activation link for angstromCTF')
+    message.set_subject('Activation Link for angstromCTF')
     message.set_text(message_text)
     message.set_from('angstromCTF team <contact@angstromctf.com>')
     sg.send(message)
