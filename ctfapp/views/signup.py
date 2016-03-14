@@ -45,6 +45,8 @@ def signup(request):
                 profile.gender = form.cleaned_data['gender']
             if form.cleaned_data['race']:
                 profile.race = form.cleaned_data['race']
+            if form.cleaned_data['age']:
+                profile.age = form.cleaned_data['age']
 
             user.userprofile = profile
 
