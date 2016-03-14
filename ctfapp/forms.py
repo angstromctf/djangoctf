@@ -143,11 +143,12 @@ class CreateUserForm(forms.Form):
     last_name = forms.CharField(label='Last name', max_length=50, required=True)
     email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator(), validate_unique_email])
     eligible = forms.ChoiceField(label='Eligibility', required=True,
-                            choices=(('Y','High school or middle school student in the US (see Rules for more information)'),
+                            choices=(('Y','High school or middle school student in the US (see About for more information)'),
                             ('N','Ineligible to compete')))
 
     gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
     race = forms.ChoiceField(choices=RACE_CHOICES, required=False)
+    age = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(CreateUserForm, self).__init__(*args, **kwargs)
@@ -168,11 +169,13 @@ class CreateUserForm(forms.Form):
             Fieldset(
                 'Demographics',
                 HTML(
-                    """<span style='color: grey;'>All information in this section is completely optional.
+                    """<span style='color: grey;'>All information here is completely optional, but we'd
+                    greatly appreciate it if you filled this section out.
                     It will be used only for statistical purposes after the CTF is over
                     and will not be disclosed to any other parties for any reason.</span><br/><br/><br/>"""),
                 InlineRadios('gender'),
-                InlineRadios('race')
+                InlineRadios('race'),
+                Field('age', placeholder='Age')
             ),
             HTML('<br/>'),
             StrictButton('Sign up!', css_class='btn-success', type='submit')

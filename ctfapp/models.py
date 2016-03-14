@@ -68,6 +68,7 @@ class UserProfile(models.Model):
     # Optional demographic information
     gender = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
     race = models.IntegerField(blank=True, choices=RACE_CHOICES, null=True)
+    age = models.IntegerField(blank=True, null=True)
 
     # Magic methods
     def __str__(self):
