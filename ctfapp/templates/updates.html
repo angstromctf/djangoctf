@@ -13,9 +13,9 @@
 {% block content %}
 
 {% for update in updates_list %}
-	<h3>{{ update.title }} <small>{{ update.time }}</small></h3>
+	<h3>{{ update.title|safe }} <small>{{ update.time }}</small></h3>
 
-	<p>{{ update.text }}</p>
+	<p>{{ update.text|safe }}</p>
 {% endfor %}
 
 {% endblock %}
