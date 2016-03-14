@@ -2,7 +2,7 @@ Hi {{ username }},
 
 Welcome to angstromCTF! Thanks for signing up, but just one last thing: click the link below to activate your account:
 
-{{ protocol }}://{{ domain }}/activate/{{ activation_key }}
+{{ protocol }}://angstromctf.com/activate/{{ activation_key }}
 
 Happy solving!
 
