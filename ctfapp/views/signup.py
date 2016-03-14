@@ -57,7 +57,7 @@ def signup(request):
             profile.save()
 
             if emails_enabled:
-                send_email(form.cleaned_data, profile.activation_key)
+                send_email(form.cleaned_data, profile.activation_key, request=request)
 
             email_sent_message = """An activation link was sent to the address you provided. Click the email
                                         link to activate your account."""
