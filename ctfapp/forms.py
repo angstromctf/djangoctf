@@ -11,6 +11,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
+import json
+
 """
 All of the forms used in the site.
 """
@@ -136,6 +138,7 @@ class CreateUserForm(forms.Form):
     """
     Signup form to create new user.
     """
+
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
     confirm = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput(), required=True)
@@ -151,7 +154,11 @@ class CreateUserForm(forms.Form):
     age = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs):
-        super(CreateUserForm, self).__init__(*args, **kwargs)
+        with open('djangoctf/settings.json') as config_file:
+            config = json.loads(config_file.read())
+            public_key = config['signup_captcha']['public']
+
+            super(CreateUserForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
 
@@ -177,6 +184,8 @@ class CreateUserForm(forms.Form):
                 InlineRadios('race'),
                 Field('age', placeholder='Age')
             ),
+            HTML('<br/>'),
+            HTML('<div class="g-recaptcha" data-sitekey="' + public_key + '"></div>'),
             HTML('<br/>'),
             StrictButton('Sign up!', css_class='btn-success', type='submit')
         )

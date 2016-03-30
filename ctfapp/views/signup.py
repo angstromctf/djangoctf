@@ -8,6 +8,7 @@ from ctfapp.models import UserProfile
 
 import json
 import sendgrid
+import requests
 
 
 def signup(request):
@@ -20,6 +21,8 @@ def signup(request):
         enabled = config['registration_enabled']
         emails_enabled = config['email']['enabled']
 
+        captcha_enabled = config['signup_captcha']['enabled']
+
 
     if not enabled:
         return render(request, 'signup.html', {'enabled': False})
@@ -28,6 +31,18 @@ def signup(request):
         # Show our template
         return render(request, 'signup.html', {'form': CreateUserForm(), 'enabled': True})
     elif request.method == 'POST':
+        if captcha_enabled:
+            req = requests.post("https://www.google.com/recaptcha/api/siteverify", data=
+                {'secret': config['signup_captcha']['secret'],
+                 'response': request.POST['g-recaptcha-response']
+                }
+            )
+
+            success = req.json()['success']
+
+            if not success:
+                return render(request, 'message_generic.html', {'message': 'reCAPTCHA verification failed, please try again.'})
+
         form = CreateUserForm(request.POST)
 
         if form.is_valid():

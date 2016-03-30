@@ -5,6 +5,9 @@ db.sqlite3
 # Static folder, used for local testing of server
 static/
 
+# DS_Store on OS X
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
