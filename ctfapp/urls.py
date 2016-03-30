@@ -19,7 +19,7 @@ urlpatterns = [
 
     url(r'^scoreboard/$', views.scoreboard, name='scoreboard'),
     url(r'^score/', views.score, name='score'),
-    url(r'^profile/(?P<team>[a-zA-Z0-9]*)$', views.profile),
+    url(r'^profile/(?P<teamid>[a-zA-Z0-9]*)$', views.profile),
 
     url(r'^problems/$', views.problems, name='problems'),
     url(r'^problems/submit_problem/$', views.submit_problem, name='submit_problem'),
