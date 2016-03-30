@@ -7,9 +7,9 @@ from django.utils import timezone
 from ctfapp.models import CorrectSubmission
 from ctfapp.utils.time import contest_start, minutes
 
-def profile(request, team):
+def profile(request, teamid):
     try:
-        team = Team.objects.get(name=team)
+        team = Team.objects.get(id=teamid)
     except Team.DoesNotExist:
         raise Http404('No team with name ' + team + ' exists.')
 

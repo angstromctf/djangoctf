@@ -29,7 +29,7 @@
 		</tr>
 	</thead>
 	{% for team in team_list %}
-		<tr onclick="document.location = '/profile/{{ team.name }}';">
+		<tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
 			<td>{{ forloop.counter }}</td>
 			<td>{{ team.name }}</td>
 			<td>{{ team.school }}</td>
