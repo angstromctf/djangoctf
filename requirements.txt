@@ -10,3 +10,4 @@ pycrypto==2.6.1
 redis==2.10.5
 sendgrid==1.5.20
 smtpapi==0.2.0
+requests==2.9.1
