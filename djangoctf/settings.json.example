@@ -27,5 +27,23 @@
         "sendgrid_api_key": "redacted",
         "username": "redacted",
         "password": "redacted"
+    },
+    "logging": {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "handlers": {
+            "file": {
+                "level": "ERROR",
+                "class": "logging.FileHandler",
+                "filename": "django.log",
+            },
+        },
+        "loggers": {
+            "django": {
+                "handlers": ["file"],
+                "level": "DEBUG",
+                "propagate": True,
+            },
+        },
     }
 }
