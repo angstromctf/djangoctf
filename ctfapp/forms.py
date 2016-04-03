@@ -133,7 +133,6 @@ class JoinTeamForm(forms.Form):
         return self.cleaned_data['code']
 
 
-
 class CreateUserForm(forms.Form):
     """
     Signup form to create new user.
@@ -156,7 +155,8 @@ class CreateUserForm(forms.Form):
     def __init__(self, *args, **kwargs):
         with open('djangoctf/settings.json') as config_file:
             config = json.loads(config_file.read())
-            public_key = config['signup_captcha']['public']
+            captcha_enabled = config['signup_captcha']['enabled']
+            public_key = config['signup_captcha']['public'] if captcha_enabled else None
 
             super(CreateUserForm, self).__init__(*args, **kwargs)
 
@@ -185,7 +185,7 @@ class CreateUserForm(forms.Form):
                 Field('age', placeholder='Age')
             ),
             HTML('<br/>'),
-            HTML('<div class="g-recaptcha" data-sitekey="' + public_key + '"></div>'),
+            (HTML('<div class="g-recaptcha" data-sitekey="' + public_key + '"></div>') if captcha_enabled else HTML('')),
             HTML('<br/>'),
             StrictButton('Sign up!', css_class='btn-success', type='submit')
         )
