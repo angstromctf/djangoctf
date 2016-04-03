@@ -18,7 +18,7 @@ def join_team(request: HttpRequest):
     form = JoinTeamForm(request.POST)
 
     if form.is_valid():
-        team = Team.objects.get(code=form.cleaned_data['code'], user=request.user)
+        team = Team.objects.get(code=form.cleaned_data['code'])
         team.user_count += 1
         team.eligible = team.eligible and request.user.userprofile.eligible
 
