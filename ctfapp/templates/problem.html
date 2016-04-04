@@ -4,6 +4,7 @@
 <div class="panel problem panel-{% if enable_submission %}{% if solved %}success{% else %}danger{% endif %}{% else %}info{% endif %}" id="panel{{ problem.id }}">
     <div class="panel-heading" data-toggle="collapse" href="#wrapper{{ problem.id }}" aria-expanded="false" aria-controls="wrapper{{ problem.id }}">
         <h3 class="panel-title">
+            <div class="category-icon"><span class="glyphicon glyphicon-{{ problem.category|category_icon }}" aria-hidden="true"></span></div>
             {{ problem.title|safe }} ({{ problem.category }}, {{ problem.value }})
             <span style="float: right;">
                 {% if enable_submission %}
