@@ -67,6 +67,12 @@ function renderTime() {
 }
 
 var canvas = document.getElementById("clock");
-window.setInterval(renderTime, 1000);//rerenders at set intervals
 
-renderTime();
+canvas.width = window.innerWidth / 1.5;
+canvas.height = canvas.width / 4;
+
+$(window).load( function startRendering() {
+    window.setInterval(renderTime, 1000);//rerenders at set intervals
+
+    renderTime();
+});
