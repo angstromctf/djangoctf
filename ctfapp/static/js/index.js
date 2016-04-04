@@ -30,8 +30,6 @@ function renderTime() {
         l *= dividers[i];
     }
 
-    console.log(times);
-
     ctx.lineWidth = canvas.height/20;
     ctx.strokeStyle = "#AE73AE";//colour of the wheels
 
