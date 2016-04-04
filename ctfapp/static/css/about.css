@@ -18,3 +18,7 @@ ul.nav-pills {
     padding-top: 5em;
     position: fixed;
 }
+
+div.about-block {
+    height: 300px;
+}

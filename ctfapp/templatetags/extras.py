@@ -35,6 +35,15 @@ def grade_to_name(grade):
         return ordinal(grade) + " Grade"
 
 
+@register.filter
+def category_icon(name):
+    return {'crypto': 'pencil',
+            'binary': 'wrench',
+            'web': 'globe',
+            're': 'cog',
+            'forensics': 'search'}[name]
+
+
 @register.simple_tag
 def contest_started():
     return not before_start()
