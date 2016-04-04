@@ -86,3 +86,7 @@ div#footer-div {
     padding-top: 1em;
     padding-bottom: 1em;
 }
+
+div#footer-social > a {
+    text-decoration: none;
+}
