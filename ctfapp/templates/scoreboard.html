@@ -20,6 +20,10 @@
 
 {% if started %}
 <div id="chart-div"></div>
+{% else %}
+The contest hasn't started yet! For now, check out the teams that have signed up:
+<br/>
+<br/>
 {% endif %}
 
 <table class="table table-striped">
@@ -28,17 +32,30 @@
 			<th>#</th>
 			<th>Team Name</th>
 			<th>School</th>
+
+            {% if started %}
 			<th>Score</th>
+            {% endif %}
 		</tr>
 	</thead>
-	{% for team in team_list %}
-		<tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
-			<td>{{ forloop.counter }}</td>
-			<td>{{ team.name }}</td>
-			<td>{{ team.school }}</td>
-			<td>{{ team.score }}</td>
-		</tr>
-	{% endfor %}
+    {% if started %}
+        {% for team in team_list %}
+            <tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.school }}</td>
+                <td>{{ team.score }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        {% for team in team_list %}
+            <tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ team.name }}</td>
+                <td>{{ team.school }}</td>
+            </tr>
+        {% endfor %}
+    {% endif %}
 </table>
 
 {% if started %}
