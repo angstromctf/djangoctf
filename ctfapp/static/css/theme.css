@@ -58,11 +58,12 @@ div#footer-social {
 }
 
 div#github-back {
-    width: 2.5em;
-    height: 2.5em;
+    display: inline;
+    width: 2em;
+    height: 2em;
+    margin: .25em;
     background-color: lightskyblue;
     display: inline-block;
-    border-radius: 1.25em;
 }
 
 img.social-img {
