@@ -30,20 +30,23 @@
     },
     "logging": {
         "version": 1,
-        "disable_existing_loggers": False,
+        "disable_existing_loggers": false,
         "handlers": {
             "file": {
                 "level": "ERROR",
                 "class": "logging.FileHandler",
-                "filename": "django.log",
-            },
+                "filename": "django.log"
+            }
         },
         "loggers": {
             "django": {
                 "handlers": ["file"],
                 "level": "DEBUG",
-                "propagate": True,
-            },
-        },
+                "propagate": false
+            }
+        }
+    },
+    "signup_captcha": {
+        "enabled": false
     }
 }
