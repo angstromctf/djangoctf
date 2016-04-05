@@ -13,7 +13,7 @@ def is_solved(problem, user):
 
 @register.filter
 def place(team):
-    for index, item in enumerate(Team.objects.all().order_by('-score', 'score_lastupdate')):
+    for index, item in enumerate(Team.objects.filter(eligible=True).order_by('-score', 'score_lastupdate')):
         if item.id == team.id:
             return index+1
 
