@@ -71,8 +71,9 @@ def create_team(request: HttpRequest):
                     shell_password=shell_password,
                     code=code,
                     eligible=request.user.userprofile.eligible)
-        team.save()
+        
         team.users.add(request.user)
+        team.save()
 
         request.user.userprofile.team = team
         request.user.userprofile.save()
