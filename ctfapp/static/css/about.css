@@ -4,8 +4,10 @@ div.about-row {
     margin: 3em auto 0 auto;
 }
 
-div.about-img {
+img.about-img {
     margin: 0 auto;
+    width: 70%;
+    height: 70%;
 }
 
 div.about-caption {
