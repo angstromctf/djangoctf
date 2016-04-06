@@ -18,10 +18,13 @@
 {% endblock %}
 
 {% block content %}
+    {% if started %}
     <div id="chart-div"></div>
 
     <strong>Score:</strong> {{ team.score }} ({{ team|place|ordinal }} place)
     <br/>
+    {% endif %}
+
     <strong>Affiliation:</strong> {{ team.school }}
 
     <h3>Team Members</h3>
@@ -32,31 +35,36 @@
     </ul>
 
     <h3>Solved Problems</h3>
-    {% if ordered_solves|length == 0 %}
-        None yet.
-    {% else %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Value</th>
-                    <th>Time</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for solution in ordered_solves %}
+
+    {% if started %}
+        {% if ordered_solves|length == 0 %}
+            None yet.
+        {% else %}
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ solution.problem.title|safe }}</td>
-                        <td>{{ solution.problem.category }}</td>
-                        <td>{{ solution.problem.value }}</td>
-                        <td>{{ solution.time }}</td>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Value</th>
+                        <th>Time</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for solution in ordered_solves %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ solution.problem.title|safe }}</td>
+                            <td>{{ solution.problem.category }}</td>
+                            <td>{{ solution.problem.value }}</td>
+                            <td>{{ solution.time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        Check back when the contest starts to see what problems this team has solved!
     {% endif %}
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>

@@ -13,7 +13,7 @@ def is_solved(problem, user):
 
 @register.filter
 def place(team):
-    for index, item in enumerate(Team.objects.all().order_by('-score', 'score_lastupdate')):
+    for index, item in enumerate(Team.objects.filter(eligible=True).order_by('-score', 'score_lastupdate')):
         if item.id == team.id:
             return index+1
 
@@ -33,6 +33,15 @@ def grade_to_name(grade):
         return ['freshman', 'sophomore', 'junior', 'senior'][grade - 9]
     except IndexError:
         return ordinal(grade) + " Grade"
+
+
+@register.filter
+def category_icon(name):
+    return {'crypto': 'pencil',
+            'binary': 'wrench',
+            'web': 'globe',
+            're': 'cog',
+            'forensics': 'search'}[name]
 
 
 @register.simple_tag

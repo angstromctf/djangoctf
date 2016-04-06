@@ -88,6 +88,9 @@ class CreateTeamForm(forms.Form):
             )
         )
 
+    def clean_name(self):
+        return self.cleaned_data['name'].strip()
+
 
 class JoinTeamForm(forms.Form):
     """
@@ -126,9 +129,6 @@ class JoinTeamForm(forms.Form):
 
         if team.user_count == 5:
             raise ValidationError("Team is already full.")
-
-        if self.user in team.users.all():
-            raise ValidationError("Team member is already in this team.")
 
         return self.cleaned_data['code']
 

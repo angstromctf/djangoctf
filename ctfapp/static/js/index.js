@@ -1,7 +1,7 @@
 /*Javascript for index page. Handles the countdown clock. */
 
-var START = 1470758400; //Start date of the competition, in seconds since epoch
-var END = 1471406400; //End date of the competition, in seconds since epoch
+var START = 1460217600; //Start date of the competition, in seconds since epoch
+var END = 1460865600; //End date of the competition, in seconds since epoch
 
 function renderTime() {
     var canvas = document.getElementById("clock");
@@ -67,6 +67,12 @@ function renderTime() {
 }
 
 var canvas = document.getElementById("clock");
-window.setInterval(renderTime, 1000);//rerenders at set intervals
 
-renderTime();
+canvas.width = window.innerWidth / 1.5;
+canvas.height = canvas.width / 4;
+
+$(window).load( function startRendering() {
+    window.setInterval(renderTime, 1000);//rerenders at set intervals
+
+    renderTime();
+});

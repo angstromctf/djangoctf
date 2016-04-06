@@ -51,7 +51,7 @@ def signup(request):
                                      password=form.cleaned_data['password'],
                                      first_name=form.cleaned_data['first_name'],
                                      last_name=form.cleaned_data['last_name'])
-            user.is_active = False
+            user.is_active = not emails_enabled
 
             profile = UserProfile(user=user,
                                       eligible=form.cleaned_data['eligible'])
