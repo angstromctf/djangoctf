@@ -53,9 +53,7 @@ AngstromCTF is created by several students, all at MBHS. In no particular order,
 <div class="row about-row">
     {% for person in people %}
         <div class="about-block col-lg-3 col-md-3 col-sm-4 col-xs-12">
-            <div style="width: 70%; height: 70%;" class="about-img">
-                <img class="circular img-responsive" src="{{ person.picture }}">
-            </div>
+            <img class="circular img-responsive about-img" src="{{ person.picture }}">
 
             <div class="about-caption">
                 {{ person.name }}, {{ person.grade|grade_to_name }}
