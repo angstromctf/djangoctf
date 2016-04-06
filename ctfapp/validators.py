@@ -2,6 +2,7 @@
 from django.core.exceptions import ValidationError
 from ctfapp.models import User, Team
 
+
 # System wide validators
 def validate_unique_username(uname):
     """Check if a username is unique."""
@@ -12,6 +13,7 @@ def validate_unique_username(uname):
     if users.count() > 0:
         raise ValidationError("Username already exists.")
 
+
 def validate_unique_team_name(tname):
     """Check if a team name is unique."""
     # Get all team with the specified team name
@@ -20,6 +22,7 @@ def validate_unique_team_name(tname):
     # Throw an error if there are any
     if teams.count() > 0:
         raise ValidationError("Team name already exists.")
+
 
 def validate_unique_email(email_address):
     """Check if an email address is unique."""
