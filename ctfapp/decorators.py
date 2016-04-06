@@ -10,6 +10,7 @@ from functools import wraps
 Various authentication checks as decorators.
 """
 
+
 def team_required(function=None, invert=False):
     def decorator(view):
         @wraps(view, assigned=available_attrs(view))
