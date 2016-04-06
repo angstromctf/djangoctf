@@ -12,6 +12,7 @@ from ctfapp.decorators import team_required, lock_before_contest
 
 # This file handles problem grading and the display for grading.
 
+
 @require_POST
 @login_required
 @team_required

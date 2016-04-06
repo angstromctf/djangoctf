@@ -34,6 +34,7 @@ class ValidatorTests(TestCase):
             team.save()
             for j in range(i * 4, i * 4 + 4):
                 team.users.add(users[i])
+                team.save()
                 users[i].userprofile.team = team
                 users[i].userprofile.save()
 

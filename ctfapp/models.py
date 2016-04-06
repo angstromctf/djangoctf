@@ -9,6 +9,7 @@ from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
 Various core database models for angstrom.
 """
 
+
 class Problem(models.Model):
     """Model for a CTF question. Contains name, title, text, value,
     category, hint, and flag."""
@@ -75,6 +76,7 @@ class UserProfile(models.Model):
         """Represent the user as a string."""
         return self.user.username
 
+
 class Team(models.Model):
     """Model for a team registered with the CTF. Contains name,
     school, participation, solved problems, score data, and shell
@@ -108,6 +110,7 @@ class Team(models.Model):
         """Represent the problem as a string."""
         return "Team[" + self.name + "]"
 
+
 class CorrectSubmission(models.Model):
     """A model that represents a correct submission for a problem."""
 
@@ -123,6 +126,7 @@ class CorrectSubmission(models.Model):
     def __str__(self):
         """Represent the solved problem as a string."""
         return "%s solved %s at %s" % (str(self.team), str(self.problem), str(self.time))
+
 
 class IncorrectSubmission(models.Model):
     """A model that represents an incorrect submission for a problem."""
