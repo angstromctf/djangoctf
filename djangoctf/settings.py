@@ -78,6 +78,9 @@ for database in config['databases']:
 
 DATABASES = config['databases']
 
+# Logging
+LOGGING = config['logging']
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -128,7 +131,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 CSRF_COOKIE_SECURE = config['ssl']
 SESSION_COOKIE_SECURE = config['ssl']
 
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
