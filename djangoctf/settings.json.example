@@ -37,9 +37,9 @@
                 "class": "logging.FileHandler",
                 "filename": "django.log"
             },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler'
+            "mail_admins": {
+                "level": "ERROR",
+                "class": "django.utils.log.AdminEmailHandler"
             }
         },
         "loggers": {
