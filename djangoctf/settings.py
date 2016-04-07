@@ -144,4 +144,5 @@ if config['email']['enabled']:
     EMAIL_HOST_PASSWORD = config['email']['password']
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
+    SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
     DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
