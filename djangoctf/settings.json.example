@@ -36,6 +36,10 @@
                 "level": "ERROR",
                 "class": "logging.FileHandler",
                 "filename": "django.log"
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler'
             }
         },
         "loggers": {
@@ -46,6 +50,7 @@
             }
         }
     },
+    "admins": [],
     "signup_captcha": {
         "enabled": false
     }
