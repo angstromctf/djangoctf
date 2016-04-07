@@ -66,10 +66,10 @@ def create_team(request: HttpRequest):
             createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
-            stdout_data = stdout.read()
-            stderr_data = stderr.read()
+            stdout_data = stdout.read().decode('utf-8')
+            stderr_data = stderr.read().decode('utf-8')
 
-            if stderr != b'':
+            if stderr != '':
                 logger.error("""Error while creating shell account.
                 stdout: """ + stdout_data + """
                 stderr: """ + stderr_data)
