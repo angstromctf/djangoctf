@@ -35,7 +35,7 @@
             "file": {
                 "level": "ERROR",
                 "class": "logging.FileHandler",
-                "filename": "django.log"
+                "filename": "/var/log/django.log"
             },
             "mail_admins": {
                 "level": "ERROR",
@@ -44,7 +44,7 @@
         },
         "loggers": {
             "django": {
-                "handlers": ["file"],
+                "handlers": ["file", "mail_admins"],
                 "level": "DEBUG",
                 "propagate": false
             }

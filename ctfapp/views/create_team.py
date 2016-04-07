@@ -8,6 +8,7 @@ from ctfapp.models import Team
 from ctfapp.decorators import team_required
 
 import json
+import logging
 
 from random import choice
 
@@ -25,6 +26,7 @@ def create_shell_username():
 def create_shell_password():
     return "".join([choice("0123456789abcdef") for x in range(12)])
 
+logger = logging.getLogger(__name__)
 
 # Handle the HTTP request
 @login_required
@@ -63,6 +65,14 @@ def create_team(request: HttpRequest):
             ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
             createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
+
+            stdout_data = stdout.read()
+            stderr_data = stderr.read()
+
+            if stderr != b'':
+                logger.error("""Error while creating shell account.
+                stdout: """ + stdout_data + """
+                stderr: """ + stderr_data)
 
         team = Team(name=form.cleaned_data['name'],
                     user_count=1,
