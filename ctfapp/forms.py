@@ -145,8 +145,8 @@ class CreateUserForm(forms.Form):
     last_name = forms.CharField(label='Last name', max_length=50, required=True)
     email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator(), validate_unique_email])
     eligible = forms.ChoiceField(label='Eligibility', required=True,
-                            choices=(('Y','High school or middle school student in the US (see About for more information)'),
-                            ('N','Ineligible to compete')))
+                            choices=((True,'High school or middle school student in the US (see About for more information)'),
+                            (False,'Ineligible to compete')))
 
     gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
     race = forms.ChoiceField(choices=RACE_CHOICES, required=False)

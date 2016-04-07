@@ -17,7 +17,7 @@ def place(team):
         if item.id == team.id:
             return index+1
 
-    return -1
+    return "unranked"
 
 
 @register.filter
