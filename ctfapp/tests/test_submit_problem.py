@@ -1,11 +1,12 @@
 """
 Test submit problem for correct and incorrect solutions
 """
+import json
 from hashlib import sha512
 
 from django.core.exceptions import PermissionDenied
 from django.test import TestCase, RequestFactory
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import AnonymousUser
 from ..views import submit_problem
 from ..models import User, UserProfile, Team, Problem
 
@@ -15,16 +16,16 @@ class SubmitProblemTest(TestCase):
         self.factory = RequestFactory()
 
         m = sha512()
-        m.update(b"flag")
+        m.update(b"rightflag")
         m.digest()
-        hash = m.hexdigest()
+        h = m.hexdigest()
 
         self.problem = Problem(name="problem",
                                title="Problem Title",
                                text="Problem Text",
                                value=100,
-                               category="Category",
-                               flag_sha512_hash=hash)
+                               category="forensics",
+                               flag_sha512_hash=h)
         self.problem.save()
 
         self.no_team_user = User.objects.create_user("noteam",
@@ -68,7 +69,8 @@ class SubmitProblemTest(TestCase):
         request.user = AnonymousUser()
 
         response = submit_problem(request)
-        self.assertRedirects(response, "/login")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.get("location"), "/account/login/?next=/problems/submit_problem")
 
     def test_no_team(self):
         """
@@ -79,3 +81,13 @@ class SubmitProblemTest(TestCase):
 
         with self.assertRaises(PermissionDenied):
             submit_problem(request)
+
+    def test_incorrect(self):
+        request = self.factory.post("/problems/submit_problem",
+                                    {"problem": str(self.problem.id),
+                                     "guess": "wrongflag"})
+        request.user = self.team_user
+
+        response = submit_problem(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("That was incorrect." in json.loads(response.content.decode("utf-8"))["alert"])
