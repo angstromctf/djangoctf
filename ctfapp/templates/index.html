@@ -35,9 +35,15 @@
     <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called
     angstromCTF.</p>
 
+    {% if not user.is_authenticated %}
     <br/>
     <a class="btn btn-success" style="width: 100%;" role="button" href="{% url 'signup' %}">Sign Up!</a>
     <br/><br/>
+    {% else %}
+    {% if started %}
+    <a class="btn btn-success" style="width: 100%;" role="button" href="{% url 'problems' %}">Go to Problems!</a>
+    {% endif %}
+    {% endif %}
 
     <p>Students will compete in <strong>teams of up to five members</strong>. Points are given for answering each question
     (entering the flag). Prizes will be awarded to the top-scoring US high-school teams. angstromCTF is meant for
