@@ -46,4 +46,4 @@ def category_icon(name):
 
 @register.simple_tag(takes_context=True)
 def contest_started(context):
-    return not before_start() or (context['user'].is_authenticated() and context['user'].is_admin())
+    return not before_start() or (context['user'].is_authenticated() and context['user'].is_staff())
