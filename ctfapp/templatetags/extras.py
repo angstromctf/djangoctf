@@ -44,6 +44,6 @@ def category_icon(name):
             'forensics': 'search'}[name]
 
 
-@register.simple_tag
-def contest_started():
-    return not before_start()
+@register.simple_tag(takes_context=True)
+def contest_started(context):
+    return not before_start() or (context['user'].is_authenticated() and context['user'].is_admin())
