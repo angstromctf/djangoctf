@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("problems_directory", help="import problems from directory")
 parser.add_argument("-r", "--reset", help="reset all problems", action="store_true")
 parser.add_argument("-s", "--reset-static", help="reset static problem files", action="store_true")
+parser.add_argument("-v", "--verbose", help="show successful imports (not just errors)", action="store_true")
 
 args = parser.parse_args()
 
@@ -78,7 +79,8 @@ for category in listdir(path):
                 # We can't update the name for obvious reasons
                 problem_obj.save()
 
-                print("Note: Successfully updated problem {:s}".format(name))
+                if args.verbose:
+                    print("Note: Successfully updated problem {:s}".format(name))
             except MultipleObjectsReturned:
                 print("Error: Multiple problems exist with name {:s}".format(name))
         else:
@@ -91,7 +93,9 @@ for category in listdir(path):
                                   hint_text=data["hint"],
                                   flag_sha512_hash=sha512(data["flag"].encode()).hexdigest())
             problem_obj.save()
-            print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
+
+            if args.verbose:
+                print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
 
 print()
 # Now copy static files
@@ -114,7 +118,9 @@ for category in listdir(path):
         makedirs(static_dir, exist_ok=True)
 
         if exists(problem_path + '/build.sh'):
-            print("build.sh found, building")
+            if args.verbose:
+                print("build.sh found for {:s}, building".format(name))
+
             oldpath = getcwd()
             chdir(problem_path)
             try:
@@ -137,4 +143,6 @@ for category in listdir(path):
                 if len(file) == 0 or not isfile(file_path):
                     continue
                 copyfile(file_path, static_path)
-                print("Note: Copying static file {:s} for problem {:s}".format(file.strip(), name))
+
+                if args.verbose:
+                    print("Note: Copying static file {:s} for problem {:s}".format(file.strip(), name))
