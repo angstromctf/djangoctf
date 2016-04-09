@@ -92,9 +92,9 @@ class Team(models.Model):
     solved = models.ManyToManyField(Problem)
 
     # Information about team
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=128)
     user_count = models.IntegerField(default=0)
-    school = models.CharField(max_length=100)
+    school = models.CharField(max_length=128)
     eligible = models.BooleanField(default=True)
 
     # Code for team registration
@@ -139,7 +139,7 @@ class IncorrectSubmission(models.Model):
     problem = models.ForeignKey(Problem)
 
     # Time and contents of submission
-    guess = models.CharField(max_length=64)
+    guess = models.CharField(max_length=128)
     time = models.DateTimeField(default=timezone.now)
 
     # Magic methods
