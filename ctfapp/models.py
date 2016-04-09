@@ -28,6 +28,9 @@ class Problem(models.Model):
     # Only should be off for things like survey problems
     update_time = models.BooleanField(default=True)
 
+    # How many teams have solved this problem
+    solves = models.IntegerField(default=0)
+
     # Magic methods
     def __str__(self):
         """Represent the problem as a string."""

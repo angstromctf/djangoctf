@@ -12,7 +12,7 @@
                         Solved
                     {% else %}
                         Unsolved
-                    {% endif %}
+                    {% endif %} ({{ problem.solves }} solve{{ problem.solves|pluralize }})
                 {% endif %}
             </span>
         </h3>
