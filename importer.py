@@ -55,6 +55,9 @@ for category in listdir(path):
             print("Error: Failed to import problem {:s}/{:s}".format(category, problem))
             continue
 
+        if "enabled" in data and data["enabled"] == False:
+            continue
+
         data["title"] = data["name"]
         del data["name"]
 
