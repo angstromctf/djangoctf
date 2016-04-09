@@ -37,12 +37,15 @@ if args.reset_static:
 
 pattern = re.compile('\{\{([^,\}]*),([^\}]*)\}\}')
 
+total = 0
+successful = 0
 for category in listdir(path):
     category_path = path + '/' + category
     if not isdir(category_path) or category[0] == '.':
         continue
 
     for problem in listdir(category_path):
+        total += 1
         problem_path = category_path + '/' + problem
         name = category + '/' + problem
 
@@ -81,6 +84,8 @@ for category in listdir(path):
 
                 if args.verbose:
                     print("Note: Successfully updated problem {:s}".format(name))
+
+                successful += 1
             except MultipleObjectsReturned:
                 print("Error: Multiple problems exist with name {:s}".format(name))
         else:
@@ -97,7 +102,11 @@ for category in listdir(path):
             if args.verbose:
                 print("Note: Successfully created problem {:s}/{:s}".format(category, problem))
 
+            successful += 1
+
+print("Successful imported {:d}/{:d} problems".format(successful, total))
 print()
+
 # Now copy static files
 # This is in a seperate for loop so that static files are copied even when their respective problem already exists
 for category in listdir(path):
