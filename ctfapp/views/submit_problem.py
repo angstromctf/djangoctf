@@ -51,6 +51,9 @@ def submit_problem(request: HttpRequest):
         solution = CorrectSubmission(team=team, problem=problem, new_score=team.score)
         solution.save()
 
+        problem.solves += 1
+        problem.save()
+
         alert = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)"
         alert_class = "glyphicon glyphicon-ok-sign"
 
