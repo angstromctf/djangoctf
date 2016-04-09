@@ -34,7 +34,7 @@ def signup(request):
         if captcha_enabled:
             req = requests.post("https://www.google.com/recaptcha/api/siteverify", data=
                 {'secret': config['signup_captcha']['secret'],
-                 'response': request.POST['g-recaptcha-response']
+                 'response': request.POST.get('g-recaptcha-response')
                 }
             )
 
