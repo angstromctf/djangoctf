@@ -78,7 +78,7 @@ for category in listdir(path):
                 problem_obj.text = data["text"]
                 problem_obj.value = data["value"]
                 problem_obj.hint_text = data["hint"]
-                problem_obj.flag_sha512_hash = sha512(data["flag"].encode()).hexdigest()
+                problem_obj.flag_sha512_hash = sha512(data["flag"].lower().encode()).hexdigest()
                 # We can't update the name for obvious reasons
                 problem_obj.save()
 
