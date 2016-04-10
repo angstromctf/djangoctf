@@ -23,7 +23,7 @@ def submit_problem(request: HttpRequest):
     """
 
     pid = int(request.POST.get("problem"))
-    guess = request.POST.get("guess").strip()
+    guess = request.POST.get("guess").strip().lower()
 
     problem = Problem.objects.get(id=pid)
 
