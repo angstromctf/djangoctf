@@ -3,7 +3,7 @@ db.sqlite3
 *.old
 
 # Static folder, used for local testing of server
-static/
+/static/
 
 # DS_Store on OS X
 .DS_Store
