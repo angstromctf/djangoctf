@@ -66,8 +66,10 @@
                             </thead>
                             <tbody>
                                 {% for update in problem|problem_updates %}
-                                    <td>{{ update.text|safe }}</td>
-                                    <td>{{ update.time }}</td>
+                                    <tr>
+                                        <td>{{ update.text|safe }}</td>
+                                        <td>{{ update.time }}</td>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
