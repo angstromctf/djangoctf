@@ -146,3 +146,16 @@ class IncorrectSubmission(models.Model):
     def __str__(self):
         """Represent the solved problem as a string."""
         return "%s incorrectly submitted %s at %s" % (str(self.team), str(self.problem), str(self.time))
+
+
+class ProblemUpdate(models.Model):
+    # Link to problem
+    problem = models.ForeignKey(Problem)
+
+    # Update information
+    text = models.CharField(max_length=256)
+    time = models.DateTimeField(default=timezone.now)
+
+    # Magic methods
+    def __str__(self):
+        return "%s updated at %s: %s" % (str(self.problem), str(self.time), str(self.time))

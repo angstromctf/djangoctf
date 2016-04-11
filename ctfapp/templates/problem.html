@@ -12,8 +12,10 @@
                         Solved
                     {% else %}
                         Unsolved
-                    {% endif %} ({{ problem.solves }} solve{{ problem.solves|pluralize }})
+                    {% endif %}
                 {% endif %}
+
+                ({{ problem.solves }} solve{{ problem.solves|pluralize }})
             </span>
         </h3>
     </div>
@@ -23,6 +25,7 @@
             <ul class="nav nav-tabs">
                 <li class="active" data-toggle="tab" href="#problem{{ problem.id }}"><a href="#">Problem</a></li>
                 <li><a data-toggle="tab" href="#hint{{ problem.id }}">Hint</a></li>
+                <li><a data-toggle="tab" href="#updates{{ problem.id }}">Updates</a></li>
             </ul>
 
             <br/>
@@ -48,6 +51,27 @@
 
                 <div id="hint{{ problem.id }}" class="tab-pane">
                     {{ problem.hint_text|safe }}
+                </div>
+
+                <div id="updates{{ problem.id }}" class="tab-pane">
+                    {% if problem|problem_updates|length == 0 %}
+                        No updates.
+                    {% else %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Update</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for update in problem|problem_updates %}
+                                    <td>{{ update.text|safe }}</td>
+                                    <td>{{ update.time }}</td>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>
             </div>
         </div>
