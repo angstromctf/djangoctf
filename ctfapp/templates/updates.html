@@ -12,10 +12,33 @@
 
 {% block content %}
 
-{% for update in updates_list %}
-	<h3>{{ update.title|safe }} <small>{{ update.time }}</small></h3>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Tweets <span style="text-align: left; font-size: .6em;">&nbsp;&nbsp;&nbsp;by <a href="https://twitter.com/angstromctf" target="_blank">@angstromctf</a></span></h3>
+        <a class="twitter-timeline tw-align-center" data-dnt="true" href="https://twitter.com/angstromctf" data-widget-id="719352683652628482" data-chrome="noheader">Tweets by @angstromctf</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    </div>
+    <div class="col-md-6">
+        <h3>Problem Updates</h3>
 
-	<p>{{ update.text|safe }}</p>
-{% endfor %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Update</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for update in updates %}
+                    <td>{{ update.problem.name|safe }}</td>
+                    <td>{{ update.text|safe }}</td>
+                    <td>{{ update.time }}</td>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 {% endblock %}

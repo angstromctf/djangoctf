@@ -1,6 +1,7 @@
 from django import template
 from django.contrib.humanize.templatetags.humanize import ordinal
-from ctfapp.models import Team
+
+from ctfapp.models import Team, ProblemUpdate
 from ctfapp.utils.time import before_start
 
 register = template.Library()
@@ -42,6 +43,11 @@ def category_icon(name):
             'web': 'globe',
             're': 'cog',
             'forensics': 'search'}[name]
+
+
+@register.filter
+def problem_updates(problem):
+    return ProblemUpdate.objects.filter(problem=problem).order_by('-time')
 
 
 @register.simple_tag(takes_context=True)
