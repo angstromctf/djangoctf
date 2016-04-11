@@ -31,7 +31,7 @@
             </thead>
             <tbody>
                 {% for update in updates %}
-                    <td>{{ update.problem.name|safe }}</td>
+                    <td>{{ update.problem.title|safe }}</td>
                     <td>{{ update.text|safe }}</td>
                     <td>{{ update.time }}</td>
                 {% endfor %}
