@@ -4,7 +4,7 @@ def change_value(problem, new_value):
     value = problem.value
 
     for t in Team.objects.all():
-        if problem in t.solved:
+        if problem in t.solved.all():
             t.score += new_value - value
             t.save()
 
