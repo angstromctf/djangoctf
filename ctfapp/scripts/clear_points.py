@@ -7,7 +7,7 @@ def clear_points(problem):
             correct = CorrectSubmission.objects.get(team=t, problem=problem)
             for s in CorrectSubmission.objects.filter(team=t):
                 if s.time >= correct.time:
-                    s.new_socore -= problem.value
+                    s.new_score -= problem.value
                     s.save()
 
             correct.delete()
