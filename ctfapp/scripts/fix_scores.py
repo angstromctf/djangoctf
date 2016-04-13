@@ -6,7 +6,8 @@ def fix_scores():
     for t in Team.objects.all():
         score = 0
 
-        t.solved.clear()
+        t.solved
+        t.clear()
 
         for s in CorrectSubmission.objects.all().filter(team=t).order_by('time'):
             score += s.problem.value

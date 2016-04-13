@@ -15,3 +15,6 @@ def clear_points(problem):
 
             t.score -= problem.value
             t.save()
+
+    problem.solves = 0
+    problem.save()
