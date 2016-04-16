@@ -42,7 +42,8 @@ def category_icon(name):
             'binary': 'wrench',
             'web': 'globe',
             're': 'cog',
-            'forensics': 'search'}[name]
+            'forensics': 'search',
+            'misc': 'star'}[name]
 
 
 @register.filter
