@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST
 from django.utils import timezone
 
 from ctfapp.models import Problem, CorrectSubmission, IncorrectSubmission
-from ctfapp.decorators import team_required, lock_before_contest
+from ctfapp.decorators import team_required, lock_before_contest, lock_after_contest
 
 # This file handles problem grading and the display for grading.
 
@@ -17,6 +17,7 @@ from ctfapp.decorators import team_required, lock_before_contest
 @login_required
 @team_required
 @lock_before_contest
+@lock_after_contest
 def submit_problem(request: HttpRequest):
     """
     View for submitting a problem through AJAX.  Login is required.
