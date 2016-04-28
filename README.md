@@ -1,17 +1,17 @@
-# djangoctf
-A basic platform for jeopardy CTF (capture-the-flag) competitions written in Django.
+# djangoctf v1.0
+A platform for jeopardy CTF (capture-the-flag) competitions written in Django.
 
 CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity students.
-After the success of high-school CTF games like picoCTF, we decided to run our own CTF competition called angstromCTF.
-angstromCTF will consist of questions ranging from trivial to extremely difficult in various categories:
+After the success of high-school CTF games like picoCTF, we, the members of Montgomery Blair High School's Cybersecurity Club, decided to run our own CTF competition called [angstromCTF](https://angstromctf.com).
+angstromCTF consists of questions ranging from trivial to extremely difficult in various categories:
 
 * Binary exploitation
 * Reverse engineering
 * Cryptography
 * Web exploitation
 * Forensics
-* A combination of these
+* Master challenges
 
-This platform was written for [angstromCTF](https://angstromctf.com), a high school cybersecurity competition created
-by students.
-Participants will login, read and answer questions, receive updates, and ask for help through this platform.
+Using this platform, participants will login, read and answer challenges, and receive updates.  Teams can be created and joined by participants.  The platform is designed to be extensible and re-usable for other CTFs and competitions.
+
+This platform is actively maintained by Noah Singer (singerng@gmail.com), as well as other members of the project, including Theo Tosini (theo.tosini@gmail.com) and Chris Wang (kisa.ayano@icloud.com).  Montgomery Blair High School is located in Silver Spring, Maryland, USA.  This project is licensed under the GNU General Public License (GPL), version 3.
