@@ -16,7 +16,6 @@ def profile(request, teamid):
     ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
 
     solutions_list = []
-    graph_size = min(5, Team.objects.all().count())
 
     submissions = CorrectSubmission.objects.all().filter(team=team)
 

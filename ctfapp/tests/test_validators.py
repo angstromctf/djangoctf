@@ -3,9 +3,10 @@ Test validators for uniqueness in the test database
 """
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from ..validators import validate_unique_email, validate_unique_team_name, validate_unique_username
+
+from ctfapp.views.team.create_team import create_code
 from ..models import User, UserProfile, Team
-from ..views.create_team import create_code
+from ..validators import validate_unique_email, validate_unique_team_name, validate_unique_username
 
 
 class ValidatorTests(TestCase):

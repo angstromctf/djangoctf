@@ -9,4 +9,8 @@ def index(request: HttpRequest):
     :param request: the HTTP Request
     """
 
-    return render(request, "index.html", {"user": request.user, "start": contest_start, "end": contest_end})
+    return render(request, "index.html", {
+        "user": request.user,
+        "start": contest_start,
+        "end": contest_end
+    })

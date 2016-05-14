@@ -1,14 +1,13 @@
-from django.shortcuts import render
+import json
+
+import requests
 from django.contrib.auth.models import User
+from django.shortcuts import render
 from django.utils import timezone
 
-from ctfapp.views.activation import generate_activation_key, send_email
 from ctfapp.forms import CreateUserForm
 from ctfapp.models import UserProfile
-
-import json
-import sendgrid
-import requests
+from ctfapp.views.users.activation import generate_activation_key, send_email
 
 
 def signup(request):
