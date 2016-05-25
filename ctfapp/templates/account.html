@@ -37,6 +37,33 @@
                 <p>Your shell account username and default password are below:</p>
                 Username: <samp style='color: blue;'>{{ user.userprofile.team.shell_username }}</samp><br>
                 Password: <samp style='color: blue;'>{{ user.userprofile.team.shell_password }}</samp>
+                <br><br><br>
+                <h4 style="margin-top: 0;">Shipping address & prize eligibility</h4>
+
+                {% if not user.userprofile.team.address_street %}
+                    <p>Nobody in your team has given us a shipping address yet. Please fill out the form below.</p>
+                    {% crispy address_form %}
+
+                {% else %}
+                    <p>We've received the following information from you or one of your teammates. Should you need
+                    to correct this information, email us at contact@angstromctf.com.</p>
+                    <p>Shipping address:</p>
+                    {{user.userprofile.team.address_street}}<br>
+                    {% if user.userprofile.team.address_street_line_2 %}
+                        {{user.userprofile.team.address_street_line_2}}<br>
+                    {% endif %}
+                    {{user.userprofile.team.address_city}}, {{user.userprofile.team.address_state}} {{user.userprofile.team.address_zip}}
+                    <br><br>
+                    <p>All-highschool team?</p>
+
+                    {% if user.userprofile.team.eligible == 'True' %}
+                    Yes
+                    {% else %}
+                    No
+                    {% endif %}
+                {% endif %}
+
+
             {% else %}
                 {% crispy join_team %}
                 {% crispy create_team %}

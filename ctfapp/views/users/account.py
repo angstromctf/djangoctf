@@ -2,7 +2,7 @@ from django.http import HttpRequest
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
+from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAddressForm
 from ctfapp.models import UserProfile
 # Handle the HTTP request
 
@@ -19,5 +19,6 @@ def account(request: HttpRequest):
         'change_password': ChangePasswordForm(user=request.user),
         'join_team': JoinTeamForm(user=request.user),
         'team_member_list': team_member_list,
-        'create_team': CreateTeamForm()
+        'create_team': CreateTeamForm(),
+        'address_form': TeamAddressForm()
     })

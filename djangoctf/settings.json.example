@@ -54,4 +54,8 @@
     "signup_captcha": {
         "enabled": false
     }
+    "lob_address_verification":{
+        "enabled": true,
+        "api_key": "redacted"
+    }
 }
