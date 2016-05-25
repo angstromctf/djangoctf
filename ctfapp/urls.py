@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^account/change_password/$', views.team.change_password, name='change_password'),
     url(r'^account/create_team/$', views.team.create_team, name='create_team'),
     url(r'^account/join_team/$', views.team.join_team, name='join_team'),
+    url(r'^account/submit_addr/$', views.team.submit_addr, name='submit_addr'),
     url(r'^account/login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^account/logout/$', auth_views.logout, {'next_page': 'home'}, name='logout'),
     url(r'^account/signup/$', views.users.signup, name='signup'),

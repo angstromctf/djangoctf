@@ -32,3 +32,13 @@ def validate_unique_email(email_address):
     # Throw an error if there are any
     if users.count() > 0:
         raise ValidationError("Email address already registered.")
+def validate_zip(zipcode):
+    """Check if a zip code is five characters long and numeric"""
+    first_five = zipcode[:5]
+    last_four = zipcode[-4:]
+    if len(zipcode) == 5:  # 5-digit zip codes
+        if not first_five.isdigit():
+            raise ValidationError("Invalid ZIP code entered!")
+    else:  # ZIP+4 codes
+        if not (first_five.isdigit() and last_four.is_numeric() and (len(zipcode) == 9 or len(zipcode) == 10)):
+            raise ValidationError("Invalid ZIP code entered!")

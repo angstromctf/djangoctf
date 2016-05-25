@@ -3,14 +3,14 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 
-from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email
+from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email, validate_zip
 from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
 from ctfapp.models import Team
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
-
+import lob
 import json
 
 """
@@ -211,3 +211,70 @@ class ResetPasswordForm(forms.Form):
             HTML('<br/>'),
             StrictButton('Send reset email', css_class='btn-success', type='submit')
         )
+
+class TeamAddressForm(forms.Form):
+    street_address = forms.CharField(label='Street Address', max_length=1000, required=True)
+    street_address_line_2 = forms.CharField(label='Street Address Line 2', max_length=1000, required=False)
+    zip_5 = forms.CharField(label='US 5-digit ZIP', max_length=5, required=True, validators=[validate_zip])
+    eligible = forms.ChoiceField(label='All members of my team are US high school students.', required=True,
+                            choices=((True, 'Yes'),
+                            (False, 'No')))
+    city = forms.CharField(label='City', max_length=1000, required=False)
+    state = forms.CharField(label='State', max_length=1000, required=False)
+    def __init__(self, *args, **kwargs):
+
+        super(TeamAddressForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_action = 'submit_addr'
+        self.helper.layout = Layout(
+            Field('street_address', placeholder='123 Main Street'),
+
+            Field('street_address_line_2', placeholder='(Optional)'),
+
+            Field('zip_5', placeholder='ZIP'),
+            HTML('<br/>'),
+            InlineRadios('eligible'),
+            HTML('<br/>'),
+            StrictButton('Submit', css_class='btn-success', type='submit')
+        )
+    def clean(self):
+        cleaned_data = super(TeamAddressForm, self).clean()
+        with open('djangoctf/settings.json') as config_file:
+            config = json.loads(config_file.read())
+            address_verification_enabled = config['lob_address_verification']['enabled']
+            address_verification_api_key = config['lob_address_verification'][
+                'api_key'] if address_verification_enabled else None
+
+            if address_verification_enabled:
+                lob.api_key = address_verification_api_key
+                try:
+                    print(self)
+                    verifiedAddress = lob.Verification.create(
+                        address_line1=cleaned_data.get("street_address"),
+                        address_line2=cleaned_data.get("street_address_line_2"),
+                        address_zip=cleaned_data.get("zip_5"),
+                        address_country="US"
+
+                    )
+
+
+                    cleaned_data['street_address'] = verifiedAddress.address.address_line1
+                    cleaned_data['street_address_line_2'] = verifiedAddress.address.address_line2
+                    cleaned_data['zip_5'] = cleaned_data.get("zip_5")
+                    cleaned_data['city'] = verifiedAddress.address.address_city
+
+                    cleaned_data['state'] = verifiedAddress.address.address_state
+
+                except Exception as e:
+                    raise ValidationError("Unable to locate address! Make sure your address is correct. If you "
+                                          "continue to have trouble, you can provide your address by email at "
+                                          "contact@angstromctf.com.")
+
+            return cleaned_data
+
+
+
+
+
+

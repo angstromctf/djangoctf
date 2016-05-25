@@ -89,7 +89,7 @@ def create_team(request: HttpRequest):
         request.user.userprofile.team = team
         request.user.userprofile.save()
 
-        return reverse('account')
+        return redirect('/account/')
 
     return render(request, 'account.html', {'user': request.user,
                                             'change_password': ChangePasswordForm(user=request.user),
