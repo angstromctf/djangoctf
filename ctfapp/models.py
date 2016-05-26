@@ -96,11 +96,11 @@ class Team(models.Model):
     user_count = models.IntegerField(default=0)
     school = models.CharField(max_length=128)
     eligible = models.BooleanField(default=True)
-    address_street = models.CharField(max_length=1000, default=None, null=True)
-    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True)
-    address_zip = models.CharField(max_length=10, default=None, null=True)
-    address_city = models.CharField(max_length=1000, default=None, null=True)
-    address_state = models.CharField(max_length=1000, default=None, null=True)
+    address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
+    address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
     # Code for team registration
     code = models.CharField(max_length=20)
 
