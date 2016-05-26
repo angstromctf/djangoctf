@@ -5,9 +5,13 @@ django-password-reset==0.8.2
 django-redis-sessions==0.5.0
 django-registration==2.0.4
 ecdsa==0.13
+lob==2.24
 paramiko==1.16.0
+pkg-resources==0.0.0
+psycopg2==2.6.1
 pycrypto==2.6.1
 redis==2.10.5
+requests==2.9.1
 sendgrid==1.5.20
 smtpapi==0.2.0
-requests==2.9.1
+uWSGI==2.0.13.1
