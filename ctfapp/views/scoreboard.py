@@ -9,7 +9,7 @@ def scoreboard(request: HttpRequest):
     """
     View for the scoreboard page.
     """
-    team_list = Team.objects.filter(eligible=True,score__gt=0).order_by('-score', 'score_lastupdate')
+    team_list = Team.objects.filter(score__gt=0).order_by('-score', 'score_lastupdate')
 
     solutions_list = []
     graph_size = min(5, Team.objects.all().count())
