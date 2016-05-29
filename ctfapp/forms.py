@@ -216,9 +216,7 @@ class TeamAddressForm(forms.Form):
     street_address = forms.CharField(label='Street Address', max_length=1000, required=True)
     street_address_line_2 = forms.CharField(label='Street Address Line 2', max_length=1000, required=False)
     zip_5 = forms.CharField(label='US 5-digit ZIP', max_length=5, required=True, validators=[validate_zip])
-    eligible = forms.BooleanField(label='All members of my team are US high school students.', required=True,
-                            choices=((True, 'Yes'),
-                            (False, 'No')))
+    eligible = forms.BooleanField(label='All members of my team are US high school students.', required=True)
     city = forms.CharField(label='City', max_length=1000, required=False)
     state = forms.CharField(label='State', max_length=1000, required=False)
     def __init__(self, *args, **kwargs):
