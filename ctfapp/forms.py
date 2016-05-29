@@ -233,7 +233,7 @@ class TeamAddressForm(forms.Form):
 
             Field('zip_5', placeholder='ZIP'),
             HTML('<br/>'),
-            InlineRadios('eligible'),
+            InlineRadios('eligible2'),
             HTML('<br/>'),
             StrictButton('Submit', css_class='btn-success', type='submit')
         )

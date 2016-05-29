@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES, ELIGIBLE_CHOICES
 
 """
 Various core database models for angstrom.
@@ -96,7 +96,7 @@ class Team(models.Model):
     user_count = models.IntegerField(default=0)
     school = models.CharField(max_length=128)
     eligible = models.BooleanField(default=True)
-    eligible2 = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
+    eligible2 = models.IntegerField(blank=True, choices=ELIGIBLE_CHOICES, null=True)
     address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
