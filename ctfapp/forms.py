@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
 
 from ctfapp.validators import validate_unique_username, validate_unique_team_name, validate_unique_email, validate_zip
-from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES
+from ctfapp.utils.globals import GENDER_CHOICES, RACE_CHOICES, ELIGIBLE_CHOICES
 from ctfapp.models import Team
 
 from crispy_forms.helper import FormHelper
@@ -217,6 +217,7 @@ class TeamAddressForm(forms.Form):
     street_address_line_2 = forms.CharField(label='Street Address Line 2', max_length=1000, required=False)
     zip_5 = forms.CharField(label='US 5-digit ZIP', max_length=5, required=True, validators=[validate_zip])
     eligible = forms.BooleanField(label='All members of my team are US high school students.', required=True)
+    eligible2 = forms.ChoiceField(choices=ELIGIBLE_CHOICES, required=False)
     city = forms.CharField(label='City', max_length=1000, required=False)
     state = forms.CharField(label='State', max_length=1000, required=False)
     def __init__(self, *args, **kwargs):
