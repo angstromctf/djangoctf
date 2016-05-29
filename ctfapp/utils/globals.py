@@ -6,6 +6,12 @@ GENDER_CHOICES = (
     (3, 'Non-binary')
 )
 
+ELIGIBLE_CHOICES = (
+    (1, 'Yes'),
+    (2, 'No')
+
+)
+
 RACE_CHOICES = (
     (1, 'American Indian or Alaskan Native'),
     (2, 'Asian'),
