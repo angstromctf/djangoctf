@@ -31,9 +31,9 @@ def submit_addr(request: HttpRequest):
         user_team.address_zip = address_zip
         user_team.address_city = address_city
         user_team.address_state = address_state
-        user_team.eligible = form.cleaned_data['eligible']
+        user_team.eligible2 = form.cleaned_data['eligible2']
         user = request.user.userprofile
-        user.eligible = form.cleaned_data['eligible']
+        user.eligible = form.cleaned_data['eligible2']
         user.save()
         user_team.save()
     else:
