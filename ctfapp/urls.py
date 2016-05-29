@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^learn/', views.learn, name='learn'),
     url(r'^chat/', views.chat, name='chat'),
     url(r'^sponsors/', views.sponsors, name='sponsors'),
-
+    url(r'^unsubscribe_success/', views.unsubscribe, name='unsubscribe'),
     url(r'^scoreboard/$', views.scoreboard, name='scoreboard'),
     url(r'^score/', views.users.score, name='score'),
     url(r'^profile/(?P<teamid>[a-zA-Z0-9]*)$', views.team.profile),
