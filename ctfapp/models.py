@@ -96,6 +96,7 @@ class Team(models.Model):
     user_count = models.IntegerField(default=0)
     school = models.CharField(max_length=128)
     eligible = models.BooleanField(default=True)
+    eligible2 = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=False)
     address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
