@@ -7,7 +7,6 @@ django-registration==2.0.4
 ecdsa==0.13
 lob==2.24
 paramiko==1.16.0
-pkg-resources==0.0.0
 psycopg2==2.6.1
 pycrypto==2.6.1
 redis==2.10.5
