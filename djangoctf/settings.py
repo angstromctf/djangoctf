@@ -97,17 +97,17 @@ USE_L10N = False
 
 USE_TZ = True
 
-if config['cache_enabled']:
+if config['cache']['enabled']:
     CACHES = {
         'default': {
             'BACKEND': 'redis_cache.RedisCache',
-            'LOCATION': 'db.angstromctf.com:6379',
+            'LOCATION': config['cache']['location']+config['cache']['port'],
         },
     }
 
     SESSION_ENGINE = 'redis_sessions.session'
-    SESSION_REDIS_HOST = 'db.angstromctf.com'
-    SESSION_REDIS_PORT = 6379
+    SESSION_REDIS_HOST = config['cache']['location']
+    SESSION_REDIS_PORT = int(config['cache']['port'])
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PREFIX = 'session'
 
