@@ -42,6 +42,7 @@ def create_team(request: HttpRequest):
 
         if shell_enabled:
             ssh_priv_key_path = config['shell']['ssh_key_path']
+            shell_hostname = config['shell']['hostname']
 
     form = CreateTeamForm(request.POST)
 
@@ -63,7 +64,7 @@ def create_team(request: HttpRequest):
             pkey = paramiko.RSAKey.from_private_key_file(ssh_priv_key_path)
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname='shell.angstromctf.com', username='root', pkey=pkey)
+            ssh.connect(hostname=shell_hostname, username='root', pkey=pkey)
             createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
