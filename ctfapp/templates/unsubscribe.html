@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% load extras %}
 
-{% block title %} angstromCTF {% endblock %}
+{% block title %} {{ ctf_name }} {% endblock %}
 
 {% block pagetitle %}
     <header class="page-title">
@@ -14,5 +14,5 @@
 
 {% block content %}
 
-<p>You have unsubscribed from all future angstromCTF emails.</p>
+<p>You have unsubscribed from all future {{ ctf_name }} emails.</p>
 {% endblock %}

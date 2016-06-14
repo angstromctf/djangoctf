@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.contrib.auth import views as auth_views
+import json
 
 from . import views
 
@@ -9,6 +9,8 @@ from django.contrib.auth import views as auth_views
 """
 URL patterns used by django to load views.
 """
+
+
 urlpatterns = [
     url(r'^$', views.index, name='home'),
     url(r'^shelld/$', views.shelld, name='shelld'),
@@ -38,7 +40,8 @@ urlpatterns = [
         {'post_reset_redirect' : 'passwordsent/',
          'template_name': 'registration/password_reset_form.html'}, name='password_reset'),
     url(r'^resetpassword/passwordsent/', auth_views.password_reset_done, name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  auth_views.password_reset_confirm, {'post_reset_redirect' : '/reset/done/'}, name='password_reset_confirm'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',  auth_views.password_reset_confirm,
+        {'post_reset_redirect': '/reset/done/'}, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
     url(r'^activate/(?P<key>.+)/$', views.users.activation, name='activation'),
     url(r'^new-activation-link/(?P<user_id>\d+)/$', views.users.new_activation_link, name='new_link'),

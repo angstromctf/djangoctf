@@ -121,6 +121,7 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+TEMPLATES[0]['OPTIONS']['context_processors'].append("ctfapp.context_processors.site_configuration_processor")
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
