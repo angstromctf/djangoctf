@@ -72,6 +72,8 @@ def send_email(data, key, request=None, use_https=False):
         config = json.loads(config_file.read())
         sendgrid_api_key = config['email']['sendgrid_api_key']
         use_https = config['ssl']
+        ctf_name = config['ctf_name']
+        ctf_domain = config['ctf_platform_domain']
 
     current_site = get_current_site(request)
     link_protocol = 'https' if use_https else 'http'
@@ -80,9 +82,11 @@ def send_email(data, key, request=None, use_https=False):
         template = Template(template_file.read())
 
     context = Context({'activation_key': key,
-                                    'username': data['username'],
-                                    'domain': current_site.domain,
-                                    'protocol': link_protocol})
+                       'username': data['username'],
+                       'domain': current_site.domain,
+                       'ctf_name': ctf_name,
+                       'ctf_domain': ctf_domain,
+                       'protocol': link_protocol})
 
     message_text = template.render(context)
 
