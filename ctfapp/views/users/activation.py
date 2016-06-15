@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.sites.shortcuts import get_current_site
 from django.template import Template, Context
-
+from django.core.mail import EmailMessage
 from ctfapp.models import UserProfile
 from ctfapp.forms import CreateUserForm
 
@@ -92,10 +92,5 @@ def send_email(data, key, request=None, use_https=False):
 
     # Send an activation email through sendgrid
     message_to_field = data['email']
-    sg = sendgrid.SendGridClient(sendgrid_api_key)
-    message = sendgrid.Mail()
-    message.smtpapi.add_to(message_to_field)
-    message.set_subject('Activation Link for angstromCTF')
-    message.set_text(message_text)
-    message.set_from('angstromCTF team <contact@angstromctf.com>')
-    sg.send(message)
+    email = EmailMessage('Activation Link for angstromCTF', message_text, to=[message_to_field])
+    email.send()

@@ -140,9 +140,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 if config['email']['enabled']:
     # SMTP info
-    EMAIL_HOST = "smtp.sendgrid.net"
+
+    EMAIL_HOST = config['email']['host']
     EMAIL_HOST_USER = config['email']['username']
     EMAIL_HOST_PASSWORD = config['email']['password']
+    if EMAIL_HOST_USER == "":
+        EMAIL_HOST_USER = None
+    if EMAIL_HOST_PASSWORD == "":
+        EMAIL_HOST_PASSWORD = None
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
