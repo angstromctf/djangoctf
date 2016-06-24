@@ -5,7 +5,7 @@
     "ctf_name": "angstromCTF",
     "ctf_platform_domain": "angstromctf.com",
     "allowed_hosts": [
-        "angstromctf.com","www.angstromctf.com","platform1.angstromctf.com"
+        "angstromctf.com","www.angstromctf.com","localhost"
     ],
     "cache": {
         "enabled": false,
@@ -38,7 +38,8 @@
         "enabled": true,
         "sendgrid_api_key": "redacted",
         "username": "redacted",
-        "password": "redacted"
+        "password": "redacted",
+        "host": "smtp.somemailserver.com"
     },
     "logging": {
     },
