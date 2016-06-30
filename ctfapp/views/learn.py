@@ -1,9 +1,8 @@
 from django.http import HttpRequest
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 
-# Handle the HTTP request
 def learn(request: HttpRequest):
-    """Create the learn page."""
+    """Handle a request for the learn page."""
 
-    return render_to_response("learn.html", {"user": request.user})
+    return render(request, "learn.html")
