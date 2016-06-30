@@ -7,13 +7,10 @@ from ctfapp.models import ProblemUpdate
 
 
 def updates(request: HttpRequest):
-    """
-    View for the updates page.
-    """
+    """Handle a request for the updates page by sorting and displaying all the updates in the database."""
 
     updates_list = ProblemUpdate.objects.all().order_by('-time')
 
     return render(request, 'updates.html', {
-        'user': request.user,
         'updates': updates_list
     })
