@@ -2,12 +2,12 @@
 {% load extras %}
 {% load staticfiles %}
 
-{% block title %} angstromCTF {% endblock %}
+{% block title %} {{ ctf_name }} {% endblock %}
 
 {% block pagetitle %}
     <header class="page-title">
         <div class="container">
-            <h1>Welcome to angstromCTF!</h1>
+            <h1>Welcome to {{ ctf_name }}!</h1>
         </div>
     </header>
 {% endblock %}
@@ -34,13 +34,13 @@
     
     <br/>
 
-    <p>Welcome to angstromCTF, a new capture-the-flag (CTF) competition hosted and written by high school students!
+    <p>Welcome to {{ ctf_name }}, a new capture-the-flag (CTF) competition hosted and written by high school students!
     CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity
     students.
     These competitions are designed to <strong>educate and inspire high school students through interactive hacking
     challenges.</strong> After we saw the great success of high-school CTF games (especially
     <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called
-    angstromCTF.</p>
+    {{ ctf_name }}.</p>
 
     {% if not user.is_authenticated %}
     <br/>
@@ -55,9 +55,9 @@
     {% endif %}
 
     <p>Students will compete in <strong>teams of up to five members</strong>. Points are given for answering each question
-    (entering the flag). Prizes will be awarded to the top-scoring US high-school teams. angstromCTF is meant for
+    (entering the flag). Prizes will be awarded to the top-scoring US high-school teams. {{ ctf_name }} is meant for
     <strong>both beginners and experienced CTFers</strong> and consists of questions ranging from simple to extremely
-    difficult in various categories. If you have any questions, join our IRC <a href="https://angstromctf.com/chat/" target="_blank">here</a> or #angstromctf on freenode.</p><br/>
+    difficult in various categories. If you have any questions, join our IRC <a href="{% url 'chat' %}" target="_blank">here</a> or #angstromctf on freenode.</p><br/>
 
     <div class="row categories-row">
         <div class="col-lg-4">

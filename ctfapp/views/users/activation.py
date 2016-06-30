@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.sites.shortcuts import get_current_site
 from django.template import Template, Context
-
+from django.core.mail import EmailMessage
 from ctfapp.models import UserProfile
 from ctfapp.forms import CreateUserForm
 
@@ -72,6 +72,8 @@ def send_email(data, key, request=None, use_https=False):
         config = json.loads(config_file.read())
         sendgrid_api_key = config['email']['sendgrid_api_key']
         use_https = config['ssl']
+        ctf_name = config['ctf_name']
+        ctf_domain = config['ctf_platform_domain']
 
     current_site = get_current_site(request)
     link_protocol = 'https' if use_https else 'http'
@@ -80,18 +82,15 @@ def send_email(data, key, request=None, use_https=False):
         template = Template(template_file.read())
 
     context = Context({'activation_key': key,
-                                    'username': data['username'],
-                                    'domain': current_site.domain,
-                                    'protocol': link_protocol})
+                       'username': data['username'],
+                       'domain': current_site.domain,
+                       'ctf_name': ctf_name,
+                       'ctf_domain': ctf_domain,
+                       'protocol': link_protocol})
 
     message_text = template.render(context)
 
     # Send an activation email through sendgrid
     message_to_field = data['email']
-    sg = sendgrid.SendGridClient(sendgrid_api_key)
-    message = sendgrid.Mail()
-    message.smtpapi.add_to(message_to_field)
-    message.set_subject('Activation Link for angstromCTF')
-    message.set_text(message_text)
-    message.set_from('angstromCTF team <contact@angstromctf.com>')
-    sg.send(message)
+    email = EmailMessage('Activation Link for angstromCTF', message_text, to=[message_to_field])
+    email.send()
