@@ -1,18 +1,15 @@
 # Import
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from ctfapp.models import Team
-from django.http import Http404
 from django.utils import timezone
 
 from ctfapp.models import CorrectSubmission
 from ctfapp.utils.time import contest_start, minutes
 
-def profile(request, teamid):
-    try:
-        team = Team.objects.get(id=teamid)
-    except Team.DoesNotExist:
-        raise Http404('No team with name ' + team + ' exists.')
 
+def profile(request, teamid):
+
+    team = get_object_or_404(Team, id=teamid)
     ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
 
     solutions_list = []
