@@ -6,11 +6,10 @@ from ctfapp.models import Team, CorrectSubmission
 from ctfapp.utils.time import contest_start, minutes
 
 def scoreboard(request: HttpRequest):
-    """Handle a request for the scoreboard page.
-
-    Sorts all eligible teams and renders a graph of the top teams."""
-
-    team_list = Team.objects.filter(eligible=True,score__gt=0).order_by('-score', 'score_lastupdate')
+    """
+    View for the scoreboard page.
+    """
+    team_list = Team.objects.filter(score__gt=0).order_by('-score', 'score_lastupdate')
 
     solutions_list = []
     graph_size = min(5, Team.objects.all().count())

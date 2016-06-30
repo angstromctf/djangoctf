@@ -2,7 +2,7 @@
 {% load extras %}
 {% load staticfiles %}
 
-{% block title %} Scoreboard - angstromCTF {% endblock %}
+{% block title %} Scoreboard - {{ ctf_name }} {% endblock %}
 
 {% block pagetitle %}
 <header class="page-title">
@@ -25,7 +25,7 @@ The contest hasn't started yet! For now, check out the teams that have signed up
 <br/>
 <br/>
 {% endif %}
-
+(*) - shipping address supplied
 <table class="table table-striped">
 	<thead>
 		<tr>
@@ -42,7 +42,9 @@ The contest hasn't started yet! For now, check out the teams that have signed up
         {% for team in team_list %}
             <tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
                 <td>{{ forloop.counter }}</td>
-                <td>{{ team.name }}</td>
+                <td>{{ team.name }}
+                {% if team.address_street %}*{% endif %}
+                </td>
                 <td>{{ team.school }}</td>
                 <td>{{ team.score }}</td>
             </tr>

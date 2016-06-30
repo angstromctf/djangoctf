@@ -97,17 +97,17 @@ USE_L10N = False
 
 USE_TZ = True
 
-if config['cache_enabled']:
+if config['cache']['enabled']:
     CACHES = {
         'default': {
             'BACKEND': 'redis_cache.RedisCache',
-            'LOCATION': 'db.angstromctf.com:6379',
+            'LOCATION': config['cache']['location']+config['cache']['port'],
         },
     }
 
     SESSION_ENGINE = 'redis_sessions.session'
-    SESSION_REDIS_HOST = 'db.angstromctf.com'
-    SESSION_REDIS_PORT = 6379
+    SESSION_REDIS_HOST = config['cache']['location']
+    SESSION_REDIS_PORT = int(config['cache']['port'])
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PREFIX = 'session'
 
@@ -121,6 +121,7 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+TEMPLATES[0]['OPTIONS']['context_processors'].append("ctfapp.context_processors.site_configuration_processor")
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
@@ -139,9 +140,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 if config['email']['enabled']:
     # SMTP info
-    EMAIL_HOST = "smtp.sendgrid.net"
+
+    EMAIL_HOST = config['email']['host']
     EMAIL_HOST_USER = config['email']['username']
     EMAIL_HOST_PASSWORD = config['email']['password']
+    if EMAIL_HOST_USER == "":
+        EMAIL_HOST_USER = None
+    if EMAIL_HOST_PASSWORD == "":
+        EMAIL_HOST_PASSWORD = None
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'

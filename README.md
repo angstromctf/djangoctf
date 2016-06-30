@@ -12,6 +12,10 @@ angstromCTF consists of questions ranging from trivial to extremely difficult in
 * Forensics
 * Master challenges
 
-Using this platform, participants will login, read and answer challenges, and receive updates.  Teams can be created and joined by participants.  The platform is designed to be extensible and re-usable for other CTFs and competitions.
+Using this platform, participants will login, read and answer challenges, and receive updates.  Participants can create and join teams to solve challenges together.  The platform is designed to be extensible and re-usable for other CTFs and competitions. If you make something cool with djangoctf, be sure to let us know! For installation instructions, see the Wiki.
 
-This platform is actively maintained by Noah Singer (singerng@gmail.com), as well as other members of the project, including Artemis Tosini (me@artem.ist) and Chris Wang (kisa.ayano@icloud.com).  Montgomery Blair High School is located in Silver Spring, Maryland, USA.  This project is licensed under the GNU General Public License (GPL), version 3.
+This platform is actively maintained by Noah Singer (singerng@gmail.com), as well as other members of the project, including Anthony Li (tongning05@gmail.com), Artemis Tosini (me@artem.ist) and Chris Wang (kisa.ayano@icloud.com).  The djangoctf and angstromCTF projects are based out of Montgomery Blair High School in Silver Spring, Maryland, USA. 
+
+If you would like to contribute to djangoctf, fork this repo and then open a pull request once you're finished. We'll review the code and if it's good, we'll accept it!
+
+This project is licensed under the GNU General Public License (GPL), version 3.

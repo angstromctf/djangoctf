@@ -1,9 +1,9 @@
 Hi {{ username }},
 
-Welcome to angstromCTF! Thanks for signing up, but just one last thing: click the link below to activate your account:
+Welcome to {{ ctf_name }}! Thanks for signing up, but just one last thing: click the link below to activate your account:
 
-{{ protocol }}://angstromctf.com/activate/{{ activation_key }}
+{{ protocol }}://{{ ctf_domain }}/activate/{{ activation_key }}
 
 Happy solving!
 
-angstromCTF devs
+{{ ctf_name }} devs
