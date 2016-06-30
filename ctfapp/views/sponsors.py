@@ -3,6 +3,6 @@ from django.shortcuts import render
 
 
 def sponsors(request: HttpRequest):
-    """Create the sponsors page."""
+    """Handle a request for the sponsors page."""
 
-    return render(request, "sponsors.html", {"user": request.user})
+    return render(request, "sponsors.html")

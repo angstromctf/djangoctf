@@ -7,10 +7,6 @@ from ctfapp.decorators import lock_before_contest
 @login_required
 @lock_before_contest
 def shelld(request: HttpRequest):
-    """
-    View for displaying the shell page.
-    """
+    """Handle a request for the scoreboard page."""
 
-    return render(request, "shelld.html", {
-        'user': request.user,
-    })
+    return render(request, "shelld.html")

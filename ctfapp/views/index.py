@@ -5,12 +5,9 @@ from ctfapp.utils.time import contest_start, contest_end
 
 
 def index(request: HttpRequest):
-    """Create the index page.
-    :param request: the HTTP Request
-    """
+    """Handle a request for the index page."""
 
     return render(request, "index.html", {
-        "user": request.user,
         "start": contest_start,
         "end": contest_end
     })
