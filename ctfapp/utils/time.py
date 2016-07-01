@@ -1,13 +1,10 @@
+from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
-import json
 
-with open('djangoctf/settings.json') as config_file:
-    config = json.loads(config_file.read())
-
-    contest_start = parse_datetime(config["start_time"])
-    contest_end = parse_datetime(config["end_time"])
+contest_start = parse_datetime(settings.CONFIG["start_time"])
+contest_end = parse_datetime(settings.CONFIG["end_time"])
 
 
 def before_start():

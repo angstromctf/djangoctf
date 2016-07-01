@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
@@ -10,8 +11,9 @@ from ctfapp.models import Team
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
+
 import lob
-import json
+import requests
 
 """
 All of the forms used in the site.
@@ -153,12 +155,10 @@ class CreateUserForm(forms.Form):
     age = forms.IntegerField(required=False)
 
     def __init__(self, *args, **kwargs):
-        with open('djangoctf/settings.json') as config_file:
-            config = json.loads(config_file.read())
-            captcha_enabled = config['signup_captcha']['enabled']
-            public_key = config['signup_captcha']['public'] if captcha_enabled else None
+        captcha_enabled = settings.CONFIG['signup_captcha']['enabled']
+        public_key = settings.CONFIG['signup_captcha']['public'] if captcha_enabled else None
 
-            super(CreateUserForm, self).__init__(*args, **kwargs)
+        super(CreateUserForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
 
@@ -195,6 +195,16 @@ class CreateUserForm(forms.Form):
 
         if cleaned_data.get("password") != cleaned_data.get("confirm"):
             raise ValidationError("Passwords do not match.")
+
+        if settings.CONFIG['signup_captcha']['enabled']:
+            req = requests.post("https://www.google.com/recaptcha/api/siteverify", data=
+                {'secret': settings.CONFIG['signup_captcha']['secret'],
+                 'response': requests.POST.get('g-recaptcha-response')
+                }
+            )
+
+            success = req.json()['success']
+
 
 class ResetPasswordForm(forms.Form):
     """
@@ -237,40 +247,37 @@ class TeamAddressForm(forms.Form):
             HTML('<br/>'),
             StrictButton('Submit', css_class='btn-success', type='submit')
         )
+
     def clean(self):
         cleaned_data = super(TeamAddressForm, self).clean()
-        with open('djangoctf/settings.json') as config_file:
-            config = json.loads(config_file.read())
-            address_verification_enabled = config['lob_address_verification']['enabled']
-            address_verification_api_key = config['lob_address_verification'][
-                'api_key'] if address_verification_enabled else None
+        address_verification_enabled = settings.CONFIG['lob_address_verification']['enabled']
+        address_verification_api_key = settings.CONFIG['lob_address_verification']['api_key'] if address_verification_enabled else None
 
-            if address_verification_enabled:
-                lob.api_key = address_verification_api_key
-                try:
-                    print(self)
-                    verifiedAddress = lob.Verification.create(
-                        address_line1=cleaned_data.get("street_address"),
-                        address_line2=cleaned_data.get("street_address_line_2"),
-                        address_zip=cleaned_data.get("zip_5"),
-                        address_country="US"
+        if address_verification_enabled:
+            lob.api_key = address_verification_api_key
+            try:
+                print(self)
+                verifiedAddress = lob.Verification.create(
+                    address_line1=cleaned_data.get("street_address"),
+                    address_line2=cleaned_data.get("street_address_line_2"),
+                    address_zip=cleaned_data.get("zip_5"),
+                    address_country="US"
 
-                    )
+                )
 
+                cleaned_data['street_address'] = verifiedAddress.address.address_line1
+                cleaned_data['street_address_line_2'] = verifiedAddress.address.address_line2
+                cleaned_data['zip_5'] = cleaned_data.get("zip_5")
+                cleaned_data['city'] = verifiedAddress.address.address_city
 
-                    cleaned_data['street_address'] = verifiedAddress.address.address_line1
-                    cleaned_data['street_address_line_2'] = verifiedAddress.address.address_line2
-                    cleaned_data['zip_5'] = cleaned_data.get("zip_5")
-                    cleaned_data['city'] = verifiedAddress.address.address_city
+                cleaned_data['state'] = verifiedAddress.address.address_state
 
-                    cleaned_data['state'] = verifiedAddress.address.address_state
+            except:
+                raise ValidationError("Unable to locate address! Make sure your address is correct. If you "
+                                      "continue to have trouble, you can provide your address by email at "
+                                      "contact@angstromctf.com.")
 
-                except Exception as e:
-                    raise ValidationError("Unable to locate address! Make sure your address is correct. If you "
-                                          "continue to have trouble, you can provide your address by email at "
-                                          "contact@angstromctf.com.")
-
-            return cleaned_data
+        return cleaned_data
 
 
 

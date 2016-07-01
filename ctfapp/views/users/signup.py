@@ -1,6 +1,4 @@
-import json
-
-import requests
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.utils import timezone
@@ -9,18 +7,18 @@ from ctfapp.forms import CreateUserForm
 from ctfapp.models import UserProfile
 from ctfapp.views.users.activation import generate_activation_key, send_email
 
+import requests
+
 
 def signup(request):
     """
     View for the registration page.
     """
 
-    with open('djangoctf/settings.json') as config_file:
-        config = json.loads(config_file.read())
-        enabled = config['registration_enabled']
-        emails_enabled = config['email']['enabled']
+    enabled = settings.CONFIG['registration_enabled']
+    emails_enabled = settings.CONFIG['email']['enabled']
 
-        captcha_enabled = config['signup_captcha']['enabled']
+    captcha_enabled = settings.CONFIG['signup_captcha']['enabled']
 
 
     if not enabled:
@@ -30,18 +28,6 @@ def signup(request):
         # Show our template
         return render(request, 'signup.html', {'form': CreateUserForm(), 'enabled': True})
     elif request.method == 'POST':
-        if captcha_enabled:
-            req = requests.post("https://www.google.com/recaptcha/api/siteverify", data=
-                {'secret': config['signup_captcha']['secret'],
-                 'response': request.POST.get('g-recaptcha-response')
-                }
-            )
-
-            success = req.json()['success']
-
-            if not success:
-                return render(request, 'message_generic.html', {'message': 'reCAPTCHA verification failed, please try again.'})
-
         form = CreateUserForm(request.POST)
 
         if form.is_valid():
@@ -76,7 +62,7 @@ def signup(request):
             email_sent_message = """An activation link was sent to the address you provided. Click the email
                                         link to activate your account."""
             # Direct user to activation email sent page
-            return render(request, 'message_generic.html', {'message': email_sent_message})
+            return render(request, 'message.html', {'message': email_sent_message})
         else:
             # The form didn't validate properly
             return render(request, 'signup.html', {'form': form, 'enabled': True})
