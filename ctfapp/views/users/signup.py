@@ -7,8 +7,6 @@ from ctfapp.forms import CreateUserForm
 from ctfapp.models import UserProfile
 from ctfapp.views.users.activation import generate_activation_key, send_email
 
-import requests
-
 
 def signup(request):
     """

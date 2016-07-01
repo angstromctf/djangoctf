@@ -205,6 +205,9 @@ class CreateUserForm(forms.Form):
 
             success = req.json()['success']
 
+            if not success:
+                raise ValidationError("Error while validating reCAPTCHA. Please try again.")
+
 
 class ResetPasswordForm(forms.Form):
     """
