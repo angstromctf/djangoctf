@@ -1,3 +1,10 @@
+function fix_tab_height(num) {
+    var height = Math.max($('#problem'+num).height(),$('#hint'+num).height());
+    $('#problem'+num).height(height);
+    $('#hint'+num).height(height);
+    $('#updates'+num).height(Math.max($('#updates'+num).height(), height));
+}
+
 function submit_problem(num) {
     $.ajax({
         url : "submit_problem/",
@@ -20,6 +27,7 @@ function submit_problem(num) {
             });
 
             $('#outer'+num.toString()).html(json.html);
+            fix_tab_height(num);
 
             $.ajax({
                 url : "/score/",
@@ -68,4 +76,10 @@ $.ajaxSetup({
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }
+});
+
+$(window).load(function() {
+    $.each($('.problem'), function (i,problem) {
+        fix_tab_height(parseInt(problem.id.substr(5)));
+    });
 });
