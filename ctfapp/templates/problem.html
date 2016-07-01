@@ -50,7 +50,7 @@
                 </div>
 
                 <div id="hint{{ problem.id }}" class="tab-pane">
-                    {{ problem.hint_text|safe }}
+                    {{ problem.hint_text|safe|linebreaksbr }}
                 </div>
 
                 <div id="updates{{ problem.id }}" class="tab-pane">
