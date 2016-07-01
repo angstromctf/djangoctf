@@ -6,17 +6,15 @@
 
 {% block pagetitle %}
 <header class="page-title">
-	<div class="container">
-		<h3>Note:</h3>
-	</div>
+	<h1>
+        {{ title }}
+    </h1>
 </header>
 {% endblock %}
 
 {% block content %}
 
-<div class="span9" style="min-height: 400px;">
-    {{ message }}
-</div>
+<p>{{ message }}</p>
 
 
 {% endblock %}

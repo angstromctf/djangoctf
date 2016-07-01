@@ -102,6 +102,7 @@ class Team(models.Model):
     address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
     address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
+
     # Code for team registration
     code = models.CharField(max_length=20)
 

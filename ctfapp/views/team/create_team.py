@@ -1,16 +1,14 @@
+from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.core.urlresolvers import reverse
 
 from ctfapp.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
 from ctfapp.models import Team
 from ctfapp.decorators import team_required
 
-import json
 import logging
-
 from random import choice
 
 
@@ -35,14 +33,12 @@ logger = logging.getLogger(__name__)
 @require_POST
 def create_team(request: HttpRequest):
     """Create the account page."""
-    with open('djangoctf/settings.json') as config_file:
-        config = json.loads(config_file.read())
 
-        shell_enabled = config['shell']['enabled']
+    shell_enabled = settings.CONFIG['shell']['enabled']
 
-        if shell_enabled:
-            ssh_priv_key_path = config['shell']['ssh_key_path']
-            shell_hostname = config['shell']['hostname']
+    if shell_enabled:
+        ssh_priv_key_path = settings.CONFIG['shell']['ssh_key_path']
+        shell_hostname = settings.CONFIG['shell']['hostname']
 
     form = CreateTeamForm(request.POST)
 

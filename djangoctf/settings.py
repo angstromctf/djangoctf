@@ -16,12 +16,12 @@ import json
 
 # Parse the secure configuration file
 with open('djangoctf/settings.json') as config_file:
-    config = json.loads(config_file.read())
+    CONFIG = json.loads(config_file.read())
 
 # Read security options from the file
-SECRET_KEY = config['secret_key']
-DEBUG = config['debug']
-ALLOWED_HOSTS = config['allowed_hosts']
+SECRET_KEY = CONFIG['secret_key']
+DEBUG = CONFIG['debug']
+ALLOWED_HOSTS = CONFIG['allowed_hosts']
 
 # Application definition
 
@@ -72,15 +72,15 @@ TEMPLATES = [
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-for database in config['databases']:
-    if config['databases'][database]['NAME_JOIN']:
-        config['databases'][database]['NAME'] = os.path.join(BASE_DIR, config['databases'][database]['NAME'])
+for database in CONFIG['databases']:
+    if CONFIG['databases'][database]['NAME_JOIN']:
+        CONFIG['databases'][database]['NAME'] = os.path.join(BASE_DIR, CONFIG['databases'][database]['NAME'])
 
-DATABASES = config['databases']
+DATABASES = CONFIG['databases']
 
 # Logging
-LOGGING = config['logging']
-ADMINS = list(map(tuple, config['admins']))
+LOGGING = CONFIG['logging']
+ADMINS = list(map(tuple, CONFIG['admins']))
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -97,21 +97,21 @@ USE_L10N = False
 
 USE_TZ = True
 
-if config['cache']['enabled']:
+if CONFIG['cache']['enabled']:
     CACHES = {
         'default': {
             'BACKEND': 'redis_cache.RedisCache',
-            'LOCATION': config['cache']['location']+config['cache']['port'],
+            'LOCATION': CONFIG['cache']['location']+CONFIG['cache']['port'],
         },
     }
 
     SESSION_ENGINE = 'redis_sessions.session'
-    SESSION_REDIS_HOST = config['cache']['location']
-    SESSION_REDIS_PORT = int(config['cache']['port'])
+    SESSION_REDIS_HOST = CONFIG['cache']['location']
+    SESSION_REDIS_PORT = int(CONFIG['cache']['port'])
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PREFIX = 'session'
 
-if config['use_loadbalanced_databases']:
+if CONFIG['use_loadbalanced_databases']:
     DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)
     SLAVE_DATABASES = ['shadow-1']
 
@@ -130,20 +130,20 @@ CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 # Security stuff
 
-CSRF_COOKIE_SECURE = config['ssl']
-SESSION_COOKIE_SECURE = config['ssl']
+CSRF_COOKIE_SECURE = CONFIG['ssl']
+SESSION_COOKIE_SECURE = CONFIG['ssl']
 
 CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-if config['email']['enabled']:
+if CONFIG['email']['enabled']:
     # SMTP info
 
-    EMAIL_HOST = config['email']['host']
-    EMAIL_HOST_USER = config['email']['username']
-    EMAIL_HOST_PASSWORD = config['email']['password']
+    EMAIL_HOST = CONFIG['email']['host']
+    EMAIL_HOST_USER = CONFIG['email']['username']
+    EMAIL_HOST_PASSWORD = CONFIG['email']['password']
     if EMAIL_HOST_USER == "":
         EMAIL_HOST_USER = None
     if EMAIL_HOST_PASSWORD == "":
