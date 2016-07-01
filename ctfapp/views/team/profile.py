@@ -5,7 +5,7 @@ from django.http import Http404
 from django.utils import timezone
 
 from ctfapp.models import CorrectSubmission
-from ctfapp.utils.time import contest_start, minutes
+from ctfapp.utils.time import contest_start, contest_end, minutes
 
 def profile(request, teamid):
     try:
@@ -29,7 +29,7 @@ def profile(request, teamid):
     solutions_list.insert(0, [0, 0])
     solutions_list.insert(0, ['X', team.name])
 
-    delta = timezone.now() - contest_start
+    delta = min(timezone.now(), contest_end) - contest_start
     solutions_list.append([minutes(delta), team.score])
 
     return render(request, 'profile.html', {
