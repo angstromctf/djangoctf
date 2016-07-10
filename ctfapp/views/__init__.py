@@ -9,6 +9,7 @@ from .shelld import shelld
 from .unsubscribe import unsubscribe
 from .updates import updates
 from .sponsors import sponsors
+from .jsonfeed import jsonfeed
 from ctfapp.views import team
 from ctfapp.views import users
 from ctfapp.views import problems

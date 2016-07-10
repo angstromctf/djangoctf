@@ -21,8 +21,9 @@ urlpatterns = [
     url(r'^sponsors/', views.sponsors, name='sponsors'),
     url(r'^unsubscribe_success/', views.unsubscribe, name='unsubscribe'),
     url(r'^scoreboard/$', views.scoreboard, name='scoreboard'),
+    url(r'^scoreboard/feed/$', views.jsonfeed, name='jsonfeed'),
     url(r'^score/', views.users.score, name='score'),
-    url(r'^profile/(?P<teamid>[a-zA-Z0-9]*)$', views.team.profile),
+    url(r'^profile/(?P<teamid>\d+)$', views.team.profile),
 
     url(r'^problems/$', views.problems.problems, name='problems'),
     url(r'^problems/submit_problem/$', views.problems.submit_problem, name='submit_problem'),
