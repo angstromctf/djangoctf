@@ -1,13 +1,9 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 
+app_name = 'learn'
 urlpatterns = [
-    # Examples:
-    # url(r'^$', 'djangoctf.views.home', name='home'),
-    # Explanation - 
-    # r'^$' is the regex for the url that the view corresponds to.
-    # 'djangoctf.views.home' is the view itself.  
-    # name='home' is the name of the view
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include('ctfapp.urls')),
+    url(r'^', include('core.urls')),
+    url(r'^learn/', include('learn.urls')),
 ]
