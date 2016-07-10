@@ -25,9 +25,9 @@ path = args.problems_directory
 settings.configure(DATABASES=DATABASES, TIME_ZONE=TIME_ZONE, INSTALLED_APPS=INSTALLED_APPS)
 setup()
 
-from ctfapp.models import *
+from core.models import *
 
-STATIC = '/'.join(realpath(__file__).replace('\\', '/').split('/')[:-1]) + '/ctfapp/static/problems'
+STATIC = '/'.join(realpath(__file__).replace('\\', '/').split('/')[:-1]) + '/core/static/problems'
 
 if args.reset:
     Problem.objects.all().delete()

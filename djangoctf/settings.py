@@ -35,7 +35,8 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sites',
     'password_reset',
-    'ctfapp',
+    'core',
+    'learn',
     'crispy_forms',
 )
 
@@ -56,7 +57,7 @@ WSGI_APPLICATION = 'djangoctf.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'ctfapp/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'core/templates', 'learn/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -121,7 +122,7 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-TEMPLATES[0]['OPTIONS']['context_processors'].append("ctfapp.context_processors.site_configuration_processor")
+TEMPLATES[0]['OPTIONS']['context_processors'].append("core.context_processors.site_configuration_processor")
 
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
