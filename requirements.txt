@@ -1,4 +1,4 @@
-Django==1.9.1
+Django==1.9.7
 django-crispy-forms==1.6.0
 django-multidb-router==0.6
 django-password-reset==0.8.2

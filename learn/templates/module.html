@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load learn_extras %}
+
+{% block title %} {{ module.title }} - Learn - {{ ctf_name }} {% endblock %}
+
+{% block pagetitle %}
+<h1></h1>
+{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/learn.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$']]}
+    });
+    </script>
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-4">
+            <strong>Navigation</strong>
+
+            {% module_tree module %}
+        </div>
+        <div class="col-xs-12 col-sm-8 module">
+            <header class="page-title">
+                <div class="container">
+                    <h1>{{ module.title }}</h1>
+                </div>
+            </header>
+
+            {{ module.text|safe }}
+        </div>
+    </div>
+{% endblock %}
