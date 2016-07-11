@@ -111,6 +111,12 @@ if CONFIG['cache']['enabled']:
     SESSION_REDIS_PORT = int(CONFIG['cache']['port'])
     SESSION_REDIS_DB = 0
     SESSION_REDIS_PREFIX = 'session'
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
+        }
+    }
 
 if CONFIG['use_loadbalanced_databases']:
     DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)
@@ -138,6 +144,7 @@ CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+print(STATIC_ROOT)
 
 if CONFIG['email']['enabled']:
     # SMTP info
