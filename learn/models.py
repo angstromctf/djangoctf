@@ -10,7 +10,7 @@ class Module(models.Model):
     # Relationships with other modules
     prereqs = models.ManyToManyField('self', blank=True, related_name="required_for", symmetrical=False)
     parent = models.ForeignKey('self', blank=True, null=True, related_name="children")
-    first_child = models.ForeignKey('self', blank=True, null=True, related_name="parents")
+    first_child = models.ForeignKey('self', blank=True, null=True, related_name="first_parents")
     next = models.ForeignKey('self', blank=True, null=True, related_name="prevs")
 
     def __str__(self):

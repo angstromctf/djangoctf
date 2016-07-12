@@ -58,6 +58,9 @@ class Command(BaseCommand):
             else:
                 module.prereqs.set(module.prevs.all())
 
+                if module.first_parents.count() != 0:
+                    module.prereqs.add(module.first_parents.all()[0])
+
             if 'next' in data:
                 module.next = Module.objects.get(name=data['next'])
 
