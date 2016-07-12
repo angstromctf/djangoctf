@@ -12,15 +12,14 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def module_tree(context, module):
     def gen_tree(module):
-        tree = "<li><a href=\"" + reverse('learn:module', args=[module.name]) + "\">" + module.title + "</a></li>"
+        tree = "<li><a href=\"" + reverse('learn:module', args=[module.name]) + "\"" + (" id=\"current-module\"" if module == context['module'] else "") + "\">" + module.title + "</a></li>"
 
         if module.first_child is not None:
-            tree += "<ul>" + gen_tree(module.first_child) + "</ul>"
+            tree += "<ol>" + gen_tree(module.first_child) + "</ol>"
 
         if module.next is not None:
             tree += gen_tree(module.next)
 
         return tree
 
-
-    return mark_safe("<ul>" + gen_tree(module) + "</ul>")
+    return mark_safe("<ol>" + gen_tree(module) + "</ol>")
