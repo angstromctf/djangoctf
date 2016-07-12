@@ -144,7 +144,6 @@ CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-print(STATIC_ROOT)
 
 if CONFIG['email']['enabled']:
     # SMTP info

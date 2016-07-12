@@ -4,7 +4,7 @@ from learn.models import Module
 
 import os
 import json
-
+import markdown2
 
 class Command(BaseCommand):
     help = 'Update learning modules by reading from directory.'
@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
         def parse(dir, name, parent):
             # Check if this is a valid module
-            if name != '':
+            if os.path.exists(os.path.join(dir, 'module.json')):
                 file = open(os.path.join(dir, 'module.json'))
                 data = json.loads(file.read())
                 file.close()
@@ -28,29 +28,35 @@ class Command(BaseCommand):
                 else:
                     module = Module(name=name)
 
-                module['title'] = data['title']
+                module.title = data['title']
 
-                file = open(os.path.join(dir, 'module.html'))
-                module['text'] = file.read()
+                file = open(os.path.join(dir, 'contents.md'))
+                module.text = markdown2.markdown(file.read())
                 file.close()
 
-                module['parent'] = parent
+                module.parent = parent
+
+                module.save()
 
                 modules[module] = data
 
-                module.save()
-            else:
+                print('Successfully updated model %s.' % (module.name))
+            elif name == '':
                 module = None
+            else:
+                return
 
             for sub in os.listdir(dir):
-                if sub != 'module.json' and sub != 'module.html':
+                if sub != 'module.json' and sub != 'module.html' and os.path.isdir(os.path.join(dir, sub)):
                     parse(os.path.join(dir, sub), sub, module)
-
 
         parse(options['module-dir'], '', None)
 
         for module, data in modules.items():
-            module.prereqs.set(Module.objects.filter(name__in=data['prereqs']))
+            if 'prereqs' in data:
+                module.prereqs.set(Module.objects.filter(name__in=data['prereqs']).all())
+            else:
+                module.prereqs.set(module.prevs.all())
 
             if 'next' in data:
                 module.next = Module.objects.get(name=data['next'])
