@@ -70,4 +70,4 @@ target/
 .idea/
 
 # Images of people
-ctfapp/static/images/people/
+core/static/images/people/
