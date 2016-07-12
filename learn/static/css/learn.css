@@ -8,24 +8,28 @@ nav.module-nav {
 nav.module-nav > ol {
     margin-top: 1em;
     margin-bottom: 1em;
-    padding: 0;
+    padding-left: 0!important;
+}
+
+nav.module-nav ol {
+    list-style-type: none;
+    padding-left: 1em;
 }
 
 nav.module-nav #active {
-    color: #95a5a6;
+    color: #2c3e50;
 }
 
 div.module {
     padding-left: 3em;
 }
 
-ol {
-    counter-reset: section;
-    list-style-type: none;
-    padding-left: 1em;
+/* This part will hopefully be unnecessary with Bootstrap 4 */
+figure {
+    padding-top: 2em;
+    padding-bottom: 2em;
 }
 
-li::before {
-    counter-increment: section;
-    content: counters(section,".") " ";
+figure > figcaption.figure-caption {
+    font-style: italic;
 }
