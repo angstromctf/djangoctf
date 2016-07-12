@@ -17,7 +17,7 @@ def module(request, module_name):
 
     current = module
 
-    while current:
+    while current and next is None:
         if current.next:
             next = current.next
             break
