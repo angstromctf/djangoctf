@@ -62,6 +62,7 @@
                         <ul class="nav navbar-nav navbar-left">
                             <li><a href="{% url 'about' %}">About</a></li>
                             <li><a href="{% url 'sponsors' %}">Sponsors</a></li>
+                            <li><a href="{% url 'learn:index' %}">Learn</a></li>
                             {% contest_started as started %}
                             {% if started %}<li><a href="{% url 'problems' %}">Problems</a></li>{% endif %}
                             <li><a href="{% url 'updates' %}">Updates</a></li>

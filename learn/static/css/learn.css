@@ -31,5 +31,6 @@ figure {
 }
 
 figure > figcaption.figure-caption {
+    padding-top: .5em;
     font-style: italic;
 }

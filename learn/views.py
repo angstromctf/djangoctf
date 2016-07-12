@@ -1,8 +1,12 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import Template, Context
 
 from .models import Module
 
+def index(request):
+    root = Module.objects.get(prereqs=None)
+
+    return redirect('learn:module', root.name)
 
 def module(request, module_name):
     module = get_object_or_404(Module.objects, name=module_name)
