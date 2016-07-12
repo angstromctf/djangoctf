@@ -3,7 +3,7 @@ from django.db import models
 
 class Module(models.Model):
     # Textual information associated with module
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     title = models.CharField(max_length=128)
     text = models.TextField()
 
