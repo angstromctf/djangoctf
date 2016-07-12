@@ -21,10 +21,10 @@
     <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
     <div class="row">
-        <nav class="col-xs-12 col-sm-2 module-nav">
+        <nav class="col-xs-12 col-sm-3 module-nav">
             {% module_tree root %}
         </nav>
-        <div class="col-xs-12 col-sm-10 module">
+        <div class="col-xs-12 col-sm-9 module">
             <header class="page-title">
                 <div class="container">
                     <h1>{{ module.title }}</h1>
@@ -32,6 +32,15 @@
             </header>
 
             {{ contents|safe|linebreaks }}
+
+            <div style="float: right;">
+                {% if module.first_child %}
+                    Next: <a href="{% url 'learn:module' module.first_child.name %}">{{ module.first_child.title }} &raquo;</a>
+                {% elif module.next %}
+                    Next: <a href="{% url 'learn:module' module.next.name %}">{{ module.next.title }} &raquo;</a>
+                {% endif %}
+            </div>
+
         </div>
     </div>
 {% endblock %}

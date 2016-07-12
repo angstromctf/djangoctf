@@ -1,18 +1,31 @@
 nav.module-nav {
-    background-color: #F5F5F5;
+    background-color: #ecf0f1;
     margin-top: 5em;
+    border-radius: 4px;
+    text-align: left;
 }
 
 nav.module-nav > ol {
     margin-top: 1em;
     margin-bottom: 1em;
+    padding: 0;
 }
 
-a#current-module {
-    color: #2c3e50;
+nav.module-nav #active {
+    color: #95a5a6;
 }
 
 div.module {
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 3em;
+}
+
+ol {
+    counter-reset: section;
+    list-style-type: none;
+    padding-left: 1em;
+}
+
+li::before {
+    counter-increment: section;
+    content: counters(section,".") " ";
 }
