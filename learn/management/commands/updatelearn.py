@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 module.title = data['title']
 
                 file = open(os.path.join(dir, 'contents.md'))
-                module.text = markdown2.markdown(file.read())
+                module.text = markdown2.markdown(file.read(), extras=['code-friendly', 'tables'])
                 file.close()
 
                 module.parent = parent

@@ -10,8 +10,23 @@ def module(request, module_name):
 
     template = Template(module.text)
 
+    next = None
+
+    if module.first_child:
+        next = module.first_child
+
+    current = module
+
+    while current:
+        if current.next:
+            next = current.next
+            break
+
+        current = current.parent
+
     return render(request, "module.html", {
         'module': module,
         'root': root,
-        'contents': template.render(Context())
+        'contents': template.render(Context()),
+        'next': next
     })
