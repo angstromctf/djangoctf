@@ -20,8 +20,11 @@ nav.module-nav #active {
     color: #2c3e50;
 }
 
-div.module {
-    padding-left: 3em;
+/* When it displays next to nav */
+@media (min-width: 576px) {
+    div.module {
+        padding-left: 50px;
+    }
 }
 
 /* This part will hopefully be unnecessary with Bootstrap 4 */
