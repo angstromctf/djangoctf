@@ -6,11 +6,12 @@ import os
 import json
 import markdown2
 
+
 class Command(BaseCommand):
-    help = 'Update learning modules by reading from directory.'
+    help = 'Updates learning modules by reading from directory.'
 
     def add_arguments(self, parser):
-        parser.add_argument('module-dir', type=str)
+        parser.add_argument('module-dir', type=str, help='path to learn repository')
 
     def handle(self, *args, **options):
         modules = {}
