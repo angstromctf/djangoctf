@@ -37,21 +37,6 @@ class Problem(models.Model):
         return "Problem[" + self.title + "]"
 
 
-class Update(models.Model):
-    """Model for an update message for the CTF. Contains title, text,
-    and date."""
-    
-    # Information about an update
-    title = models.CharField(max_length=200)
-    text = models.CharField(max_length=500)
-    time = models.DateTimeField(default=timezone.now)
-
-    # Magic methods
-    def __str__(self):
-        """Represent the update as a string."""
-        return "Update[" + self.title + "]"
-
-
 class UserProfile(models.Model):
     """Model for a user registered with the CTF. Contains name,
     school, participation, solved problems, and score data."""
