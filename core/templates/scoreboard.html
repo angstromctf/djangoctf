@@ -25,7 +25,6 @@ The contest hasn't started yet! For now, check out the teams that have signed up
 <br/>
 <br/>
 {% endif %}
-(*) - shipping address supplied
 <table class="table table-striped">
 	<thead>
 		<tr>
@@ -38,19 +37,19 @@ The contest hasn't started yet! For now, check out the teams that have signed up
             {% endif %}
 		</tr>
 	</thead>
+
     {% if started %}
-        {% for team in team_list %}
+        {% for team in scroring_teams%}
             <tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ team.name }}
-                {% if team.address_street %}*{% endif %}
                 </td>
                 <td>{{ team.school }}</td>
                 <td>{{ team.score }}</td>
             </tr>
         {% endfor %}
     {% else %}
-        {% for team in team_list %}
+        {% for team in all_teams %}
             <tr onclick="document.location = '/profile/{{ team.id|urlencode }}';">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ team.name }}</td>

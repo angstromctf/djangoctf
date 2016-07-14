@@ -8,7 +8,7 @@ import markdown2
 
 
 class Command(BaseCommand):
-    help = 'Updates learning modules by reading from directory.'
+    help = 'Imports learning modules from repository.'
 
     def add_arguments(self, parser):
         parser.add_argument('module-dir', type=str, help='path to learn repository')
@@ -54,14 +54,6 @@ class Command(BaseCommand):
         parse(options['module-dir'], '', None)
 
         for module, data in modules.items():
-            if 'prereqs' in data:
-                module.prereqs.set(Module.objects.filter(name__in=data['prereqs']).all())
-            else:
-                module.prereqs.set(module.prevs.all())
-
-                if module.first_parents.count() != 0:
-                    module.prereqs.add(module.first_parents.all()[0])
-
             if 'next' in data:
                 module.next = Module.objects.get(name=data['next'])
 
@@ -69,3 +61,12 @@ class Command(BaseCommand):
                 module.first_child = Module.objects.get(name=data['first_child'])
 
             module.save()
+
+        for module, data in modules.items():
+            if 'prereqs' in data:
+                module.prereqs.set(Module.objects.filter(name__in=data['prereqs']).all())
+            else:
+                module.prereqs.set(module.prevs.all())
+
+                if module.first_parents.count() != 0:
+                    module.prereqs.add(module.first_parents.all()[0])

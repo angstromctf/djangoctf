@@ -14,12 +14,12 @@ class Problem(models.Model):
     text = models.TextField()
     value = models.IntegerField()
     category = models.CharField(max_length=50)
-
     hint_text = models.TextField()
+
+    # Hash the flags so attackers can't get them even with database access
     flag_sha512_hash = models.CharField(max_length=128)
 
-    # Whether solving this problem should update a team's "last submitted" time
-    # Only should be off for things like survey problems
+    # Whether solving this problem should update a team's "last submitted" time (off for survey problems)
     update_time = models.BooleanField(default=True)
 
     # How many teams have solved this problem
@@ -38,7 +38,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User)
 
     # The user's team
-    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True, default=None)
+    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
+                             default=None, related_name="profiles")
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, default="")
