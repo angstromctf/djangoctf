@@ -1,10 +1,9 @@
 from django.conf import settings
-from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm
+from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAddressForm
 from core.models import Team
 from core.decorators import team_required
 
@@ -12,33 +11,27 @@ import logging
 from random import choice
 
 
-# Create random team code
+# Creates a random team code
 def create_code():
     return "".join([choice("0123456789abcdef") for x in range(20)])
 
 
-# Generate shell username
+# Generates a random shell username
 def create_shell_username():
     return "team" + "".join([choice("0123456789") for x in range(5)])
 
 
+# Generates a random shell password
 def create_shell_password():
     return "".join([choice("0123456789abcdef") for x in range(12)])
 
 logger = logging.getLogger(__name__)
 
-# Handle the HTTP request
 @login_required
 @team_required(invert=True)
 @require_POST
-def create_team(request: HttpRequest):
-    """Create the account page."""
-
-    shell_enabled = settings.CONFIG['shell']['enabled']
-
-    if shell_enabled:
-        ssh_priv_key_path = settings.CONFIG['shell']['ssh_key_path']
-        shell_hostname = settings.CONFIG['shell']['hostname']
+def create_team(request):
+    """Creates a team for the user and adds them to that team."""
 
     form = CreateTeamForm(request.POST)
 
@@ -53,42 +46,45 @@ def create_team(request: HttpRequest):
 
         shell_password = create_shell_password()
 
-        if shell_enabled:
+        # Check if we need to set up a shell account for the team
+        if settings.CONFIG['shell']['enabled']:
             import paramiko
 
+            ssh_private_key_path = settings.CONFIG['shell']['ssh_key_path']
+            shell_hostname = settings.CONFIG['shell']['hostname']
+
             # SSH to shell server and create the account
-            pkey = paramiko.RSAKey.from_private_key_file(ssh_priv_key_path)
+            private_key = paramiko.RSAKey.from_private_key_file(ssh_private_key_path)
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=shell_hostname, username='root', pkey=pkey)
+            ssh.connect(hostname=shell_hostname, username='root', pkey=private_key)
             createuser_command = "addctfuser " + shell_username + " " + shell_password
             stdin, stdout, stderr = ssh.exec_command(createuser_command)
 
             stdout_data = stdout.read().decode('utf-8')
             stderr_data = stderr.read().decode('utf-8')
 
-            if stderr != '':
-                logger.error("""Error while creating shell account.
-                stdout: """ + stdout_data + """
-                stderr: """ + stderr_data)
+            if stderr != "":
+                logger.error("Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))
 
+        # Create the team
         team = Team(name=form.cleaned_data['name'],
-                    user_count=1,
                     school=form.cleaned_data['affiliation'],
                     shell_username=shell_username,
                     shell_password=shell_password,
                     code=code,
-                    eligible=request.user.userprofile.eligible)
-
+                    eligible=request.user.profile.eligible)
         team.save()
-        team.users.add(request.user)
 
-        request.user.userprofile.team = team
-        request.user.userprofile.save()
+        # Add the user to that team
+        request.user.profile.team = team
+        request.user.profile.save()
 
-        return redirect('/account/')
+        return redirect('account')
 
-    return render(request, 'account.html', {'user': request.user,
-                                            'change_password': ChangePasswordForm(user=request.user),
-                                            'join_team': JoinTeamForm(user=request.user),
-                                            'create_team': form})
+    return render(request, 'account.html', {
+        'change_password': ChangePasswordForm(user=request.user),
+        'join_team': JoinTeamForm(user=request.user),
+        'create_team': form,
+        'address_form': TeamAddressForm()
+    })

@@ -6,16 +6,12 @@ from core.utils.time import before_start, after_end
 
 from functools import wraps
 
-"""
-Various authentication checks as decorators.
-"""
-
 
 def team_required(function=None, invert=False):
     def decorator(view):
         @wraps(view, assigned=available_attrs(view))
         def wrap(request, *args, **kwargs):
-            if (request.user.userprofile.team is not None) == invert:
+            if (request.user.profile.team is not None) == invert:
                 raise PermissionDenied
             else:
                 return view(request, *args, **kwargs)

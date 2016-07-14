@@ -15,9 +15,6 @@ from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithB
 import lob
 import requests
 
-"""
-All of the forms used in the site.
-"""
 
 class LoginForm(forms.Form):
     """

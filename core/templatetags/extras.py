@@ -9,7 +9,7 @@ register = template.Library()
 
 @register.filter
 def is_solved(problem, user):
-    return user.is_authenticated() and user.userprofile.team and problem in user.userprofile.team.solved.all()
+    return user.is_authenticated() and user.profile.team and problem in user.profile.team.solved.all()
 
 
 @register.filter

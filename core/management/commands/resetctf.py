@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
-from core.models import Problem, ProblemUpdate, CorrectSubmission, IncorrectSubmission, Team, UserProfile
+from core.models import Problem, ProblemUpdate, CorrectSubmission, IncorrectSubmission, Team, Profile
 
 class Command(BaseCommand):
     help = 'Resets the CTF game for a new year.'
@@ -33,4 +33,4 @@ class Command(BaseCommand):
 
         if yesno("Delete users?", default=False):
             User.objects.all().delete()
-            UserProfile.objects.all().delete()
+            Profile.objects.all().delete()

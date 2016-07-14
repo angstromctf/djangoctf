@@ -1,10 +1,8 @@
-#The view for the about page. Displays information about angstrom and the project.
-
 from django.http import HttpRequest
 from django.shortcuts import render
 
 
-# Handle the HTTP request
-def unsubscribe(request: HttpRequest):
+def unsubscribe(request):
+    # This is a worthless view that I'll delete soon
 
-    return render(request, "unsubscribe.html", {})
+    return render(request, "unsubscribe.html")

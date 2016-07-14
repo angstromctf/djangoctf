@@ -1,7 +1,4 @@
-import hashlib
-import json
-
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -10,7 +7,8 @@ from django.utils import timezone
 from core.models import Problem, CorrectSubmission, IncorrectSubmission
 from core.decorators import team_required, lock_before_contest, lock_after_contest
 
-# This file handles problem grading and the display for grading.
+import hashlib
+import json
 
 
 @require_POST
@@ -18,17 +16,15 @@ from core.decorators import team_required, lock_before_contest, lock_after_conte
 @team_required
 @lock_before_contest
 @lock_after_contest
-def submit_problem(request: HttpRequest):
-    """
-    View for submitting a problem through AJAX.  Login is required.
-    """
+def submit_problem(request):
+    """Handles submissions for specific problems and returns JSON data indicating success status."""
 
-    pid = int(request.POST.get("problem"))
+    problem_id = int(request.POST.get("problem"))
     guess = request.POST.get("guess").strip().lower()
 
-    problem = Problem.objects.get(id=pid)
+    problem = Problem.objects.get(id=problem_id)
 
-    team = request.user.userprofile.team
+    team = request.user.profile.team
 
     if problem in team.solved.all():
         # We've already solved the problem
@@ -72,7 +68,6 @@ def submit_problem(request: HttpRequest):
         solved = False
 
     html = render(request, "problem.html", {
-        'user': request.user,
         'problem': problem,
         'guess': guess,
         'enable_submission': True,

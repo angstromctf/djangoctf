@@ -1,17 +1,19 @@
-# Import
 from django.shortcuts import render, get_object_or_404
-from core.models import Team
 from django.utils import timezone
 
-from core.models import CorrectSubmission
+from core.models import CorrectSubmission, Team
 from core.utils.time import contest_start, contest_end, minutes
 
 
-def profile(request, teamid):
+def profile(request, team_id):
+    """Displays basic information and score progression for a given team."""
 
-    team = get_object_or_404(Team, id=teamid)
+    team = get_object_or_404(Team, id=team_id)
+
+    # Sort the problems this team has solved
     ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
 
+    # Graph the score progression of this team
     solutions_list = []
 
     submissions = CorrectSubmission.objects.all().filter(team=team)
@@ -20,7 +22,6 @@ def profile(request, teamid):
         delta = sub.time - contest_start
 
         solutions_list.append([minutes(delta), sub.new_score])
-
 
     solutions_list.sort()
     solutions_list.insert(0, [0, 0])

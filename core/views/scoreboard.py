@@ -1,14 +1,13 @@
-from django.http import HttpRequest
 from django.shortcuts import render
 from django.utils import timezone
 
 from core.models import Team, CorrectSubmission
 from core.utils.time import contest_start, contest_end, minutes
 
-def scoreboard(request: HttpRequest):
-    """
-    View for the scoreboard page.
-    """
+
+def scoreboard(request):
+    """Displays the scoreboard as a list of teams and graph."""
+
     team_list = Team.objects.filter(score__gt=0).order_by('-score', 'score_lastupdate')
 
     solutions_list = []
@@ -31,7 +30,6 @@ def scoreboard(request: HttpRequest):
     solutions_list[-1] = [solutions_list[-1][0]] + list(map(lambda x: team_list[x].score, range(graph_size)))
     
     return render(request, 'scoreboard.html', {
-        'user': request.user,
         'team_list': team_list,
         'data': str(solutions_list).replace('-1', 'null').replace('(', '[').replace(')', ']'),
     })

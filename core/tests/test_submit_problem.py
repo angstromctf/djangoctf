@@ -8,7 +8,7 @@ from django.core.exceptions import PermissionDenied
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import AnonymousUser
 from ..views import submit_problem
-from ..models import User, UserProfile, Team, Problem
+from ..models import User, Profile, Team, Problem
 
 
 class SubmitProblemTest(TestCase):
@@ -34,8 +34,8 @@ class SubmitProblemTest(TestCase):
                                                      first_name="User",
                                                      last_name="Noteam")
         self.no_team_user.is_active = True
-        self.no_team_user.userprofile = UserProfile(user=self.no_team_user, eligible=True)
-        self.no_team_user.userprofile.save()
+        self.no_team_user.profile = Profile(user=self.no_team_user, eligible=True)
+        self.no_team_user.profile.save()
         self.no_team_user.save()
 
         self.team_user = User.objects.create_user("yesteam",
@@ -45,8 +45,8 @@ class SubmitProblemTest(TestCase):
                                                   last_name="Yesteam")
 
         self.team_user.is_active = True
-        self.team_user.userprofile = UserProfile(user=self.team_user, eligible=True)
-        self.team_user.userprofile.save()
+        self.team_user.profile = Profile(user=self.team_user, eligible=True)
+        self.team_user.profile.save()
         self.team_user.save()
 
         self.team = Team(name="team",
@@ -57,9 +57,8 @@ class SubmitProblemTest(TestCase):
                          code="",
                          eligible=True)
         self.team.save()
-        self.team.users.add(self.team_user)
-        self.team_user.userprofile.team = self.team
-        self.team_user.userprofile.save()
+        self.team_user.profile.team = self.team
+        self.team_user.profile.save()
 
     def test_anonymous(self):
         """

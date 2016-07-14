@@ -5,10 +5,6 @@ from django.shortcuts import render
 
 @login_required
 def score(request: HttpRequest):
-    """
-    View for the score in the menu bar.  Login is required.
-    """
+    """Displays the score in the menu bar. Reloaded when the player solves a problem."""
 
-    return render(request, "score.html", {
-        'user': request.user,
-    })
+    return render(request, "score.html")

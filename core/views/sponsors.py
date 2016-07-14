@@ -3,6 +3,6 @@ from django.shortcuts import render
 
 
 def sponsors(request: HttpRequest):
-    """Handle a request for the sponsors page."""
+    """Displays the competition sponsors."""
 
     return render(request, "sponsors.html")

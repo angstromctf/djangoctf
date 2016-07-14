@@ -1,18 +1,12 @@
-# Import
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
 from core.utils.globals import GENDER_CHOICES, RACE_CHOICES, ELIGIBLE_CHOICES
 
-"""
-Various core database models for angstrom.
-"""
-
 
 class Problem(models.Model):
-    """Model for a CTF question. Contains name, title, text, value,
-    category, hint, and flag."""
+    """A CTF problem with information."""
     
     # Standard information about the problem
     name = models.CharField(max_length=200)
@@ -37,9 +31,8 @@ class Problem(models.Model):
         return "Problem[" + self.title + "]"
 
 
-class UserProfile(models.Model):
-    """Model for a user registered with the CTF. Contains name,
-    school, participation, solved problems, and score data."""
+class Profile(models.Model):
+    """Extra information belonging to users, such as demographics and teams, in addition to normal Django User model."""
     
     # Which user this belongs to
     user = models.OneToOneField(User)
@@ -66,22 +59,18 @@ class UserProfile(models.Model):
 
 
 class Team(models.Model):
-    """Model for a team registered with the CTF. Contains name,
-    school, participation, solved problems, score data, and shell
-    login info. """
-
-    # Link to team members
-    users = models.ManyToManyField(User)
+    """A team registered with the CTF. Contains identity and tracks problems solved and score. """
 
     # Which problems this team has solved
     solved = models.ManyToManyField(Problem)
 
     # Information about team
     name = models.CharField(max_length=128)
-    user_count = models.IntegerField(default=0)
     school = models.CharField(max_length=128)
+
     eligible = models.BooleanField(default=True)
     eligible2 = models.IntegerField(blank=True, choices=ELIGIBLE_CHOICES, null=True)
+
     address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
     address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
@@ -106,7 +95,7 @@ class Team(models.Model):
 
 
 class CorrectSubmission(models.Model):
-    """A model that represents a correct submission for a problem."""
+    """A correct submission for a problem."""
 
     # Link to team and problem
     team = models.ForeignKey(Team)
@@ -123,7 +112,7 @@ class CorrectSubmission(models.Model):
 
 
 class IncorrectSubmission(models.Model):
-    """A model that represents an incorrect submission for a problem."""
+    """An incorrect submission for a problem."""
 
     # Link to team and problem
     team = models.ForeignKey(Team)
@@ -140,6 +129,8 @@ class IncorrectSubmission(models.Model):
 
 
 class ProblemUpdate(models.Model):
+    """An update to a problem."""
+
     # Link to problem
     problem = models.ForeignKey(Problem)
 

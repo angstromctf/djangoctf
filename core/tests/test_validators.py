@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from core.views.team.create_team import create_code
-from ..models import User, UserProfile, Team
+from ..models import User, Profile, Team
 from ..validators import validate_unique_email, validate_unique_team_name, validate_unique_username
 
 
@@ -19,8 +19,8 @@ class ValidatorTests(TestCase):
                                             first_name="User",
                                             last_name="User{}".format(i))
             user.is_active = True
-            user.userprofile = UserProfile(user=user, eligible=True)
-            user.userprofile.save()
+            user.profile = Profile(user=user, eligible=True)
+            user.profile.save()
             user.save()
             users.append(user)
 
@@ -34,10 +34,8 @@ class ValidatorTests(TestCase):
                         eligible=True)
             team.save()
             for j in range(i * 4, i * 4 + 4):
-                team.users.add(users[i])
-                team.save()
-                users[i].userprofile.team = team
-                users[i].userprofile.save()
+                users[i].profile.team = team
+                users[i].profile.save()
 
     def test_unique_email(self):
         # It would raise an exception if the email already existed

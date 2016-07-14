@@ -14,7 +14,7 @@
 
 {% block content %}
 
-{% if user.is_authenticated and not user.userprofile.team %}
+{% if user.is_authenticated and not user.profile.team %}
     Looks like you haven't joined a team yet!  Head over to <a href="/account">Account</a> to join one!
     <br/><br/>
 {% endif %}
