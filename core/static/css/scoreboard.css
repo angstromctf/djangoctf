@@ -1,9 +1,11 @@
-/* CSS for scoreboard page */
-
 div#chart-div {
     width: 70vw;
     height: 50vh;
     margin-bottom: 1em;
     margin-left: auto;
     margin-right: auto;
+}
+
+td {
+    cursor: pointer;
 }

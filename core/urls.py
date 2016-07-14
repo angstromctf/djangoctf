@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^scoreboard/$', views.scoreboard, name='scoreboard'),
     url(r'^scoreboard/feed/$', views.jsonfeed, name='jsonfeed'),
     url(r'^score/', views.user.score, name='score'),
-    url(r'^profile/(?P<team_id>\d+)$', views.team.profile),
+    url(r'^profile/(\d+)$', views.team.profile, name='profile'),
 
     url(r'^problems/$', views.problems.problems, name='problems'),
     url(r'^problems/submit_problem/$', views.problems.submit_problem, name='submit_problem'),

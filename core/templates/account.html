@@ -29,7 +29,7 @@
 
                 <p>Your team has {{ user.profile.team.user_count }} out of 5 possible members:</p>
                 <ul>
-                    {% for team_member in user.profile.team.profile_set %}
+                    {% for team_member in user.profile.team.profiles.all %}
                         <li>{{ team_member.user.first_name }}&nbsp;{{ team_member.user.last_name }}
                         &nbsp;({{ team_member.user.username }})</li>
                     {% endfor %}

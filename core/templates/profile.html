@@ -29,8 +29,8 @@
 
     <h3>Team Members</h3>
     <ul>
-    {% for member in team.users.all %}
-        <li>{{ member.username }}</li>
+    {% for member in team.profiles.all %}
+        <li>{{ member.user.username }}</li>
     {% endfor %}
     </ul>
 
