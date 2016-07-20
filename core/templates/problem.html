@@ -15,7 +15,7 @@
                     {% endif %}
                 {% endif %}
 
-                ({{ problem.solves }} solve{{ problem.solves|pluralize }})
+                ({{ problem.solvers.count }} solve{{ problem.solvers.count|pluralize }})
             </span>
         </h3>
     </div>

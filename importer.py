@@ -104,7 +104,7 @@ for category in listdir(path):
 
             successful += 1
 
-print("Successful imported {:d}/{:d} problems".format(successful, total))
+print("Successfully imported {:d}/{:d} problems".format(successful, total))
 print()
 
 # Now copy static files

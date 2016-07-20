@@ -26,6 +26,3 @@ class Command(BaseCommand):
 
                 team.score -= problem.value
                 team.save()
-
-        problem.solves = 0
-        problem.save()

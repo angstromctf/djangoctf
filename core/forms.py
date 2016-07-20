@@ -117,16 +117,14 @@ class JoinTeamForm(forms.Form):
         )
 
     def clean_code(self):
-        # Get all teams with the specified team code
-        teams = Team.objects.all().filter(code=self.cleaned_data['code'])
-
-        # Throw an error if the team code wasn't found
-        if teams.count() != 1:
+        try:
+            # Get all teams with the specified team code
+            team = Team.objects.get(code=self.cleaned_data['code'])
+        except Team.DoesNotExist:
+            # Throw an error if the team code wasn't found
             raise ValidationError("Team code not found.")
 
-        team = teams[0]
-
-        if team.user_count == 5:
+        if team.profiles.count() == 5:
             raise ValidationError("Team is already full.")
 
         return self.cleaned_data['code']

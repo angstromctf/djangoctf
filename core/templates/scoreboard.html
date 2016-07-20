@@ -39,7 +39,7 @@ The contest hasn't started yet! For now, check out the teams that have signed up
 	</thead>
 
     {% if started %}
-        {% for team in scroring_teams %}
+        {% for team in scoring_teams %}
             <tr onclick="document.location = '{% url 'profile' team.id %}';">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ team.name }}

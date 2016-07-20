@@ -22,13 +22,31 @@ class Problem(models.Model):
     # Whether solving this problem should update a team's "last submitted" time (off for survey problems)
     update_time = models.BooleanField(default=True)
 
-    # How many teams have solved this problem
-    solves = models.IntegerField(default=0)
-
     # Magic methods
     def __str__(self):
         """Represent the problem as a string."""
         return "Problem[" + self.title + "]"
+
+    def save(self, *args, **kwargs):
+        try:
+            old_value = Problem.objects.get(id=self.id).value
+
+            if self.value != old_value:
+                delta = self.value - old_value
+
+                for team in Team.objects.filter(solved=self):
+                        team.score += delta
+                        team.save()
+
+                        correct = CorrectSubmission.objects.get(team=team, problem=self)
+                        for submission in CorrectSubmission.objects.filter(team=team):
+                            if submission.time >= correct.time:
+                                submission.new_score += delta
+                                submission.save()
+        except Problem.DoesNotExist:
+            pass
+
+        super(Problem, self).save(*args, **kwargs)
 
 
 class Profile(models.Model):
@@ -63,7 +81,7 @@ class Team(models.Model):
     """A team registered with the CTF. Contains identity and tracks problems solved and score. """
 
     # Which problems this team has solved
-    solved = models.ManyToManyField(Problem)
+    solved = models.ManyToManyField(Problem, related_name="solvers")
 
     # Information about team
     name = models.CharField(max_length=128)

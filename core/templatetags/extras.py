@@ -38,12 +38,15 @@ def grade_to_name(grade):
 
 @register.filter
 def category_icon(name):
-    return {'crypto': 'pencil',
-            'binary': 'wrench',
-            'web': 'globe',
-            're': 'cog',
-            'forensics': 'search',
-            'misc': 'star'}[name]
+    return {
+        'crypto': 'pencil',
+        'binary': 'wrench',
+        'web': 'globe',
+        're': 'cog',
+        'forensics': 'search',
+        'misc': 'star',
+        'master': 'flag'
+    }[name]
 
 
 @register.filter

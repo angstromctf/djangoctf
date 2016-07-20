@@ -17,11 +17,9 @@ def join_team(request):
 
     if form.is_valid():
         team = Team.objects.get(code=form.cleaned_data['code'])
-        team.user_count += 1
         team.eligible = team.eligible and request.user.profile.eligible
 
         team.save()
-        team.users.add(request.user)
 
         request.user.profile.team = team
         request.user.profile.save()

@@ -1,14 +1,6 @@
 {% load extras %}
 {% load humanize %}
 
-{% if user.is_authenticated %}
-{% if user.profile.team %}
+{% if user.is_authenticated and user.profile.team %}
     <p class="navbar-text">{{ user.profile.team.score }} points ({{ user.profile.team|place|ordinal }} place)</p>
-    <li><a href="{% url 'shelld' %}">Shell</a></li>
-{% endif %}
-<li><a href="{% url 'account' %}">Account</a></li>
-<li><a href="{% url 'logout' %}">Logout</a></li>
-{% else %}
-<li><a href="{% url 'login' %}">Login</a></li>
-<li><a href="{% url 'signup' %}">Sign Up</a></li>
 {% endif %}
