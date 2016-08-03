@@ -34,7 +34,6 @@ class Command(BaseCommand):
                 with open(os.path.join(dir, 'contents.md')) as file:
                     module.text = markdown2.markdown(file.read(), extras=['code-friendly', 'tables'])
 
-
                 module.parent = parent
 
                 module.save()
@@ -57,16 +56,16 @@ class Command(BaseCommand):
             if 'next' in data:
                 module.next = Module.objects.get(name=data['next'])
 
-            if 'first_child' in data:
-                module.first_child = Module.objects.get(name=data['first_child'])
+            if module.children.count() > 0:
+                module.first_child = module.children.get(prevs=None)
 
             module.save()
 
         for module, data in modules.items():
-            if 'prereqs' in data:
-                module.prereqs.set(Module.objects.filter(name__in=data['prereqs']).all())
-            else:
-                module.prereqs.set(module.prevs.all())
+            module.prereqs.set(module.prevs.all())
 
-                if module.first_parents.count() != 0:
-                    module.prereqs.add(module.first_parents.all()[0])
+            if 'prereqs' in data:
+                module.prereqs.add(Module.objects.filter(name__in=data['prereqs']).all())
+
+            if module.first_parents.count() != 0:
+                module.prereqs.add(module.first_parents.all()[0])

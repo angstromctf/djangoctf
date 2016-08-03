@@ -7,7 +7,7 @@ def index(request):
     """Landing page for the learning platform, redirects to the first module."""
 
     # Find module with no prerequisites (this is defined as the first module)
-    root = Module.objects.get(prereqs=None)
+    root = Module.objects.get(prereqs=None, parent=None)
 
     return redirect('learn:module', root.name)
 
@@ -18,7 +18,7 @@ def module(request, module_name):
     module = get_object_or_404(Module.objects, name=module_name)
 
     # Find module with no prerequisites as the first/root module
-    root = Module.objects.get(prereqs=None)
+    root = Module.objects.get(prereqs=None, parent=None)
 
     # Now we try to find the "next" module after this one: not necessarily the same as module.next
     # module.next represents the next sibling of module in the tree
