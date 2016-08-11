@@ -18,10 +18,12 @@ function setupTitle() {
     back_width = Math.floor((canvas.width-PAD)/(metrics.width+PAD));
     back_height = Math.floor((canvas.height-PAD)/(10+PAD));
 
+    back = [];
+
     for (var j = 0; j < back_height; j++) {
         var arr = [];
         for (var i = 0; i < back_width; i++) {
-            arr.push([Math.floor(10+Math.random()*200), DATA[Math.floor(Math.random()*DATA.length)]]);
+            arr.push([Math.floor(10+Math.random()*130), DATA[Math.floor(Math.random()*DATA.length)]]);
         }
 
         back.push(arr);
@@ -40,14 +42,16 @@ function renderTitle() {
     ctx.font = "10pt monospace";
     var metrics = ctx.measureText("a");
 
-    ctx.textBaseline = "top";
+    ctx.textBaseline = "hanging";
 
     for (var j = 0; j < back_height; j++) {
         for (var i = 0; i < back_width; i++) {
             ctx.fillStyle = "rgb(0,"+back[j][i][0]+",0)";
-            ctx.fillText(back[j][i][1], PAD+i*(metrics.width+PAD), PAD+j*(10+PAD));
+            ctx.fillText(back[j][i][1], (canvas.width-back_width*(metrics.width+PAD)+PAD)/2+i*(metrics.width+PAD), (canvas.height-back_height*(10+PAD)+PAD)/2+j*(10+PAD));
         }
     }
+
+    console.log(canvas.width/2-back_width*(metrics.width+PAD)/2);
 
     ctx.font = canvas.height/5 + "pt monospace";
     ctx.fillStyle = "white";
@@ -68,7 +72,7 @@ function renderTitle() {
 
     var arr = [];
     for (var i = 0; i < back_width; i++) {
-        arr.push([Math.floor(10+Math.random()*200), DATA[Math.floor(Math.random()*DATA.length)]]);
+        arr.push([Math.floor(10+Math.random()*130), DATA[Math.floor(Math.random()*DATA.length)]]);
     }
     back[0] = arr;
 }
@@ -146,3 +150,5 @@ $(window).load( function startRendering() {
     setupTitle();
     window.setInterval(renderTitle, 200);
 });
+
+$(window).resize(setupTitle);
