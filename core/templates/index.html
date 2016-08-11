@@ -23,13 +23,16 @@
 
     <br/>
 
-    <p>Welcome to {{ ctf_name }}, a new capture-the-flag (CTF) competition hosted and written by high school students!
-    CTF cybersecurity competitions have become an increasingly popular form of challenges for aspiring cybersecurity
-    students.
+    <p>Welcome to angstromCTF, a capture-the-flag (CTF) competition hosted and written by entirely by students at Montgomery Blair High School!
+    CTF cybersecurity competitions have become an increasingly popular way for students to learn more about cybersecurity
+    and develop and refine their hacking skills.
     These competitions are designed to <strong>educate and inspire high school students through interactive hacking
-    challenges.</strong> After we saw the great success of high-school CTF games (especially
-    <a href="https://picoctf.com/" target="_blank">picoCTF</a>), we decided to run our own CTF competition called
-    {{ ctf_name }}.</p>
+    challenges.</strong></p>
+
+    <p>The first angstromCTF took place April 8-17, 2016. It was a phenomenal success, with almost 500 teams participating.
+    This year, we're following up with exciting new problems and prizes. One of our chief goals this year to make our competition
+    <strong>as accessible as possible</strong> to students with <strong>little to no background knowledge in hacking
+    and cybersecurity</strong>. If you're looking for where to start, check out our <a href="{% url 'learn:index' %}">learning materials</a>.</p>
 
     {% if not user.is_authenticated %}
     <br/>
@@ -91,12 +94,6 @@
             memory forensics, data recovery, and system examination. You can find the flag if you look carefully enough!
         </div>
         <div class="lg-col-2"></div>
-        <!--div class="col-lg-4">
-            <div class="category-icon" style="background-color: lightseagreen;"><span class="glyphicon glyphicon-flash" aria-hidden="true"></span></div>
-            <h4 class="category">Hardware</h4>
-            Explore your computer at a lower level by creating and hacking hardware, from transistors all the way
-            to entire processors.  Design, simplify, and exploit circuits to retrieve the flag!
-        </div-->
     </div>
 
     <link href="{% static 'css/index.css' %}" rel="stylesheet">

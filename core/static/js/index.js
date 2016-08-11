@@ -53,8 +53,14 @@ function renderTitle() {
     ctx.fillStyle = "white";
     ctx.textBaseline = "middle";
 
-    metrics = ctx.measureText("angstromCTF");
-    ctx.fillText("angstromCTF", canvas.width/2-metrics.width/2, canvas.height/2);
+    metrics = ctx.measureText("angstromCTF 2");
+    ctx.fillText("angstromCTF 2", canvas.width/2-metrics.width/2, canvas.height/2);
+
+    ctx.font = canvas.height/15 + "pt monospace";
+    ctx.fillStyle = "#AAF";
+
+    metrics = ctx.measureText("hacking competition coming this winter");
+    ctx.fillText("hacking competition coming this winter", canvas.width/2-metrics.width/2, 3*canvas.height/4);
 
     for (var j = back_height-1; j > 0; j--) {
         back[j] = back[j-1];
@@ -138,5 +144,5 @@ canvas.height = canvas.width / 4;
 
 $(window).load( function startRendering() {
     setupTitle();
-    window.setInterval(renderTitle, 250);
+    window.setInterval(renderTitle, 200);
 });
