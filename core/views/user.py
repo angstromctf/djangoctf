@@ -1,12 +1,57 @@
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth import login
 from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
+from django.conf import settings
 from django.utils import timezone
 
-from core.forms import CreateUserForm
+from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAddressForm, CreateUserForm
 from core.models import Profile
-from core.views.user.activation import generate_activation_key, send_activation_email
+from core.views.activation import generate_activation_key, send_activation_email
+
+
+@login_required
+def account(request):
+    """Displays a management panel for the user's account."""
+
+    return render(request, 'account.html', {
+        'change_password': ChangePasswordForm(user=request.user),
+        'join_team': JoinTeamForm(user=request.user),
+        'create_team': CreateTeamForm(),
+        'address_form': TeamAddressForm()
+    })
+
+
+@login_required
+@require_POST
+def change_password(request):
+    """Changes a user's password."""
+
+    form = ChangePasswordForm(request.POST, user=request.user)
+
+    if form.is_valid():
+        user = authenticate(username=request.user.get_username(), password=form.cleaned_data['password'])
+
+        user.set_password(form.cleaned_data["new_password"])
+        user.save()
+
+        login(request, user)
+
+    return render(request, 'account.html', {
+        'change_password': form,
+        'join_team': JoinTeamForm(user=request.user),
+        'create_team': CreateTeamForm(),
+        'address_form': TeamAddressForm()
+    })
+
+
+@login_required
+def score(request):
+    """Displays the score in the menu bar. Reloaded when the player solves a problem."""
+
+    return render(request, "score.html")
+
 
 
 def signup(request):

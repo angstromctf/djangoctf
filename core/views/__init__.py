@@ -1,12 +1,5 @@
-from .about import about
-from .chat import chat
-from .index import index
-from .scoreboard import scoreboard
-from .shelld import shelld
-from .unsubscribe import unsubscribe
-from .updates import updates
-from .sponsors import sponsors
-from .jsonfeed import jsonfeed
-from core.views import team
-from core.views import user
-from core.views import problems
+from .index import index, chat, updates, jsonfeed, about, unsubscribe, sponsors, shelld
+from .problems import problems, submit_problem
+from .activation import activation, new_activation_link
+from .team import create_team, join_team, profile, submit_addr, scoreboard
+from .user import account, change_password, score, signup

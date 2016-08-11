@@ -4,7 +4,7 @@ Test validators for uniqueness in the test database
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from core.views.team.create_team import create_code
+from core.views.team import create_code
 from ..models import User, Profile, Team
 from ..validators import validate_unique_email, validate_unique_team_name, validate_unique_username
 

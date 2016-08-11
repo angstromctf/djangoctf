@@ -48,7 +48,7 @@ def activation(request, key):
         'already_active': already_active,
         'activation_success': activation_success,
         'resend_userid': resend_userid}
-    )
+                  )
 
 
 def new_activation_link(request, user_id):

@@ -1,0 +1,232 @@
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.utils import timezone
+
+from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAddressForm
+from core.models import Team, CorrectSubmission, Profile
+from core.decorators import team_required
+from core.utils.time import contest_start, contest_end, minutes
+
+import logging
+from random import choice
+
+logger = logging.getLogger(__name__)
+
+
+# Creates a random team code
+def create_code():
+    return "".join([choice("0123456789abcdef") for x in range(20)])
+
+
+# Generates a random shell username
+def create_shell_username():
+    return "team" + "".join([choice("0123456789") for x in range(5)])
+
+
+# Generates a random shell password
+def create_shell_password():
+    return "".join([choice("0123456789abcdef") for x in range(12)])
+
+
+@login_required
+@team_required(invert=True)
+@require_POST
+def create_team(request):
+    """Creates a team for the user and adds them to that team."""
+
+    form = CreateTeamForm(request.POST)
+
+    if form.is_valid():
+        code = create_code()
+        while Team.objects.filter(code=code).count() > 0:
+            code = create_code()
+
+        shell_username = create_shell_username()
+        while Team.objects.filter(shell_username=shell_username).count() > 0:
+            shell_username = create_shell_username()
+
+        shell_password = create_shell_password()
+
+        # Check if we need to set up a shell account for the team
+        if settings.CONFIG['shell']['enabled']:
+            import paramiko
+
+            ssh_private_key_path = settings.CONFIG['shell']['ssh_key_path']
+            shell_hostname = settings.CONFIG['shell']['hostname']
+
+            # SSH to shell server and create the account
+            private_key = paramiko.RSAKey.from_private_key_file(ssh_private_key_path)
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(hostname=shell_hostname, username='root', pkey=private_key)
+            createuser_command = "addctfuser " + shell_username + " " + shell_password
+            stdin, stdout, stderr = ssh.exec_command(createuser_command)
+
+            stdout_data = stdout.read().decode('utf-8')
+            stderr_data = stderr.read().decode('utf-8')
+
+            if stderr != "":
+                logger.error("Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))
+
+        # Create the team
+        team = Team(name=form.cleaned_data['name'],
+                    school=form.cleaned_data['affiliation'],
+                    shell_username=shell_username,
+                    shell_password=shell_password,
+                    code=code,
+                    eligible=request.user.profile.eligible)
+        team.save()
+
+        # Add the user to that team
+        request.user.profile.team = team
+        request.user.profile.save()
+
+        return redirect('account')
+
+    return render(request, 'account.html', {
+        'change_password': ChangePasswordForm(user=request.user),
+        'join_team': JoinTeamForm(user=request.user),
+        'create_team': form,
+        'address_form': TeamAddressForm()
+    })
+
+
+@login_required
+@team_required(invert=True)
+@require_POST
+def join_team(request):
+    """Adds the user to a pre-existing team."""
+
+    form = JoinTeamForm(request.POST)
+
+    if form.is_valid():
+        team = Team.objects.get(code=form.cleaned_data['code'])
+        team.eligible = team.eligible and request.user.profile.eligible
+
+        team.save()
+
+        request.user.profile.team = team
+        request.user.profile.save()
+
+        return redirect('account')
+
+    return render(request, 'account.html', {
+        'change_password': ChangePasswordForm(user=request.user),
+        'join_team': form,
+        'create_team': CreateTeamForm(),
+        'address_form': TeamAddressForm()
+    })
+
+
+def profile(request, team_id):
+    """Displays basic information and score progression for a given team."""
+
+    team = get_object_or_404(Team, id=team_id)
+
+    # Sort the problems this team has solved
+    ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
+
+    # Graph the score progression of this team
+    solutions_list = []
+
+    submissions = CorrectSubmission.objects.all().filter(team=team)
+
+    for sub in submissions:
+        delta = sub.time - contest_start
+
+        solutions_list.append([minutes(delta), sub.new_score])
+
+    solutions_list.sort()
+    solutions_list.insert(0, [0, 0])
+    solutions_list.insert(0, ['X', team.name])
+
+    delta = min(timezone.now(), contest_end) - contest_start
+    solutions_list.append([minutes(delta), team.score])
+
+    return render(request, 'profile.html', {
+        'team': team,
+        'ordered_solves': ordered_solves,
+        'data': str(solutions_list).replace('(', '[').replace(')', ']'),
+    })
+
+
+@login_required
+@team_required
+@require_POST
+def submit_addr(request):
+    user_team = request.user.profile.team
+    team_member_list = Profile.objects.filter(team=user_team)
+    form = TeamAddressForm(request.POST)
+
+    if form.is_valid() and not user_team.address_street:
+        address_line1 = form.cleaned_data['street_address']
+        address_line2 = form.cleaned_data['street_address_line_2']
+        address_zip = form.cleaned_data['zip_5']
+        address_city = form.cleaned_data['city']
+        address_state = form.cleaned_data['state']
+
+        user_team = request.user.profile.team
+
+        user_team.address_street = address_line1
+        user_team.address_street_line_2 = address_line2
+        user_team.address_zip = address_zip
+        user_team.address_city = address_city
+        user_team.address_state = address_state
+        user_team.eligible2 = form.cleaned_data['eligible2']
+        user = request.user.profile
+        user.eligible = form.cleaned_data['eligible2']
+        user.save()
+        user_team.save()
+    else:
+
+        return render(request, 'account.html', {
+            'user': request.user,
+            'change_password': ChangePasswordForm(user=request.user),
+            'join_team': JoinTeamForm(user=request.user),
+            'team_member_list': team_member_list,
+            'create_team': CreateTeamForm(),
+
+            'address_form': form
+        })
+
+    return render(request, 'account.html', {
+        'change_password': ChangePasswordForm(user=request.user),
+        'join_team': JoinTeamForm(user=request.user),
+        'team_member_list': team_member_list,
+        'create_team': CreateTeamForm(),
+        'address_form': TeamAddressForm()
+    })
+
+
+def scoreboard(request):
+    """Displays the scoreboard as a list of teams and graph."""
+
+    all_teams = Team.objects.all()
+    scoring_teams = Team.objects.filter(score__gt=0).order_by('-score', 'score_lastupdate')
+
+    solutions_list = []
+    graph_size = min(5, Team.objects.filter(score__gt=0).count())
+
+    for x in range(graph_size):
+        submissions = CorrectSubmission.objects.all().filter(team=scoring_teams[x])
+
+        for sub in submissions:
+            delta = sub.time - contest_start
+
+            solutions_list.append([minutes(delta)] + [-1] * x + [sub.new_score] + [-1] * (graph_size - 1 - x))
+
+    delta = min(timezone.now(), contest_end) - contest_start
+    solutions_list.append([minutes(delta)] + [scoring_teams[x].score for x in range(graph_size)])
+
+    solutions_list.sort()
+    solutions_list.insert(0, [0] * (graph_size + 1))
+    solutions_list.insert(0, ['X'] + list(map(lambda x: scoring_teams[x].name, range(graph_size))))
+    solutions_list[-1] = [solutions_list[-1][0]] + list(map(lambda x: scoring_teams[x].score, range(graph_size)))
+
+    return render(request, 'scoreboard.html', {
+        'all_teams': all_teams,
+        'scoring_teams': scoring_teams,
+        'data': str(solutions_list).replace('-1', 'null').replace('(', '[').replace(')', ']'),
+    })

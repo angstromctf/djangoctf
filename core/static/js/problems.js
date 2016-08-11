@@ -15,9 +15,29 @@ function submit_problem(num) {
         },
 
         success : function(json) {
+            var icon, message;
+
+            switch (json.alert) {
+                case "already_solved":
+                    message = "<strong>Hmm?</strong> You've already solved this.";
+                    icon = "glyphicon glyphicon-info-sign";
+                    break;
+                case "correct":
+                    message = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)";
+                    icon = "glyphicon glyphicon-ok-sign";
+                    break;
+                case "incorrect":
+                    message = "<strong>Sorry.</strong> That was incorrect.";
+                    break;
+                case "incorrect_tried":
+                    message = "<strong>Oops!</strong> You've already tried this solution.";
+                    icon = "glyphicon glyphicon-remove-sign";
+                    break;
+            }
+
             $.notify({
-                icon: json.alert_class,
-                message: json.alert
+                icon: icon,
+                message: message
             }, {
                 type: 'info',
                 animate: {

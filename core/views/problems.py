@@ -1,3 +1,4 @@
+from django.template.context_processors import csrf
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -9,6 +10,24 @@ from core.decorators import team_required, lock_before_contest, lock_after_conte
 
 import hashlib
 import json
+
+
+@lock_before_contest
+def problems(request):
+    """Displays a list of all the problems."""
+
+    problem_list = Problem.objects.all().order_by("value")
+
+    # Create the context beforehand, so we can add CSRF data to it
+    context = {
+        "problem_list": problem_list,
+        "enable_submission": request.user.is_authenticated() and request.user.profile.team
+    }
+
+    # Add CSRF protection data to the context
+    context.update(csrf(request))
+
+    return render(request, "problems.html", context)
 
 
 @require_POST
@@ -28,8 +47,7 @@ def submit_problem(request):
 
     if problem in team.solved.all():
         # We've already solved the problem
-        alert = "<strong>Hmm?</strong> You've already solved this."
-        alert_class = "glyphicon glyphicon-info-sign"
+        alert = "already_solved"
 
         solved = True
     elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag_sha512_hash:
@@ -48,23 +66,18 @@ def submit_problem(request):
         solution = CorrectSubmission(team=team, problem=problem, new_score=team.score)
         solution.save()
 
-        problem.solves += 1
-        problem.save()
-
-        alert = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)"
-        alert_class = "glyphicon glyphicon-ok-sign"
+        alert = "correct"
 
         solved = True
     else:
-        alert = "<strong>Sorry.</strong> That was incorrect."
+        alert = "incorrect"
 
         if IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
-            alert = "<strong>Oops!</strong> You've already tried this solution."
+            alert = "incorrect_tried"
         else:
             solution = IncorrectSubmission(team=team, problem=problem, guess=guess)
             solution.save()
 
-        alert_class = "glyphicon glyphicon-remove-sign"
         solved = False
 
     html = render(request, "problem.html", {
@@ -74,5 +87,5 @@ def submit_problem(request):
         'solved': solved
     }).content
 
-    response_data = {"html": html.decode("utf-8"), "alert": alert, "alert_class": alert_class}
+    response_data = {"html": html.decode("utf-8"), "alert": alert}
     return HttpResponse(json.dumps(response_data), content_type="application/json")
