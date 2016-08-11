@@ -5,18 +5,12 @@
 {% block title %} {{ ctf_name }} {% endblock %}
 
 {% block pagetitle %}
-    <header class="page-title">
-        <div class="container">
-            <h1>Welcome to {{ ctf_name }}!</h1>
-        </div>
-    </header>
+    <canvas id="title-canvas"></canvas>
 {% endblock %}
 
 {% block css %}
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
 {% endblock %}
-
-
 
 {% block content %}
     <!--<div style="text-align: center;">
@@ -26,7 +20,7 @@
 
     <h4 style="text-align: center;" id="time"><br/></h4>
     <canvas id="clock">Lol, you don't have HTML5.</canvas>-->
-    
+
     <br/>
 
     <p>Welcome to {{ ctf_name }}, a new capture-the-flag (CTF) competition hosted and written by high school students!

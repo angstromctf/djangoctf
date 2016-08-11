@@ -33,3 +33,9 @@ canvas#clock {
 h2 {
     text-align: center;
 }
+
+canvas#title-canvas {
+    margin: 0;
+    padding: 0;
+    display: block;
+}

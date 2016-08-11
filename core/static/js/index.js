@@ -1,8 +1,72 @@
-/*Javascript for index page. Handles the countdown clock. */
-
 var START = 1460217600; //Start date of the competition, in seconds since epoch
 var END = 1460865600; //End date of the competition, in seconds since epoch
 
+var PAD = 10;
+var DATA = "abcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()-_=+[]\\;',./<>?:\"{}|";
+
+var back = [];
+var back_width, back_height;
+
+function setupTitle() {
+    var canvas = document.getElementById("title-canvas");
+    canvas.width = $("body").prop("clientWidth");
+    canvas.height = canvas.width/3;
+    var ctx = canvas.getContext("2d");
+
+    ctx.font = "10pt monospace";
+    var metrics = ctx.measureText("a");
+    back_width = Math.floor((canvas.width-PAD)/(metrics.width+PAD));
+    back_height = Math.floor((canvas.height-PAD)/(10+PAD));
+
+    for (var j = 0; j < back_height; j++) {
+        var arr = [];
+        for (var i = 0; i < back_width; i++) {
+            arr.push([Math.floor(10+Math.random()*200), DATA[Math.floor(Math.random()*DATA.length)]]);
+        }
+
+        back.push(arr);
+    }
+
+    renderTitle();
+}
+
+function renderTitle() {
+    var canvas = document.getElementById("title-canvas");
+    var ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = "10pt monospace";
+    var metrics = ctx.measureText("a");
+
+    ctx.textBaseline = "top";
+
+    for (var j = 0; j < back_height; j++) {
+        for (var i = 0; i < back_width; i++) {
+            ctx.fillStyle = "rgb(0,"+back[j][i][0]+",0)";
+            ctx.fillText(back[j][i][1], PAD+i*(metrics.width+PAD), PAD+j*(10+PAD));
+        }
+    }
+
+    ctx.font = canvas.height/5 + "pt monospace";
+    ctx.fillStyle = "white";
+    ctx.textBaseline = "middle";
+
+    metrics = ctx.measureText("angstromCTF");
+    ctx.fillText("angstromCTF", canvas.width/2-metrics.width/2, canvas.height/2);
+
+    for (var j = back_height-1; j > 0; j--) {
+        back[j] = back[j-1];
+    }
+
+    var arr = [];
+    for (var i = 0; i < back_width; i++) {
+        arr.push([Math.floor(10+Math.random()*200), DATA[Math.floor(Math.random()*DATA.length)]]);
+    }
+    back[0] = arr;
+}
+/*
 function renderTime() {
     var canvas = document.getElementById("clock");
     var ctx = canvas.getContext("2d");
@@ -70,9 +134,9 @@ var canvas = document.getElementById("clock");
 
 canvas.width = window.innerWidth / 1.5;
 canvas.height = canvas.width / 4;
+*/
 
 $(window).load( function startRendering() {
-    window.setInterval(renderTime, 1000);//rerenders at set intervals
-
-    renderTime();
+    setupTitle();
+    window.setInterval(renderTitle, 250);
 });
