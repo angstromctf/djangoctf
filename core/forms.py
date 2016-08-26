@@ -12,6 +12,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, HTML
 from crispy_forms.bootstrap import StrictButton, InlineRadios, Field, FieldWithButtons
 
+from django_countries import countries
+
 import lob
 import requests
 
@@ -148,6 +150,7 @@ class CreateUserForm(forms.Form):
     gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
     race = forms.ChoiceField(choices=RACE_CHOICES, required=False)
     age = forms.IntegerField(required=False)
+    country = forms.ChoiceField(choices=countries)
 
     def __init__(self, *args, **kwargs):
         captcha_enabled = settings.CONFIG['signup_captcha']['enabled']
@@ -177,7 +180,8 @@ class CreateUserForm(forms.Form):
                     and will not be disclosed to any other parties for any reason.</span><br/><br/><br/>"""),
                 InlineRadios('gender'),
                 InlineRadios('race'),
-                Field('age', placeholder='Age')
+                Field('age', placeholder='Age'),
+                Field('country', placeholder='Countries')
             ),
             HTML('<br/>'),
             (HTML('<div class="g-recaptcha" data-sitekey="' + public_key + '"></div>') if captcha_enabled else HTML('')),

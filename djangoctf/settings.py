@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'core',
     'learn',
     'crispy_forms',
+    'django_countries'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -159,3 +160,6 @@ if CONFIG['email']['enabled']:
     EMAIL_USE_TLS = True
     SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
     DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
+
+COUNTRIES_FIRST = ['US']
+COUNTRIES_FIRST_REPEAT = True

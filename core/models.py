@@ -160,3 +160,11 @@ class ProblemUpdate(models.Model):
     # Magic methods
     def __str__(self):
         return "%s updated at %s: %s" % (str(self.problem), str(self.time), str(self.time))
+
+class Sponsor(models.Model):
+    """A company or organization who sponsored this competition."""
+
+    # Company information
+    name = models.CharField(max_length=256)
+    text = models.TextField()
+

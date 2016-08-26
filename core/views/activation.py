@@ -12,7 +12,6 @@ from datetime import timedelta
 import hashlib
 import random
 
-
 EXPIRATION = timedelta(days=2)
 
 
@@ -47,8 +46,8 @@ def activation(request, key):
         'activation_expired': activation_expired,
         'already_active': already_active,
         'activation_success': activation_success,
-        'resend_userid': resend_userid}
-                  )
+        'resend_userid': resend_userid
+    })
 
 
 def new_activation_link(request, user_id):
@@ -81,12 +80,14 @@ def send_activation_email(user, request=None, use_https=False):
     with open('core/templates/activation_email_template.txt', 'r') as template_file:
         template = Template(template_file.read())
 
-    context = Context({'activation_key': user.profile.activation_key,
-                       'username': user.get_username(),
-                       'domain': current_site.domain,
-                       'ctf_name': ctf_name,
-                       'ctf_domain': ctf_domain,
-                       'protocol': link_protocol})
+    context = Context({
+        'activation_key': user.profile.activation_key,
+        'username': user.get_username(),
+        'domain': current_site.domain,
+        'ctf_name': ctf_name,
+        'ctf_domain': ctf_domain,
+        'protocol': link_protocol
+    })
 
     message_text = template.render(context)
 
