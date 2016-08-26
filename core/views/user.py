@@ -90,6 +90,8 @@ def signup(request):
                 profile.race = form.cleaned_data['race']
             if form.cleaned_data['age']:
                 profile.age = form.cleaned_data['age']
+            if form.cleaned_data['country']:
+                profile.age = form.cleaned_data['country']
 
             # Generate activation keys
             profile.activation_key = generate_activation_key(user.get_username())

@@ -4,6 +4,8 @@ from django.utils import timezone
 
 from core.utils.globals import GENDER_CHOICES, RACE_CHOICES, ELIGIBLE_CHOICES
 
+from django_countries.fields import CountryField
+
 
 class Problem(models.Model):
     """A CTF problem with information."""
@@ -70,11 +72,12 @@ class Profile(models.Model):
     gender = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
     race = models.IntegerField(blank=True, choices=RACE_CHOICES, null=True)
     age = models.IntegerField(blank=True, null=True)
+    country = CountryField(blank=True, null=True)
 
     # Magic methods
     def __str__(self):
         """Represent the user as a string."""
-        return self.user.username
+        return "Profile[" + self.user.username + "]"
 
 
 class Team(models.Model):

@@ -150,7 +150,7 @@ class CreateUserForm(forms.Form):
     gender = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
     race = forms.ChoiceField(choices=RACE_CHOICES, required=False)
     age = forms.IntegerField(required=False)
-    country = forms.ChoiceField(choices=countries)
+    country = forms.ChoiceField(choices=[('','')]+list(countries))
 
     def __init__(self, *args, **kwargs):
         captcha_enabled = settings.CONFIG['signup_captcha']['enabled']
@@ -258,13 +258,11 @@ class TeamAddressForm(forms.Form):
         if address_verification_enabled:
             lob.api_key = address_verification_api_key
             try:
-                print(self)
                 verifiedAddress = lob.Verification.create(
                     address_line1=cleaned_data.get("street_address"),
                     address_line2=cleaned_data.get("street_address_line_2"),
                     address_zip=cleaned_data.get("zip_5"),
                     address_country="US"
-
                 )
 
                 cleaned_data['street_address'] = verifiedAddress.address.address_line1
