@@ -278,9 +278,3 @@ class TeamAddressForm(forms.Form):
                                       "contact@angstromctf.com.")
 
         return cleaned_data
-
-
-
-
-
-
