@@ -23,7 +23,7 @@ SECRET_KEY = CONFIG['secret_key']
 DEBUG = CONFIG['debug']
 ALLOWED_HOSTS = CONFIG['allowed_hosts']
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 # Application definition
 
