@@ -19,7 +19,7 @@
 
 {% block content %}
     {% if started %}
-    <div id="chart-div"></div>
+    <canvas id="chart" width="4" height="1"></canvas>
 
     <strong>Score:</strong> {{ team.score }} ({{ team|place|ordinal }} place)
     <br/>
@@ -67,19 +67,12 @@
         Check back when the contest starts to see what problems this team has solved!
     {% endif %}
 
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    google.load('visualization', '1', {packages: ['corechart', 'line']});
-    google.setOnLoadCallback(drawBasic);
-
-    function drawBasic() {
-        var data = google.visualization.arrayToDataTable({{ data|safe }});
-
-        var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true, legend: {position:  'bottom'}};
-
-        var chart = new google.visualization.LineChart(document.getElementById('chart-div'));
-
-        chart.draw(data, options);
-    }
-    </script>
+{% if started %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
+<script type="text/javascript">
+var data = {{ data|safe }};
+var ctx = $('#chart')[0];
+</script>
+<script type="text/javascript" src="{% static 'js/progression.js' %}"></script>
+{% endif %}
 {% endblock %}

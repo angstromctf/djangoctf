@@ -31,6 +31,23 @@ def create_shell_password():
     return "".join([choice("0123456789abcdef") for x in range(12)])
 
 
+# Generates a score progression for a team suitable for Chart.js
+def score_progression(team):
+    submissions = CorrectSubmission.objects.all().filter(team=team)
+
+    # Add the origin
+    data = [{"x": 0, "y": 0}]
+
+    for sub in submissions:
+        # Add each submission
+        data.append({"x": minutes(sub.time - contest_start), "y": sub.new_score})
+
+    # Add final score
+    data.append({"x": minutes(min(timezone.now(), contest_end) - contest_start), "y": team.score})
+
+    return {"label": team.name, "data": data}
+
+
 @login_required
 @team_required(invert=True)
 @require_POST
@@ -121,38 +138,6 @@ def join_team(request):
     })
 
 
-def profile(request, team_id):
-    """Displays basic information and score progression for a given team."""
-
-    team = get_object_or_404(Team, id=team_id)
-
-    # Sort the problems this team has solved
-    ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
-
-    # Graph the score progression of this team
-    solutions_list = []
-
-    submissions = CorrectSubmission.objects.all().filter(team=team)
-
-    for sub in submissions:
-        delta = sub.time - contest_start
-
-        solutions_list.append([minutes(delta), sub.new_score])
-
-    solutions_list.sort()
-    solutions_list.insert(0, [0, 0])
-    solutions_list.insert(0, ['X', team.name])
-
-    delta = min(timezone.now(), contest_end) - contest_start
-    solutions_list.append([minutes(delta), team.score])
-
-    return render(request, 'profile.html', {
-        'team': team,
-        'ordered_solves': ordered_solves,
-        'data': str(solutions_list).replace('(', '[').replace(')', ']'),
-    })
-
-
 @login_required
 @team_required
 @require_POST
@@ -188,6 +173,23 @@ def submit_addr(request):
     })
 
 
+def profile(request, team_id):
+    """Displays basic information and score progression for a given team."""
+
+    team = get_object_or_404(Team, id=team_id)
+
+    # Sort the problems this team has solved
+    ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
+
+    data = [score_progression(team)]
+
+    return render(request, 'profile.html', {
+        'team': team,
+        'ordered_solves': ordered_solves,
+        'data': json.dumps(data)
+    })
+
+
 def scoreboard(request):
     """Displays the scoreboard as a list of teams and graph."""
 
@@ -199,14 +201,7 @@ def scoreboard(request):
     datasets = []
 
     for x in range(graph_size):
-        team = scoring_teams[x]
-        submissions = CorrectSubmission.objects.all().filter(team=team)
-        data = []
-
-        for sub in submissions:
-            data.append({"x": minutes(sub.time - contest_start), "y": sub.new_score})
-
-        datasets.append({"label": team.name, "data": data})
+        datasets.append(score_progression(scoring_teams[x]))
 
     return render(request, 'scoreboard.html', {
         'all_teams': all_teams,
