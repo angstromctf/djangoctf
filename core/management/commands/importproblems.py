@@ -150,8 +150,9 @@ class Command(BaseCommand):
                     continue
 
                 if "deploy" in data:
-                    func = getattr(deploy, data['deploy']['script'])
-                    func(data, problem, category, problem_path)
+                    if "enabled" not in data["deploy"] or data["deploy"]["enabled"]:
+                        func = getattr(deploy, data['deploy']['script'])
+                        func(data, problem, category, problem_path)
 
                 if "files" in data:
                     for file in data["files"]:

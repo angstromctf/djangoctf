@@ -21,7 +21,7 @@
 
         <div class="col-xs-6">
             {% if user.profile.team %}
-                <h3 style="margin-top: 0;">Team Information</h3>
+                <h3 style="margin-top: 0;">Team information</h3>
 
                 <p>You're a member of team {{ user.profile.team.name }}.  Your team code is
                 <samp style='color: blue;'>{{ user.profile.team.code }}</samp>.  Don't give it
@@ -39,21 +39,24 @@
                 Username: <samp style='color: blue;'>{{ user.profile.team.shell_username }}</samp><br>
                 Password: <samp style='color: blue;'>{{ user.profile.team.shell_password }}</samp>
                 <br><br><br>
-                <h4 style="margin-top: 0;">Shipping address & prize eligibility</h4>
+
+                <h3 style="margin-top: 0;">Shipping address</h3>
 
                 {% if not user.profile.team.address_street %}
-                    <p>Nobody in your team has given us a shipping address yet. Please fill out the form below.</p>
+                    <p>Nobody in your team has given us a shipping address yet. If you're eligible for prizes, make
+                    sure to fill this out. Prizes are only awarded to US high school (or middle school) teams.</p>
                     {% crispy address_form %}
                 {% else %}
                     <p>We've received the following information from you or one of your teammates. Should you need
                     to correct this information, email us at <a href="mailto:contact@angstromctf.com">contact@angstromctf.com</a>.</p>
 
                     <p>Shipping address:</p>
-                    {{user.profile.team.address_street}}<br>
+
+                    {{ user.profile.team.address_street }}<br/>
                     {% if user.profile.team.address_street_line_2 %}
-                        {{user.profile.team.address_street_line_2}}<br>
+                        {{ user.profile.team.address_street_line_2 }}<br/>
                     {% endif %}
-                    {{user.profile.team.address_city}}, {{user.profile.team.address_state}} {{user.profile.team.address_zip}}
+                    {{ user.profile.team.address_city }}, {{ user.profile.team.address_state }} {{ user.profile.team.address_zip }}
                     <br/><br/>
                 {% endif %}
 
