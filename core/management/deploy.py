@@ -1,6 +1,5 @@
 from docker import Client
-from io import BytesIO
-from os.path import relpath
+
 
 def docker(data, problem, category, problem_path):
     cli = Client()
@@ -14,7 +13,7 @@ def docker(data, problem, category, problem_path):
 
     if 'info' in locals():
         containers = cli.containers(filters={
-            'ancestor': 'web-amoebananas'
+            'ancestor': name
         })
 
         for container in containers:
@@ -24,7 +23,12 @@ def docker(data, problem, category, problem_path):
 
     response = [line for line in cli.build(path=problem_path, rm=True, tag=name, quiet=True)]
 
-    container = cli.create_container(name, ports=[80], host_config=cli.create_host_config(port_bindings={
-        80: 5000
-    }))
+    ports = []
+    bindings = {}
+
+    for container, host in data['deploy']['ports']:
+        ports.append(container)
+        bindings[container] = host
+
+    container = cli.create_container(name, ports=ports, host_config=cli.create_host_config(port_bindings=bindings))
     cli.start(container=container['Id'])
