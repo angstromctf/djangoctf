@@ -19,16 +19,15 @@ import requests
 
 
 class LoginForm(forms.Form):
-    """
-    A form for users to login to the site.
-    """
+    """Logs a user into the site."""
+
     username = forms.CharField(max_length=50)
     password = forms.CharField(max_length=50, widget=forms.PasswordInput())
 
+
 class ChangePasswordForm(forms.Form):
-    """
-    Form to change password
-    """
+    """Changes a user's password."""
+
     password = forms.CharField(label='Current password', max_length=50, widget=forms.PasswordInput())
     new_password = forms.CharField(label='New password', max_length=50, widget=forms.PasswordInput())
     confirm_password = forms.CharField(label='Confirm password', max_length=50, widget=forms.PasswordInput())
@@ -68,9 +67,8 @@ class ChangePasswordForm(forms.Form):
 
 
 class CreateTeamForm(forms.Form):
-    """
-    Form to create a new team
-    """
+    """Creates a new team."""
+
     name = forms.CharField(label='Team name', max_length=100, validators=[validate_unique_team_name])
     affiliation = forms.CharField(label='School or affiliation', max_length=50)
 
@@ -94,9 +92,8 @@ class CreateTeamForm(forms.Form):
 
 
 class JoinTeamForm(forms.Form):
-    """
-    Form to join a team
-    """
+    """Adds a user to an existing team."""
+
     code = forms.CharField(label='Team code', max_length=100)
 
     def __init__(self, *args, **kwargs):
@@ -133,9 +130,7 @@ class JoinTeamForm(forms.Form):
 
 
 class CreateUserForm(forms.Form):
-    """
-    Signup form to create new user.
-    """
+    """Creates a new user."""
 
     username = forms.CharField(label='Username', max_length=50, required=True, validators=[validate_unique_username])
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput(), required=True)
@@ -209,9 +204,8 @@ class CreateUserForm(forms.Form):
 
 
 class ResetPasswordForm(forms.Form):
-    """
-    Resets password if it is forgotten.
-    """
+    """Resets forgotten user passwords."""
+
     email = forms.CharField(label='Email', max_length=100, required=True, validators=[EmailValidator()])
 
     def __init__(self, *args, **kwargs):
@@ -224,25 +218,25 @@ class ResetPasswordForm(forms.Form):
             StrictButton('Send reset email', css_class='btn-success', type='submit')
         )
 
+
 class TeamAddressForm(forms.Form):
+    """Adds street address data to a team."""
+
     street_address = forms.CharField(label='Street Address', max_length=1000, required=True)
     street_address_line_2 = forms.CharField(label='Street Address Line 2', max_length=1000, required=False)
     zip_5 = forms.CharField(label='US 5-digit ZIP', max_length=5, required=True, validators=[validate_zip])
-    # eligible = forms.BooleanField(label='All members of my team are US high school students.', required=True)
     eligible2 = forms.ChoiceField(label='All members of my team are US high school students.', choices=ELIGIBLE_CHOICES, required=True)
     city = forms.CharField(label='City', max_length=1000, required=False)
     state = forms.CharField(label='State', max_length=1000, required=False)
-    def __init__(self, *args, **kwargs):
 
+    def __init__(self, *args, **kwargs):
         super(TeamAddressForm, self).__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_action = 'submit_addr'
         self.helper.layout = Layout(
             Field('street_address', placeholder='123 Main Street'),
-
-            Field('street_address_line_2', placeholder='(Optional)'),
-
+            Field('street_address_line_2', placeholder='Apt. #321 (optional)'),
             Field('zip_5', placeholder='ZIP'),
             HTML('<br/>'),
             InlineRadios('eligible2'),
@@ -258,20 +252,20 @@ class TeamAddressForm(forms.Form):
         if address_verification_enabled:
             lob.api_key = address_verification_api_key
             try:
-                verifiedAddress = lob.Verification.create(
+                # Verify that the address is valid
+                verified_address = lob.Verification.create(
                     address_line1=cleaned_data.get("street_address"),
                     address_line2=cleaned_data.get("street_address_line_2"),
                     address_zip=cleaned_data.get("zip_5"),
                     address_country="US"
                 )
 
-                cleaned_data['street_address'] = verifiedAddress.address.address_line1
-                cleaned_data['street_address_line_2'] = verifiedAddress.address.address_line2
+                cleaned_data['street_address'] = verified_address.address.address_line1
+                cleaned_data['street_address_line_2'] = verified_address.address.address_line2
                 cleaned_data['zip_5'] = cleaned_data.get("zip_5")
-                cleaned_data['city'] = verifiedAddress.address.address_city
+                cleaned_data['city'] = verified_address.address.address_city
 
-                cleaned_data['state'] = verifiedAddress.address.address_state
-
+                cleaned_data['state'] = verified_address.address.address_state
             except:
                 raise ValidationError("Unable to locate address! Make sure your address is correct. If you "
                                       "continue to have trouble, you can provide your address by email at "

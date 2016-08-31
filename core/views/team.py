@@ -160,7 +160,6 @@ def submit_addr(request):
     """Adds a team's shipping information for prizes."""
 
     team = request.user.profile.team
-    team_member_list = Profile.objects.filter(team=team)
     form = TeamAddressForm(request.POST)
 
     if form.is_valid() and not team.address_street:
@@ -171,10 +170,6 @@ def submit_addr(request):
         team.address_state = form.cleaned_data['state']
         team.eligible2 = form.cleaned_data['eligible2']
 
-        user = request.user.profile
-        user.eligible = form.cleaned_data['eligible2']
-        
-        user.save()
         team.save()
     else:
         return render(request, 'account.html', {
