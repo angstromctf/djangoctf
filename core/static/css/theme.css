@@ -92,3 +92,8 @@ div#footer-div {
 div#footer-social > a {
     text-decoration: none;
 }
+
+div.chart-div {
+    width: 75%;
+    margin: 0 auto;
+}

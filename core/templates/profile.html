@@ -19,7 +19,9 @@
 
 {% block content %}
     {% if started %}
-    <canvas id="chart" width="4" height="1"></canvas>
+    <div class="chart-div">
+        <canvas id="chart" width="3" height="1"></canvas>
+    </div>
 
     <strong>Score:</strong> {{ team.score }} ({{ team|place|ordinal }} place)
     <br/>
