@@ -1,18 +1,18 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.core.exceptions import MultipleObjectsReturned
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.management.base import BaseCommand, CommandError
 
+from core.management import deploy
 from core.models import Problem
 
-from os import listdir, makedirs, system, getcwd, chdir
-from os.path import realpath, isdir, isfile, exists, join as join_paths
+import json
+import logging
 from hashlib import sha512
+from os import listdir, makedirs, system, getcwd, chdir
+from os.path import isdir, isfile, exists, abspath, join as join_paths
 from shutil import copyfile, rmtree
 from string import digits
-
-import json
 import re
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class Command(BaseCommand):
         parser.add_argument("-s", "--reset-static", help="reset static problem files", action="store_true")
 
     def handle(self, *args, **options):
-        problems_path = options['problems_directory']
+        problems_path = abspath(options['problems_directory'])
         verbose = options['verbosity'] > 1
 
         errors = []
@@ -148,6 +148,10 @@ class Command(BaseCommand):
                         data = json.load(data_file)
                 except FileNotFoundError:
                     continue
+
+                if "deploy" in data:
+                    func = getattr(deploy, data['deploy']['script'])
+                    func(data, problem, category, problem_path)
 
                 if "files" in data:
                     for file in data["files"]:

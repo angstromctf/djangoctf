@@ -46,6 +46,7 @@ function submit_problem(num) {
 	            }
             });
 
+            alert(json.html);
             $('#outer'+num.toString()).html(json.html);
             fix_tab_height(num);
 
@@ -101,5 +102,11 @@ $.ajaxSetup({
 $(window).load(function() {
     $.each($('.problem'), function (i,problem) {
         fix_tab_height(parseInt(problem.id.substr(5)));
+    });
+    $.each($('.wrapper'), function (i,problem) {
+        $(problem).on('shown.bs.collapse', function() {
+            fix_tab_height(parseInt(problem.id.substr(5)));
+            alert("DONE");
+        });
     });
 });

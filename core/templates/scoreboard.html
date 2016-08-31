@@ -19,7 +19,7 @@
 {% block content %}
 
 {% if started %}
-<div id="chart-div"></div>
+<canvas id="chart" width="4" height="1"></canvas>
 {% else %}
 The contest hasn't started yet! For now, check out the teams that have signed up:
 <br/>
@@ -60,20 +60,25 @@ The contest hasn't started yet! For now, check out the teams that have signed up
 </table>
 
 {% if started %}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
 <script type="text/javascript">
-google.load('visualization', '1', {packages: ['corechart', 'line']});
-google.setOnLoadCallback(drawBasic);
-
-function drawBasic() {
-    var data = google.visualization.arrayToDataTable({{ data|safe }});
-
-    var options = {hAxis: {title: 'Time (minutes)'}, vAxis: {title: 'Score'}, interpolateNulls: true, legend: {position:  'bottom'}};
-
-    var chart = new google.visualization.LineChart(document.getElementById('chart-div'));
-
-    chart.draw(data, options);
-}
+var data = {{ data|safe }};
+var ctx = $('#chart')[0];
+var scatterChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: data
+    },
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'linear',
+                position: 'bottom'
+            }]
+        },
+        responsive: true
+    }
+});
 </script>
 {% endif %}
 {% endblock %}

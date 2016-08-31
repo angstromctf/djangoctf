@@ -12,4 +12,4 @@ sendgrid==1.5.20
 smtpapi==0.2.0
 uWSGI==2.0.13.1
 markdown2==2.3.1
-django-countries==4.0
+docker-py==1.9.0
