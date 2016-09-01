@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAddressForm
 from core.models import Team, CorrectSubmission, Profile
-from core.decorators import team_required
+from core.decorators import team_required, lock_before_contest
 from core.utils.time import contest_start, contest_end, minutes
 
 import logging
@@ -208,3 +208,17 @@ def scoreboard(request):
         'scoring_teams': scoring_teams,
         'data': json.dumps(datasets)
     })
+
+
+@require_POST
+@lock_before_contest(invert=True)
+def leave_team(request):
+    """Removes a user from a team, and deletes the team if it's now empty."""
+
+    if request.user.profile.team.profiles.count() == 1:
+        request.user.profile.team.delete()
+
+    request.user.profile.team = None
+    request.user.profile.save()
+
+    return redirect('account')

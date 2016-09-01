@@ -23,15 +23,21 @@ def team_required(function=None, invert=False):
         return decorator
 
 
-def lock_before_contest(view):
-    @wraps(view, assigned=available_attrs(view))
-    def wrap(request, *args, **kwargs):
-        if before_start() and not request.user.is_staff:
-            return render(request, 'denied.html', {})
-        else:
-            return view(request, *args, **kwargs)
+def lock_before_contest(function=None, invert=False):
+    def decorator(view):
+        @wraps(view, assigned=available_attrs(view))
+        def wrap(request, *args, **kwargs):
+            if (before_start() and not request.user.is_staff) != invert:
+                return render(request, 'denied.html', {})
+            else:
+                return view(request, *args, **kwargs)
+        return wrap
 
-    return wrap
+    if function:
+        return decorator(function)
+    else:
+        return decorator
+
 
 def lock_after_contest(view):
     @wraps(view, assigned=available_attrs(view))

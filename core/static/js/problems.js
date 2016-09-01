@@ -1,4 +1,5 @@
 function fix_tab_height(num) {
+    return;
     var height = Math.max($('#problem'+num).height(),$('#hint'+num).height());
     $('#problem'+num).height(height);
     $('#hint'+num).height(height);

@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^team/create/$', views.create_team, name='create_team'),
     url(r'^team/join/$', views.join_team, name='join_team'),
     url(r'^team/submit_addr/$', views.submit_addr, name='submit_addr'),
+    url(r'^team/leave_team/$', views.leave_team, name='leave_team'),
 
     url(r'^problems/$', views.problems, name='problems'),
     url(r'^problems/submit/$', views.submit_problem, name='submit_problem'),

@@ -38,9 +38,23 @@
                 <p>Your shell account username and default password are below:</p>
                 Username: <samp style='color: blue;'>{{ user.profile.team.shell_username }}</samp><br>
                 Password: <samp style='color: blue;'>{{ user.profile.team.shell_password }}</samp>
-                <br><br><br>
 
-                <h3 style="margin-top: 0;">Shipping address</h3>
+                {% if not started %}
+                    <h4>Leave team</h4>
+
+                    Since the competition hasn't started yet, you can still leave your team. Your team will be locked in after the competition starts.
+                    {% if user.profile.team.profiles.all.count == 1 %}
+                        You're the last person on your team, so your team will get deleted.
+                    {% endif %}
+                    <br/><br/>
+
+                    <form action="{% url "leave_team" %}" method="post">
+                        {% csrf_token %}
+                         <button type="submit" class="btn btn-danger">Leave team</button>
+                    </form>
+                {% endif %}
+
+                <h3>Shipping address</h3>
 
                 {% if not user.profile.team.address_street %}
                     <p>Nobody in your team has given us a shipping address yet. If you're eligible for prizes, make
@@ -59,8 +73,6 @@
                     {{ user.profile.team.address_city }}, {{ user.profile.team.address_state }} {{ user.profile.team.address_zip }}
                     <br/><br/>
                 {% endif %}
-
-
             {% else %}
                 {% crispy join_team %}
                 {% crispy create_team %}
