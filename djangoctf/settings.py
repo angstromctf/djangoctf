@@ -133,7 +133,7 @@ SITE_ID = 1
 STATIC_URL = '/static/'
 TEMPLATES[0]['OPTIONS']['context_processors'].append("core.context_processors.site_configuration_processor")
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"

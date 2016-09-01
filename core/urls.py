@@ -5,7 +5,7 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^$', views.index, name='home'),
+    url(r'^$', views.index, name='index'),
     url(r'^shelld/$', views.shelld, name='shelld'),
     url(r'^updates/$', views.updates, name='updates'),
     url(r'^about/', views.about, name='about'),
@@ -28,7 +28,7 @@ urlpatterns = [
 
     url(r'^account/$', views.account, name='account'),
     url(r'^account/login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
-    url(r'^account/logout/$', auth_views.logout, {'next_page': 'home'}, name='logout'),
+    url(r'^account/logout/$', auth_views.logout, {'next_page': 'index'}, name='logout'),
     url(r'^account/signup/$', views.signup, name='signup'),
     url(r'^account/activate/(?P<key>.+)/$', views.activation, name='activation'),
     url(r'^account/activate/new/(?P<user_id>\d+)/$', views.new_activation_link, name='new_link'),

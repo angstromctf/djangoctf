@@ -53,7 +53,6 @@ def score(request):
     return render(request, "score.html")
 
 
-
 def signup(request):
     """Lets the user sign up for an account."""
 
@@ -111,7 +110,9 @@ def signup(request):
                 })
             else:
                 # Just log the user in
-                user = authenticate(username=user.get_username(), password=user.password)
+                user = authenticate(username=user.get_username(), password=form.cleaned_data['password'])
+                print(user)
+
                 login(request, user)
 
                 return redirect('index')
