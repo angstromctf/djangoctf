@@ -67,7 +67,6 @@ def submit_problem(request):
         solution.save()
 
         alert = "correct"
-
         solved = True
     else:
         alert = "incorrect"
@@ -87,5 +86,10 @@ def submit_problem(request):
         'solved': solved
     }).content
 
-    response_data = {"html": html.decode("utf-8"), "alert": alert}
+    response_data = {
+        "html": html.decode("utf-8"),
+        "alert": alert,
+        "title": problem.title,
+        "value": problem.value
+    }
     return HttpResponse(json.dumps(response_data), content_type="application/json")

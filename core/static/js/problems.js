@@ -7,7 +7,7 @@ function fix_tab_height(num) {
 
 function submit_problem(num) {
     $.ajax({
-        url : "submit_problem/",
+        url : "submit/",
         type : "POST",
         data : {
             "problem": num,
@@ -16,6 +16,7 @@ function submit_problem(num) {
 
         success : function(json) {
             var icon, message;
+            console.log(json.alert);
 
             switch (json.alert) {
                 case "already_solved":
@@ -23,11 +24,12 @@ function submit_problem(num) {
                     icon = "glyphicon glyphicon-info-sign";
                     break;
                 case "correct":
-                    message = "<strong>Good job!</strong> You've solved " + problem.title.strip() + "! (+" + str(problem.value) + " points)";
+                    message = "<strong>Good job!</strong> You've solved " + json.title.trim() + "! (+" + json.value + " points)";
                     icon = "glyphicon glyphicon-ok-sign";
                     break;
                 case "incorrect":
                     message = "<strong>Sorry.</strong> That was incorrect.";
+                    icon = "glyphicon glyphicon-remove-sign";
                     break;
                 case "incorrect_tried":
                     message = "<strong>Oops!</strong> You've already tried this solution.";
@@ -46,7 +48,6 @@ function submit_problem(num) {
 	            }
             });
 
-            alert(json.html);
             $('#outer'+num.toString()).html(json.html);
             fix_tab_height(num);
 
