@@ -55,7 +55,7 @@ class Profile(models.Model):
     """Extra information belonging to users, such as demographics and teams, in addition to normal Django User model."""
     
     # Which user this belongs to
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # The user's team
     team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
@@ -120,8 +120,8 @@ class CorrectSubmission(models.Model):
     """A correct submission for a problem."""
 
     # Link to team and problem
-    team = models.ForeignKey(Team)
-    problem = models.ForeignKey(Problem)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
 
     # Team's score at that time
     new_score = models.IntegerField(default=0)
@@ -137,8 +137,8 @@ class IncorrectSubmission(models.Model):
     """An incorrect submission for a problem."""
 
     # Link to team and problem
-    team = models.ForeignKey(Team)
-    problem = models.ForeignKey(Problem)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
 
     # Time and contents of submission
     guess = models.CharField(max_length=128)
@@ -154,7 +154,7 @@ class ProblemUpdate(models.Model):
     """An update to a problem."""
 
     # Link to problem
-    problem = models.ForeignKey(Problem)
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
 
     # Update information
     text = models.CharField(max_length=256)

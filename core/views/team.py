@@ -8,6 +8,7 @@ from core.forms import ChangePasswordForm, CreateTeamForm, JoinTeamForm, TeamAdd
 from core.models import Team, CorrectSubmission, Profile
 from core.decorators import team_required, lock_before_contest
 from core.utils.time import contest_start, contest_end, minutes
+from core.utils import globals
 
 import logging
 import json
@@ -180,13 +181,20 @@ def profile(request, team_id):
 
     # Sort the problems this team has solved
     ordered_solves = CorrectSubmission.objects.filter(team=team).order_by("time")
+    progression = [score_progression(team)]
 
-    data = [score_progression(team)]
+    # Collect the problems this team has solved by category
+    category = CorrectSubmission.objects.filter(team=team)
+    categories = {
+        "data": [CorrectSubmission.objects.filter(team=team, problem__category=x).count() for x in globals.CATEGORIES],
+        "labels": globals.CATEGORIES
+    }
 
     return render(request, 'profile.html', {
         'team': team,
         'ordered_solves': ordered_solves,
-        'data': json.dumps(data)
+        'progression': json.dumps(progression),
+        'categories': json.dumps(categories)
     })
 
 
@@ -196,7 +204,7 @@ def scoreboard(request):
     all_teams = Team.objects.all()
     scoring_teams = Team.objects.filter(score__gt=0).order_by('-score', 'score_lastupdate')
 
-    graph_size = min(5, Team.objects.filter(score__gt=0).count())
+    graph_size = min(8, Team.objects.filter(score__gt=0).count())
 
     datasets = []
 

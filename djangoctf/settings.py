@@ -43,7 +43,7 @@ INSTALLED_APPS = (
     'django_countries'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -120,6 +120,25 @@ else:
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
         }
     }
+
+if CONFIG['use_password_validators']:
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+            'OPTIONS': {
+                'min_length': 8,
+            }
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
 if CONFIG['use_loadbalanced_databases']:
     DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)

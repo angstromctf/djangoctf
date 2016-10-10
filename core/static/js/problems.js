@@ -1,11 +1,3 @@
-function fix_tab_height(num) {
-    return;
-    var height = Math.max($('#problem'+num).height(),$('#hint'+num).height());
-    $('#problem'+num).height(height);
-    $('#hint'+num).height(height);
-    $('#updates'+num).height(Math.max($('#updates'+num).height(), height));
-}
-
 function submit_problem(num) {
     $.ajax({
         url : "submit/",
@@ -99,16 +91,4 @@ $.ajaxSetup({
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     }
-});
-
-$(window).load(function() {
-    $.each($('.problem'), function (i,problem) {
-        fix_tab_height(parseInt(problem.id.substr(5)));
-    });
-    $.each($('.wrapper'), function (i,problem) {
-        $(problem).on('shown.bs.collapse', function() {
-            fix_tab_height(parseInt(problem.id.substr(5)));
-            alert("DONE");
-        });
-    });
 });

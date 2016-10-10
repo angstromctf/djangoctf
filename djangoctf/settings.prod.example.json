@@ -47,8 +47,9 @@
         "enabled": false,
         "secret": "[REDACTED]"
     },
-    "lob_address_verification":{
+    "lob_address_verification": {
         "enabled": true,
         "api_key": "[REDACTED]"
-    }
+    },
+    "use_password_validators": true
 }

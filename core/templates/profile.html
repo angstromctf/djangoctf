@@ -20,8 +20,17 @@
 {% block content %}
     {% if started %}
     <div class="chart-div">
-        <canvas id="chart" width="3" height="1"></canvas>
+        <div style="width: 50%; float: left;">
+            <canvas id="chart" width="3" height="2"></canvas>
+        </div>
+
+        <div style="width: 50%; margin-left: 50%;">
+            <canvas id="chart2" width="3" height="2"></canvas>
+        </div>
     </div>
+    <br/>
+        <br/>
+        <div style="clear: right;"></div>
 
     <strong>Score:</strong> {{ team.score }} ({{ team|place|ordinal }} place)
     <br/>
@@ -71,10 +80,36 @@
 
 {% if started %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
-<script type="text/javascript">
-var data = {{ data|safe }};
-var ctx = $('#chart')[0];
-</script>
 <script type="text/javascript" src="{% static 'js/progression.js' %}"></script>
+<script type="text/javascript">
+var data = {{ progression|safe }};
+var ctx = $('#chart')[0];
+draw_progression(ctx, false);
+</script>
+<script type="text/javascript">
+data = {{ categories|safe }};
+ctx = $('#chart2')[0];
+
+var polarChart = new Chart(ctx, {
+    data: {
+        datasets: [{
+            data: data['data']
+        }],
+        labels: data['labels']
+    },
+    type: 'polarArea',
+    options: {
+        title: {
+            display: true,
+            text: 'Problem Solves'
+        },
+        scale: {
+            ticks: {
+                stepSize: 1
+            }
+        }
+    }
+});
+</script>
 {% endif %}
 {% endblock %}

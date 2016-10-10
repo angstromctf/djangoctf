@@ -9,9 +9,9 @@ class Module(models.Model):
 
     # Relationships with other modules
     prereqs = models.ManyToManyField('self', blank=True, related_name="required_for", symmetrical=False)
-    parent = models.ForeignKey('self', blank=True, null=True, related_name="children")
-    first_child = models.ForeignKey('self', blank=True, null=True, related_name="first_parents")
-    next = models.ForeignKey('self', blank=True, null=True, related_name="prevs")
+    parent = models.ForeignKey('self', blank=True, null=True, related_name="children", on_delete=models.CASCADE)
+    first_child = models.ForeignKey('self', blank=True, null=True, related_name="first_parents", on_delete=models.SET_NULL)
+    next = models.ForeignKey('self', blank=True, null=True, related_name="prevs", on_delete=models.SET_NULL)
 
     def __str__(self):
         return "Module[" + self.name + "]"

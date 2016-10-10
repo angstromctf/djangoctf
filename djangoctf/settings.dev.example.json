@@ -35,7 +35,8 @@
     "signup_captcha": {
         "enabled": false
     },
-    "lob_address_verification":{
+    "lob_address_verification": {
         "enabled": false
-    }
+    },
+    "use_password_validators": false
 }

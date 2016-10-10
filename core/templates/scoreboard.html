@@ -63,10 +63,11 @@ The contest hasn't started yet! For now, check out the teams that have signed up
 
 {% if started %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
+<script type="text/javascript" src="{% static 'js/progression.js' %}"></script>
 <script type="text/javascript">
 var data = {{ data|safe }};
 var ctx = $('#chart')[0];
+draw_progression(ctx, true);
 </script>
-<script type="text/javascript" src="{% static 'js/progression.js' %}"></script>
 {% endif %}
 {% endblock %}

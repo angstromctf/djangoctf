@@ -1,5 +1,3 @@
-from datetime import datetime
-
 GENDER_CHOICES = (
     (1, 'Male'),
     (2, 'Female'),
@@ -20,3 +18,13 @@ RACE_CHOICES = (
     (5, 'White'),
     (6, 'Two or more races'),
     (7, 'Other'))
+
+CATEGORIES = [
+    'crypto',
+    'binary',
+    'web',
+    're',
+    'forensics',
+    'misc',
+    'master'
+]
