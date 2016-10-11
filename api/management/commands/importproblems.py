@@ -2,8 +2,8 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.management.base import BaseCommand, CommandError
 
-from core.management import deploy
-from core.models import Problem
+from api.management import deploy
+from api.models import Problem
 
 import json
 import logging
@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
         errors = []
 
-        static_path = join_paths(settings.PROJECT_ROOT, 'core', 'static', 'problems')
+        static_path = join_paths(settings.PROJECT_ROOT, 'api', 'static', 'problems')
 
         if options['reset']:
             Problem.objects.all().delete()
@@ -82,8 +82,8 @@ class Command(BaseCommand):
                         problem_obj.title = data["title"]
                         problem_obj.text = data["text"]
                         problem_obj.value = data["value"]
-                        problem_obj.hint_text = data["hint"]
-                        problem_obj.flag_sha512_hash = sha512(data["flag"].lower().encode()).hexdigest()
+                        problem_obj.hint = data["hint"]
+                        problem_obj.flag = sha512(data["flag"].lower().encode()).hexdigest()
                         # We can't update the name for obvious reasons
                         problem_obj.save()
 
@@ -100,8 +100,8 @@ class Command(BaseCommand):
                                           text=data["text"],
                                           value=data["value"],
                                           category=category,
-                                          hint_text=data["hint"],
-                                          flag_sha512_hash=sha512(data["flag"].encode()).hexdigest())
+                                          hint=data["hint"],
+                                          flag=sha512(data["flag"].encode()).hexdigest())
                     problem_obj.save()
 
                     if verbose:
@@ -152,7 +152,7 @@ class Command(BaseCommand):
                 if "deploy" in data:
                     if "enabled" not in data["deploy"] or data["deploy"]["enabled"]:
                         func = getattr(deploy, data['deploy']['script'])
-                        func(data, problem, category, problem_path)
+                        #func(data, problem, category, problem_path)
 
                 if "files" in data:
                     for file in data["files"]:

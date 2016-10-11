@@ -1,6 +1,0 @@
-{% load extras %}
-{% load humanize %}
-
-{% if user.is_authenticated and user.profile.team %}
-    <p class="navbar-text">{{ user.profile.team.score }} points ({{ user.profile.team|place|ordinal }} place)</p>
-{% endif %}

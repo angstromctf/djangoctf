@@ -1,9 +1,0 @@
-Hi {{ username }},
-
-Welcome to {{ ctf_name }}! Thanks for signing up, but just one last thing: click the link below to activate your account:
-
-{{ protocol }}://{{ ctf_domain }}/activate/{{ activation_key }}
-
-Happy solving!
-
-{{ ctf_name }} devs
