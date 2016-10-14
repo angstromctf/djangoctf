@@ -11,6 +11,6 @@ router.register(r'problems', views.ProblemViewSet)
 router.register(r'teams', views.TeamViewSet)
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
 ]
