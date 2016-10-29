@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sites',
     'rest_framework',
+    'rest_framework_swagger',
     'api'
 )
 
@@ -126,7 +127,7 @@ if CONFIG['use_password_validators']:
         {
             'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
             'OPTIONS': {
-                'min_length': 8,
+                'min_length': 6,
             }
         },
         {

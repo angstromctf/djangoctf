@@ -13,3 +13,4 @@ smtpapi==0.2.0
 uWSGI==2.0.13.1
 markdown2==2.3.1
 docker-py==1.9.0
+djangorestframework==3.4.6
