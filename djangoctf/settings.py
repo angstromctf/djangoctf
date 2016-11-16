@@ -36,8 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-    'rest_framework',
     'rest_framework_swagger',
+    'rest_framework',
     'api'
 )
 
@@ -182,3 +182,11 @@ if CONFIG['email']['enabled']:
 
 COUNTRIES_FIRST = ['US']
 COUNTRIES_FIRST_REPEAT = True
+
+SWAGGER_SETTINGS = {
+    'LOGIN_URL': 'rest_framework:login',
+    'LOGOUT_URL': 'rest_framework:logout',
+    'USE_SESSION_AUTH': True,
+    'DOC_EXPANSION': 'list',
+    'APIS_SORTER': 'alpha'
+}

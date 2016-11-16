@@ -1,6 +1,6 @@
 from rest_framework import permissions
-from api.utils import time
 
+from api import utils
 
 def not_permission(perm):
     class NotPermission(permissions.BasePermission):
@@ -28,14 +28,14 @@ class ContestStarted(permissions.BasePermission):
     message = 'Not accessible before contest.'
 
     def has_permission(self, request, view):
-        return not time.before_start()
+        return not utils.before_start()
 
 
 class ContestEnded(permissions.BasePermission):
     message = 'Not accessible after contest.'
 
     def has_permission(self, request, view):
-        return time.after_end()
+        return utils.after_end()
 
 
 class HasTeam(permissions.BasePermission):
