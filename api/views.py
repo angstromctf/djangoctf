@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
 from api import serializers
 from api.models import Problem, Team, CorrectSubmission, IncorrectSubmission
@@ -107,7 +108,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Create the team
         team = Team(name=request.data['name'],
-                    school=request.data['affiliation'],
+                    school=request.data['school'],
                     shell_username=shell_username,
                     shell_password=shell_password,
                     code=code,
@@ -137,9 +138,19 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         response = {}
 
-        if team.members.count() < settings.CONFIG['users_per_teams']:
+        if team.members.count() < settings.CONFIG['users_per_team']:
             # If there are fewer than max number of people on the team, add the user to the team
             request.user.profile.team = team
             request.user.profile.save()
 
         return Response(response)
+
+    @detail_route(methods=['get'], serializer_class=serializers.TeamProgressSerializer)
+    def progress(self, request, *args, **kwargs):
+        """Returns a list representing the user's score progression."""
+        return self.list(request, *args, **kwargs)
+
+
+class UserViewSet(viewsets.GenericViewSet):
+    @list_route(methods=['get'])
+    def account(self, request, *args, **kwargs):

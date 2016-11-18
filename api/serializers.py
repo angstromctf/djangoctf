@@ -1,5 +1,8 @@
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
-from api.models import Problem, Team
+
+from api.models import Problem, Team, CorrectSubmission, Profile
 
 
 class ProblemSerializer(serializers.HyperlinkedModelSerializer):
@@ -28,8 +31,40 @@ class TeamJoinSerializer(serializers.ModelSerializer):
         fields = ('code',)
 
 
-class TeamSerializer(serializers.HyperlinkedModelSerializer):
+class SubmissionSerializer(serializers.ModelSerializer):
+    problem = ProblemSerializer()
+
+    class Meta:
+        model = CorrectSubmission
+        fields = ('problem', 'time')
+
+
+class TeamProgressSerializer(serializers.ModelSerializer):
+    solves = SubmissionSerializer(many=True, read_only=True)
+
     class Meta:
         model = Team
-        fields = ('url', 'name', 'school', 'score', 'score_lastupdate', 'solved')
+        fields = ('solves',)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ('user',)
+
+
+class TeamSerializer(serializers.HyperlinkedModelSerializer):
+    members = ProfileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Team
+        fields = ('url', 'name', 'school', 'score', 'score_lastupdate', 'id', 'solved', 'members')
         ordering = ('score',)

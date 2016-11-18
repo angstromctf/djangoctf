@@ -87,7 +87,7 @@ class Profile(models.Model):
 
     # The user's team
     team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
-                             default=None, related_name="profiles")
+                             default=None, related_name='members')
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, blank=True, null=True, default="")
@@ -148,12 +148,15 @@ class CorrectSubmission(models.Model):
     """A correct submission for a problem."""
 
     # Link to team and problem
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='solves')
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE, related_name='solves')
 
     # Team's score at that time
     new_score = models.IntegerField(default=0)
     time = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ('time',)
 
     # Magic methods
     def __str__(self):
