@@ -6,7 +6,8 @@ def not_permission(perm):
     class NotPermission(permissions.BasePermission):
         def __init__(self, *args, **kwargs):
             self.inst = perm(*args, **kwargs)
-            self.message = 'Opposite of {' + self.inst.message + '}.'
+            if hasattr(self.inst, 'message'):
+                self.message = 'Opposite of {' + self.inst.message + '}.'
 
         def has_permission(self, request, view):
             return not self.inst.has_permission(request, view)

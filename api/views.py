@@ -1,13 +1,13 @@
 from django.conf import settings
+from django.contrib import auth
 from django.utils import timezone
 
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
-from api import serializers
-from api.models import Problem, Team, CorrectSubmission, IncorrectSubmission
+from api import serializers, models
 from api.permissions import ContestStarted, ContestEnded, HasTeam, not_permission
 from api.utils import create_code, create_shell_username, create_shell_password
 
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (ContestStarted,)
-    queryset = Problem.objects.all()
+    queryset = models.Problem.objects.all()
     serializer_class = serializers.ProblemSerializer
 
     @detail_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(ContestEnded),
@@ -51,19 +51,19 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
             team.save()
 
             # Add a new CorrectSubmission object corresponding to having solved the problem
-            solution = CorrectSubmission(team=team, problem=problem, new_score=team.score)
+            solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
             solution.save()
 
             response['status'] = 'correct'
 
         # The submission was incorrect
         else:
-            if IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
+            if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
                 # The user has already attempted this incorrect flag
                 response['already_attempted'] = True
             else:
                 # This is a new incorrect flag
-                solution = IncorrectSubmission(team=team, problem=problem, guess=guess)
+                solution = models.IncorrectSubmission(team=team, problem=problem, guess=guess)
                 solution.save()
                 response['already_attempted'] = False
 
@@ -73,7 +73,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Team.objects.all()
+    queryset = models.Team.objects.all()
     serializer_class = serializers.TeamSerializer
 
     @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
@@ -107,12 +107,12 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
                     "Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))
 
         # Create the team
-        team = Team(name=request.data['name'],
-                    school=request.data['school'],
-                    shell_username=shell_username,
-                    shell_password=shell_password,
-                    code=code,
-                    eligible=request.user.profile.eligible)
+        team = models.Team(name=request.data['name'],
+                           school=request.data['school'],
+                           shell_username=shell_username,
+                           shell_password=shell_password,
+                           code=code,
+                           eligible=request.user.profile.eligible)
         team.save()
 
         # Add the user to that team
@@ -130,7 +130,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     def join(self, request):
         """Adds the user to a pre-existing team."""
 
-        team = Team.objects.get(code=request.data['code'])
+        team = models.Team.objects.get(code=request.data['code'])
 
         # Compute the team's eligibility by combining its current eligibility with the user's eligibility
         team.eligible = team.eligible and request.user.profile.eligible
@@ -145,12 +145,37 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(response)
 
-    @detail_route(methods=['get'], serializer_class=serializers.TeamProgressSerializer)
+    @detail_route(serializer_class=serializers.TeamProgressSerializer)
     def progress(self, request, *args, **kwargs):
         """Returns a list representing the user's score progression."""
         return self.list(request, *args, **kwargs)
 
 
 class UserViewSet(viewsets.GenericViewSet):
-    @list_route(methods=['get'])
-    def account(self, request, *args, **kwargs):
+    queryset = auth.models.User.objects.all()
+
+    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)],
+                serializer_class=serializers.UserLoginSerializer)
+    def login(self, request):
+        response = {}
+
+        code = status.HTTP_200_OK
+        user = auth.authenticate(username=request.data['username'], password=request.data['password'])
+
+        if user is not None:
+            auth.login(request, user)
+            response['status'] = 'success'
+        else:
+            code = status.HTTP_401_UNAUTHORIZED
+            response['status'] = 'failure'
+
+        return Response(response, status=code)
+
+    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
+                serializer_class=serializers.EmptySerializer)
+    def logout(self, request):
+        auth.logout(request)
+
+        return Response({
+            'status': 'success'
+        })

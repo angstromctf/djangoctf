@@ -9,6 +9,7 @@ from api import views
 router = DefaultRouter()
 router.register('problems', views.ProblemViewSet)
 router.register('teams', views.TeamViewSet)
+router.register('users', views.UserViewSet)
 
 schema_view = get_swagger_view(title='djangoctf API')
 

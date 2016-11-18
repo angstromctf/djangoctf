@@ -53,6 +53,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name')
 
 
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
@@ -68,3 +74,7 @@ class TeamSerializer(serializers.HyperlinkedModelSerializer):
         model = Team
         fields = ('url', 'name', 'school', 'score', 'score_lastupdate', 'id', 'solved', 'members')
         ordering = ('score',)
+
+
+class EmptySerializer(serializers.BaseSerializer):
+    pass
