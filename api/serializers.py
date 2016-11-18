@@ -76,5 +76,11 @@ class TeamSerializer(serializers.HyperlinkedModelSerializer):
         ordering = ('score',)
 
 
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ('code', 'shell_username', 'shell_password')
+
+
 class EmptySerializer(serializers.BaseSerializer):
     pass

@@ -33,6 +33,8 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         response = {}
 
+        code = status.HTTP_200_OK
+
         # We've already solved this problem
         if problem in team.solved.all():
             response['status'] = 'already_solved'
@@ -58,6 +60,8 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         # The submission was incorrect
         else:
+            code = status.HTTP_406_NOT_ACCEPTABLE
+
             if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
                 # The user has already attempted this incorrect flag
                 response['already_attempted'] = True
@@ -157,25 +161,31 @@ class UserViewSet(viewsets.GenericViewSet):
     @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)],
                 serializer_class=serializers.UserLoginSerializer)
     def login(self, request):
-        response = {}
+        """Logs in a user."""
 
-        code = status.HTTP_200_OK
         user = auth.authenticate(username=request.data['username'], password=request.data['password'])
 
         if user is not None:
             auth.login(request, user)
-            response['status'] = 'success'
+            code = status.HTTP_200_OK
         else:
             code = status.HTTP_401_UNAUTHORIZED
-            response['status'] = 'failure'
 
-        return Response(response, status=code)
+        return Response(status=code)
 
-    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
-                serializer_class=serializers.EmptySerializer)
+    @list_route(permission_classes=[permissions.IsAuthenticated])
     def logout(self, request):
+        """Logs out a user."""
         auth.logout(request)
 
-        return Response({
-            'status': 'success'
-        })
+        return Response(status=status.HTTP_200_OK)
+
+    @list_route(permission_classes=[permissions.IsAuthenticated], renderer_classes=[JSONRenderer])
+    def account(self, request):
+        """Displays private information about a user's team."""
+        response = {}
+
+        if request.user.profile.team:
+            return Response(serializers.AccountSerializer(request.user.profile.team).data)
+        else:
+            return Response(status=status.HTTP_423_LOCKED)
