@@ -16,6 +16,18 @@ class ProblemSubmitSerializer(serializers.ModelSerializer):
         fields = ('flag',)
 
 
+class TeamCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ('school', 'name')
+
+
+class TeamJoinSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ('code',)
+
+
 class TeamSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Team
