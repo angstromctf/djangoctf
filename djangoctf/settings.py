@@ -38,11 +38,13 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'rest_framework_swagger',
     'rest_framework',
+    'corsheaders',
     'api'
 )
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -190,3 +192,5 @@ SWAGGER_SETTINGS = {
     'DOC_EXPANSION': 'list',
     'APIS_SORTER': 'alpha'
 }
+
+CORS_ORIGIN_ALLOW_ALL = True

@@ -2,10 +2,12 @@ from django.conf import settings
 from django.contrib import auth
 from django.utils import timezone
 
-from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import detail_route, list_route
+from rest_framework import viewsets, permissions, status, schemas
+from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.views import APIView
+from rest_framework_swagger.renderers import OpenAPIRenderer
 
 from api import serializers, models
 from api.permissions import ContestStarted, ContestEnded, HasTeam, not_permission
@@ -15,6 +17,13 @@ import hashlib
 import logging
 
 logger = logging.getLogger(__name__)
+generator = schemas.SchemaGenerator()
+
+
+@api_view(exclude_from_schema=True)
+@renderer_classes([OpenAPIRenderer])
+def schema(request):
+    return Response(generator.get_schema())
 
 
 class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
@@ -140,14 +149,12 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         team.eligible = team.eligible and request.user.profile.eligible
         team.save()
 
-        response = {}
-
         if team.members.count() < settings.CONFIG['users_per_team']:
             # If there are fewer than max number of people on the team, add the user to the team
             request.user.profile.team = team
             request.user.profile.save()
 
-        return Response(response)
+        return Response()
 
     @detail_route(serializer_class=serializers.TeamProgressSerializer)
     def progress(self, request, *args, **kwargs):
@@ -178,7 +185,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """Logs out a user."""
         auth.logout(request)
 
-        return Response(status=status.HTTP_200_OK)
+        return Response()
 
     @list_route(permission_classes=[permissions.IsAuthenticated], renderer_classes=[JSONRenderer])
     def account(self, request):
