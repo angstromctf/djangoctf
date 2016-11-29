@@ -1,3 +1,12 @@
+"""Django CTF competition runtime models.
+
+This module defines two sets of models. Profiles and teams represent
+individual competitors and competitor groups. Problems and submissions
+objects are the patterns used to store the actual competition content
+as well as the progress of the teams.
+"""
+
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -32,6 +41,86 @@ CATEGORIES = [
     'misc',
     'master'
 ]
+
+
+class Profile(models.Model):
+    """An expanded user model wrapper.
+
+    The model contains extra information belonging to users, such as
+    demographics and teams. Profiles are not subclasses of in order to
+    separate CTF related attributes and normal user attributes.
+    """
+
+    # Which user this belongs to
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    # The user's team
+    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
+                             default=None, related_name='members')
+
+    # Activation information for this user
+    activation_key = models.CharField(max_length=40, blank=True, null=True, default="")
+    key_generated = models.DateTimeField(default=timezone.now)
+
+    # Required information
+    eligible = models.BooleanField(default=True)
+
+    # Optional demographic information
+    gender = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
+    race = models.IntegerField(blank=True, choices=RACE_CHOICES, null=True)
+    age = models.IntegerField(blank=True, null=True)
+
+    # Magic methods
+    def __str__(self):
+        """Represent the user as a string."""
+
+        return "Profile[" + self.user.username + "]"
+
+
+class Team(models.Model):
+    """A team registered with the CTF.
+
+    Teams track unique identity as well as progression throughout the
+    current competition. Teams do contain have a defined reference to
+    team member profile models; these can be accessed instead by
+    reverse calls to the members attribute.
+    """
+
+    # Which problems this team has solved
+    solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
+
+    # Information about team
+    name = models.CharField(max_length=128)
+    school = models.CharField(max_length=128)
+
+    eligible = models.BooleanField(default=True)
+    eligible2 = models.IntegerField(blank=True, choices=ELIGIBLE_CHOICES, null=True)
+
+    address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
+    address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
+
+    # Code for team registration
+    code = models.CharField(max_length=20)
+
+    # Score and last update of the team
+    score = models.IntegerField(default=0)
+    score_lastupdate = models.DateTimeField(default=timezone.now)
+
+    # Shell username and password
+    shell_username = models.CharField(max_length=20, default="")
+    shell_password = models.CharField(max_length=50, default="")
+
+    # Meta model attributes
+    class Meta:
+        ordering = ("-score",)
+
+    def __str__(self):
+        """Represent the team as a string."""
+
+        return "Team[" + self.name + "]"
 
 
 class Problem(models.Model):
@@ -77,71 +166,6 @@ class Problem(models.Model):
     #         pass
     #
     #     super(Problem, self).save(*args, **kwargs)
-
-
-class Profile(models.Model):
-    """Extra information belonging to users, such as demographics and teams, in addition to normal Django User model."""
-
-    # Which user this belongs to
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    # The user's team
-    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
-                             default=None, related_name='members')
-
-    # Activation information for this user
-    activation_key = models.CharField(max_length=40, blank=True, null=True, default="")
-    key_generated = models.DateTimeField(default=timezone.now)
-
-    # Required information
-    eligible = models.BooleanField(default=True)
-
-    # Optional demographic information
-    gender = models.IntegerField(blank=True, choices=GENDER_CHOICES, null=True)
-    race = models.IntegerField(blank=True, choices=RACE_CHOICES, null=True)
-    age = models.IntegerField(blank=True, null=True)
-
-    # Magic methods
-    def __str__(self):
-        """Represent the user as a string."""
-        return "Profile[" + self.user.username + "]"
-
-
-class Team(models.Model):
-    """A team registered with the CTF. Contains identity and tracks problems solved and score. """
-
-    # Which problems this team has solved
-    solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
-
-    # Information about team
-    name = models.CharField(max_length=128)
-    school = models.CharField(max_length=128)
-
-    eligible = models.BooleanField(default=True)
-    eligible2 = models.IntegerField(blank=True, choices=ELIGIBLE_CHOICES, null=True)
-
-    address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
-    address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
-
-    # Code for team registration
-    code = models.CharField(max_length=20)
-
-    # Score and last update of the team
-    score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=timezone.now)
-
-    # Shell username and password
-    shell_username = models.CharField(max_length=20, default="")
-    shell_password = models.CharField(max_length=50, default="")
-
-    def __str__(self):
-        return "Team[" + self.name + "]"
-
-    class Meta:
-        ordering = ("-score",)
 
 
 class CorrectSubmission(models.Model):
