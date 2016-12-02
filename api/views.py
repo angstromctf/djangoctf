@@ -2,11 +2,10 @@ from django.conf import settings
 from django.contrib import auth
 from django.utils import timezone
 
-from rest_framework import viewsets, permissions, status, schemas
+from rest_framework import viewsets, permissions, status as _status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
-from rest_framework.views import APIView
 from rest_framework_swagger.renderers import OpenAPIRenderer
 
 from api import serializers, models
@@ -34,7 +33,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
     @detail_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(ContestEnded),
                                                         HasTeam), serializer_class=serializers.ProblemSubmitSerializer)
     def submit(self, request):
-        """Handles submissions for specific problems and returns success status."""
+        """Handles submissions for specific problems and returns success _status."""
 
         problem = self.get_object()
         team = request.user.profile.team
@@ -42,11 +41,11 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         response = {}
 
-        code = status.HTTP_200_OK
+        code = _status.HTTP_200_OK
 
         # We've already solved this problem
         if problem in team.solved.all():
-            response['status'] = 'already_solved'
+            response['_status'] = 'already_solved'
 
         # We've now solved the problem because the solution was correct
         elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
@@ -65,11 +64,11 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
             solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
             solution.save()
 
-            response['status'] = 'correct'
+            response['_status'] = 'correct'
 
         # The submission was incorrect
         else:
-            code = status.HTTP_406_NOT_ACCEPTABLE
+            code = _status.HTTP_406_NOT_ACCEPTABLE
 
             if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
                 # The user has already attempted this incorrect flag
@@ -80,7 +79,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
                 solution.save()
                 response['already_attempted'] = False
 
-            response['status'] = 'incorrect'
+            response['_status'] = 'incorrect'
 
         return Response(response)
 
@@ -154,7 +153,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             request.user.profile.team = team
             request.user.profile.save()
 
-        return Response()
+        return Response({})
 
     @detail_route(serializer_class=serializers.TeamProgressSerializer)
     def progress(self, request, *args, **kwargs):
@@ -165,6 +164,25 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.models.User.objects.all()
 
+    @list_route(methods=['post'], serializer_class=serializers.EmptySerializer)
+    def status(self, request):
+        print("CALLED")
+        response = {
+            'logged_in': request.user.is_authenticated(),
+        }
+
+        if response['logged_in']:
+            response['team'] = request.user.profile.team is not None
+
+            if response['team']:
+                response['score'] = request.user.profile.team.score
+
+                for index, team in enumerate(models.Team.objects.filter(eligible=True).order_by('-score', 'score_lastupdate')):
+                    if team.id == request.user.profile.team.id:
+                        response['place'] = index + 1
+
+        return Response(response)
+
     @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)],
                 serializer_class=serializers.UserLoginSerializer)
     def login(self, request):
@@ -174,18 +192,19 @@ class UserViewSet(viewsets.GenericViewSet):
 
         if user is not None:
             auth.login(request, user)
-            code = status.HTTP_200_OK
+            return self.status(request)
         else:
-            code = status.HTTP_401_UNAUTHORIZED
+            return Response({}, _status.HTTP_401_UNAUTHORIZED)
 
-        return Response(status=code)
-
-    @list_route(permission_classes=[permissions.IsAuthenticated])
+    @list_route(methods=['post'], permission_classes=[],
+                serializer_class=serializers.EmptySerializer)
     def logout(self, request):
         """Logs out a user."""
+        print("HAYY")
         auth.logout(request)
+        print("HOLA")
 
-        return Response()
+        return self.status(request)
 
     @list_route(permission_classes=[permissions.IsAuthenticated], renderer_classes=[JSONRenderer])
     def account(self, request):
@@ -195,4 +214,4 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.user.profile.team:
             return Response(serializers.AccountSerializer(request.user.profile.team).data)
         else:
-            return Response(status=status.HTTP_423_LOCKED)
+            return Response({}, status=_status.HTTP_423_LOCKED)

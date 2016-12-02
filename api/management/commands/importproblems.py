@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.management.base import BaseCommand, CommandError
 
-from api.management import deploy
+# from api.management import deploy
 from api.models import Problem
 
 import json
@@ -149,10 +149,10 @@ class Command(BaseCommand):
                 except FileNotFoundError:
                     continue
 
-                if "deploy" in data:
-                    if "enabled" not in data["deploy"] or data["deploy"]["enabled"]:
-                        func = getattr(deploy, data['deploy']['script'])
-                        #func(data, problem, category, problem_path)
+                # if "deploy" in data:
+                #     if "enabled" not in data["deploy"] or data["deploy"]["enabled"]:
+                #         func = getattr(deploy, data['deploy']['script'])
+                #         #func(data, problem, category, problem_path)
 
                 if "files" in data:
                     for file in data["files"]:

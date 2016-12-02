@@ -6,9 +6,15 @@ from api.models import Problem, Team, CorrectSubmission, Profile
 
 
 class ProblemSerializer(serializers.HyperlinkedModelSerializer):
+    solved = serializers.SerializerMethodField('is_solved')
+
+    def is_solved(self, obj):
+        user = self.context['request'].user
+        return user.is_authenticated() and user.profile.team is not None and obj in user.profile.team.solved
+
     class Meta:
         model = Problem
-        fields = ('url', 'title', 'text', 'value', 'category', 'hint')
+        fields = ('url', 'title', 'text', 'value', 'category', 'hint', 'solved')
 
 
 class ProblemSubmitSerializer(serializers.ModelSerializer):
