@@ -5,16 +5,19 @@ from rest_framework import serializers
 from api.models import Problem, Team, CorrectSubmission, Profile
 
 
-class ProblemSerializer(serializers.HyperlinkedModelSerializer):
+class ProblemSerializer(serializers.ModelSerializer):
     solved = serializers.SerializerMethodField('is_solved')
 
     def is_solved(self, obj):
-        user = self.context['request'].user
-        return user.is_authenticated() and user.profile.team is not None and obj in user.profile.team.solved
+        if 'request' in self.context:
+            user = self.context['request'].user
+            return user.is_authenticated() and user.profile.team is not None and obj in user.profile.team.solved.all()
+        else:
+            return False
 
     class Meta:
         model = Problem
-        fields = ('url', 'title', 'text', 'value', 'category', 'hint', 'solved')
+        fields = ('id', 'title', 'text', 'value', 'category', 'hint', 'solved')
 
 
 class ProblemSubmitSerializer(serializers.ModelSerializer):
@@ -45,18 +48,10 @@ class SubmissionSerializer(serializers.ModelSerializer):
         fields = ('problem', 'time')
 
 
-class TeamProgressSerializer(serializers.ModelSerializer):
-    solves = SubmissionSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Team
-        fields = ('solves',)
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name')
+        fields = ('username',)
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -73,13 +68,38 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ('user',)
 
 
-class TeamSerializer(serializers.HyperlinkedModelSerializer):
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = ('id', 'name', 'school', 'score', 'score_lastupdate', 'eligible')
+
+
+class CorrectSubmissionSerializer(serializers.ModelSerializer):
+    problem = ProblemSerializer()
+    team = TeamSerializer()
+
+    class Meta:
+        model = CorrectSubmission
+        fields = ('problem', 'team', 'new_score', 'time')
+
+
+class TeamProfileSerializer(serializers.ModelSerializer):
+    solves = CorrectSubmissionSerializer(many=True, read_only=True)
     members = ProfileSerializer(many=True, read_only=True)
+    place = serializers.SerializerMethodField()
+
+    def get_place(self, obj):
+        place = -1
+
+        for index, team in enumerate(Team.objects.filter(eligible=True)):
+            if team.id == obj.id:
+                place = index + 1
+
+        return place
 
     class Meta:
         model = Team
-        fields = ('url', 'name', 'school', 'score', 'score_lastupdate', 'id', 'solved', 'members')
-        ordering = ('score',)
+        fields = ('name', 'school', 'score', 'score_lastupdate', 'solves', 'members', 'place')
 
 
 class AccountSerializer(serializers.ModelSerializer):

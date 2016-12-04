@@ -32,20 +32,19 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
     @detail_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(ContestEnded),
                                                         HasTeam), serializer_class=serializers.ProblemSubmitSerializer)
-    def submit(self, request):
-        """Handles submissions for specific problems and returns success _status."""
+    def submit(self, request, pk=None):
+        """Handles submissions for specific problems and returns success status."""
 
         problem = self.get_object()
         team = request.user.profile.team
         guess = request.data['flag'].strip().lower()
 
         response = {}
-
         code = _status.HTTP_200_OK
 
         # We've already solved this problem
         if problem in team.solved.all():
-            response['_status'] = 'already_solved'
+            response['status'] = 'already_solved'
 
         # We've now solved the problem because the solution was correct
         elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
@@ -64,7 +63,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
             solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
             solution.save()
 
-            response['_status'] = 'correct'
+            response['status'] = 'correct'
 
         # The submission was incorrect
         else:
@@ -79,9 +78,9 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
                 solution.save()
                 response['already_attempted'] = False
 
-            response['_status'] = 'incorrect'
+            response['status'] = 'incorrect'
 
-        return Response(response)
+        return Response(response, status=code)
 
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
@@ -155,10 +154,13 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response({})
 
-    @detail_route(serializer_class=serializers.TeamProgressSerializer)
-    def progress(self, request, *args, **kwargs):
+    @detail_route(serializer_class=serializers.EmptySerializer)
+    def progress(self, request, pk=None):
         """Returns a list representing the user's score progression."""
-        return self.list(request, *args, **kwargs)
+
+        team = self.get_object()
+
+        return serializers.TeamSerializer(team)
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -166,20 +168,13 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @list_route(methods=['post'], serializer_class=serializers.EmptySerializer)
     def status(self, request):
-        print("CALLED")
-        response = {
-            'logged_in': request.user.is_authenticated(),
-        }
+        response = {}
 
-        if response['logged_in']:
-            response['team'] = request.user.profile.team is not None
+        if request.user.is_authenticated():
+            response['user'] = serializers.UserSerializer(request.user).data
 
-            if response['team']:
-                response['score'] = request.user.profile.team.score
-
-                for index, team in enumerate(models.Team.objects.filter(eligible=True).order_by('-score', 'score_lastupdate')):
-                    if team.id == request.user.profile.team.id:
-                        response['place'] = index + 1
+            if request.user.profile.team:
+                response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
 
         return Response(response)
 
@@ -200,15 +195,15 @@ class UserViewSet(viewsets.GenericViewSet):
                 serializer_class=serializers.EmptySerializer)
     def logout(self, request):
         """Logs out a user."""
-        print("HAYY")
+
         auth.logout(request)
-        print("HOLA")
 
         return self.status(request)
 
     @list_route(permission_classes=[permissions.IsAuthenticated], renderer_classes=[JSONRenderer])
     def account(self, request):
         """Displays private information about a user's team."""
+
         response = {}
 
         if request.user.profile.team:

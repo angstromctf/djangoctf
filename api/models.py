@@ -77,52 +77,6 @@ class Profile(models.Model):
         return "Profile[" + self.user.username + "]"
 
 
-class Team(models.Model):
-    """A team registered with the CTF.
-
-    Teams track unique identity as well as progression throughout the
-    current competition. Teams do contain have a defined reference to
-    team member profile models; these can be accessed instead by
-    reverse calls to the members attribute.
-    """
-
-    # Which problems this team has solved
-    solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
-
-    # Information about team
-    name = models.CharField(max_length=128)
-    school = models.CharField(max_length=128)
-
-    eligible = models.BooleanField(default=True)
-    eligible2 = models.IntegerField(blank=True, choices=ELIGIBLE_CHOICES, null=True)
-
-    address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
-    address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
-    address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
-
-    # Code for team registration
-    code = models.CharField(max_length=20)
-
-    # Score and last update of the team
-    score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=timezone.now)
-
-    # Shell username and password
-    shell_username = models.CharField(max_length=20, default="")
-    shell_password = models.CharField(max_length=50, default="")
-
-    # Meta model attributes
-    class Meta:
-        ordering = ("-score",)
-
-    def __str__(self):
-        """Represent the team as a string."""
-
-        return "Team[" + self.name + "]"
-
-
 class Problem(models.Model):
     """A CTF problem with information."""
 
@@ -166,6 +120,51 @@ class Problem(models.Model):
     #         pass
     #
     #     super(Problem, self).save(*args, **kwargs)
+
+
+class Team(models.Model):
+    """A team registered with the CTF.
+
+    Teams track unique identity as well as progression throughout the
+    current competition. Teams do contain have a defined reference to
+    team member profile models; these can be accessed instead by
+    reverse calls to the members attribute.
+    """
+
+    # Which problems this team has solved
+    solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
+
+    # Information about team
+    name = models.CharField(max_length=128)
+    school = models.CharField(max_length=128)
+
+    eligible = models.BooleanField(default=True)
+
+    address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_street_line_2 = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_zip = models.CharField(max_length=10, default=None, null=True, blank=True)
+    address_city = models.CharField(max_length=1000, default=None, null=True, blank=True)
+    address_state = models.CharField(max_length=1000, default=None, null=True, blank=True)
+
+    # Code for team registration
+    code = models.CharField(max_length=20)
+
+    # Score and last update of the team
+    score = models.IntegerField(default=0)
+    score_lastupdate = models.DateTimeField(default=timezone.now)
+
+    # Shell username and password
+    shell_username = models.CharField(max_length=20, default="")
+    shell_password = models.CharField(max_length=50, default="")
+
+    # Meta model attributes
+    class Meta:
+        ordering = ("-score", "score_lastupdate")
+
+    def __str__(self):
+        """Represent the team as a string."""
+
+        return "Team[" + self.name + "]"
 
 
 class CorrectSubmission(models.Model):

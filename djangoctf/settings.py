@@ -182,9 +182,6 @@ if CONFIG['email']['enabled']:
     SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
     DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
 
-COUNTRIES_FIRST = ['US']
-COUNTRIES_FIRST_REPEAT = True
-
 SWAGGER_SETTINGS = {
     'LOGIN_URL': 'rest_framework:login',
     'LOGOUT_URL': 'rest_framework:logout',
