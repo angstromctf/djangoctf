@@ -99,7 +99,7 @@ class TeamProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ('name', 'school', 'score', 'score_lastupdate', 'solves', 'members', 'place')
+        fields = ('name', 'school', 'score', 'score_lastupdate')
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -110,3 +110,17 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class EmptySerializer(serializers.BaseSerializer):
     pass
+
+
+class SignupProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('eligible', 'country', 'state', 'gender', 'age')
+
+
+class SignupSerializer(serializers.ModelSerializer):
+    profile = SignupProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'first_name', 'last_name', 'email', 'profile')

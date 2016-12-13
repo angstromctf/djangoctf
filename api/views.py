@@ -5,7 +5,6 @@ from django.utils import timezone
 from rest_framework import viewsets, permissions, status as _status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
 from rest_framework_swagger.renderers import OpenAPIRenderer
 
 from api import serializers, models
@@ -14,6 +13,7 @@ from api.utils import create_code, create_shell_username, create_shell_password
 
 import hashlib
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 generator = schemas.SchemaGenerator()
@@ -200,7 +200,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         return self.status(request)
 
-    @list_route(permission_classes=[permissions.IsAuthenticated], renderer_classes=[JSONRenderer])
+    @list_route(permission_classes=[permissions.IsAuthenticated])
     def account(self, request):
         """Displays private information about a user's team."""
 
@@ -210,3 +210,45 @@ class UserViewSet(viewsets.GenericViewSet):
             return Response(serializers.AccountSerializer(request.user.profile.team).data)
         else:
             return Response({}, status=_status.HTTP_423_LOCKED)
+
+    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)], serializer_class=serializers.SignupSerializer)
+    def signup(self, request):
+        """Signs the user up for an account."""
+
+        emails_enabled = settings.CONFIG['email']['enabled']
+
+        user = auth.models.User.objects.create_user(request.data['username'],
+                                                    email=request.data['email'],
+                                                    password=request.data['password'],
+                                                    first_name=request.data['first_name'],
+                                                    last_name=request.data['last_name'])
+        user.is_active = not emails_enabled
+
+        user.save()
+
+        # Create user profile
+        profile = models.Profile(user=user,
+                                 eligible=request.data['profile']['eligible'])
+
+        # # Add in optional demographics data
+        # if form.cleaned_data['gender']:
+        #     profile.gender = form.cleaned_data['gender']
+        # if form.cleaned_data['race']:
+        #     profile.race = form.cleaned_data['race']
+        # if form.cleaned_data['age']:
+        #     profile.age = form.cleaned_data['age']
+        # # if form.cleaned_data['country']:
+        # #    profile.age = form.cleaned_data['country']
+
+        # Generate activation keys
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
+        profile.activation_key = hashlib.sha1(salt + request.data['username'].encode('utf8')).hexdigest()
+        profile.key_generated = timezone.now()
+
+        profile.save()
+
+        # Log the user in
+        user = auth.authenticate(username=user.get_username(), password=form.cleaned_data['password'])
+        auth.login(request, user)
+
+        return Response({})
