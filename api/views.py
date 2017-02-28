@@ -130,11 +130,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         request.user.profile.team = team
         request.user.profile.save()
 
-        response = {
-            'code': code
-        }
-
-        return Response(response)
+        return self.account(request)
 
     @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
                 serializer_class=serializers.TeamJoinSerializer)
@@ -152,7 +148,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             request.user.profile.team = team
             request.user.profile.save()
 
-        return Response({})
+        return self.account(request)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
     def progress(self, request, pk=None):
@@ -161,6 +157,16 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         team = self.get_object()
 
         return serializers.TeamSerializer(team)
+
+
+    @list_route(permission_classes=[permissions.IsAuthenticated])
+    def account(self, request):
+        """Displays private information about a user's team."""
+
+        if request.user.profile.team:
+            return Response(serializers.AccountSerializer(request.user.profile.team).data)
+        else:
+            return Response({}, status=_status.HTTP_423_LOCKED)
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -200,17 +206,6 @@ class UserViewSet(viewsets.GenericViewSet):
 
         return self.status(request)
 
-    @list_route(permission_classes=[permissions.IsAuthenticated])
-    def account(self, request):
-        """Displays private information about a user's team."""
-
-        response = {}
-
-        if request.user.profile.team:
-            return Response(serializers.AccountSerializer(request.user.profile.team).data)
-        else:
-            return Response({}, status=_status.HTTP_423_LOCKED)
-
     @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)], serializer_class=serializers.SignupSerializer)
     def signup(self, request):
         """Signs the user up for an account."""
@@ -225,6 +220,8 @@ class UserViewSet(viewsets.GenericViewSet):
         user.is_active = not emails_enabled
 
         user.save()
+
+        print(request.data)
 
         # Create user profile
         profile = models.Profile(user=user,
@@ -248,7 +245,7 @@ class UserViewSet(viewsets.GenericViewSet):
         profile.save()
 
         # Log the user in
-        user = auth.authenticate(username=user.get_username(), password=form.cleaned_data['password'])
+        user = auth.authenticate(username=user.get_username(), password=request.data['password'])
         auth.login(request, user)
 
-        return Response({})
+        return self.status(request)

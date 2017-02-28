@@ -43,7 +43,7 @@ class Profile(models.Model):
     key_generated = models.DateTimeField(default=timezone.now)
 
     # Required information
-    eligible = models.BooleanField(default=True)
+    eligible = models.BooleanField(default=False)
 
     # Optional demographic information
     gender = models.TextField(blank=True, null=True)

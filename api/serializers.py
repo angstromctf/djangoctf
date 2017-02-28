@@ -80,7 +80,7 @@ class CorrectSubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CorrectSubmission
-        fields = ('problem', 'team', 'new_score', 'time')
+        fields = ('problem', 'team', 'new_score', 'time', 'problem', 'team')
 
 
 class TeamProfileSerializer(serializers.ModelSerializer):
@@ -99,7 +99,7 @@ class TeamProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ('name', 'school', 'score', 'score_lastupdate')
+        fields = ('name', 'school', 'score', 'score_lastupdate', 'solves', 'members', 'place')
 
 
 class AccountSerializer(serializers.ModelSerializer):

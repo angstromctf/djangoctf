@@ -62,6 +62,9 @@ class Command(BaseCommand):
                 except FileNotFoundError:
                     errors.append("Failed to load metadata for problem {:s}/{:s}".format(category, problem))
                     continue
+                except json.decoder.JSONDecodeError:
+                    errors.append("Failed to decode metadata for problem {:s}/{:s}".format(category, problem))
+                    continue
 
                 if "enabled" in data and data["enabled"] == False:
                     total -= 1
@@ -146,7 +149,7 @@ class Command(BaseCommand):
                 try:
                     with open(join_paths(problem_path, 'problem.json')) as data_file:
                         data = json.load(data_file)
-                except FileNotFoundError:
+                except:
                     continue
 
                 # if "deploy" in data:
