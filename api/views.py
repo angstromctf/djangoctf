@@ -97,14 +97,14 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         shell_password = create_shell_password()
 
         # Check if we need to set up a shell account for the team
-        if settings.CONFIG['shell']['enabled']:
+        if settings.SHELL['enabled']:
             import paramiko
 
             # SSH to shell server
-            private_key = paramiko.RSAKey.from_private_key_file(settings.CONFIG['shell']['ssh_key_path'])
+            private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL['ssh_key_path'])
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=settings.CONFIG['shell']['hostname'], username='root', pkey=private_key)
+            ssh.connect(hostname=settings.SHELL['hostname'], username='root', pkey=private_key)
 
             # Create the account
             stdin, stdout, stderr = ssh.exec_command("addctfuser " + shell_username + " " + shell_password)
@@ -143,7 +143,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         team.eligible = team.eligible and request.user.profile.eligible
         team.save()
 
-        if team.members.count() < settings.CONFIG['users_per_team']:
+        if team.members.count() < settings.USERS_PER_TEAM:
             # If there are fewer than max number of people on the team, add the user to the team
             request.user.profile.team = team
             request.user.profile.save()
@@ -210,32 +210,28 @@ class UserViewSet(viewsets.GenericViewSet):
     def signup(self, request):
         """Signs the user up for an account."""
 
-        emails_enabled = settings.CONFIG['email']['enabled']
-
         user = auth.models.User.objects.create_user(request.data['username'],
                                                     email=request.data['email'],
                                                     password=request.data['password'],
                                                     first_name=request.data['first_name'],
                                                     last_name=request.data['last_name'])
-        user.is_active = not emails_enabled
+        user.is_active = not settings.REQUIRE_USER_ACTIVATION
 
         user.save()
-
-        print(request.data)
 
         # Create user profile
         profile = models.Profile(user=user,
                                  eligible=request.data['profile']['eligible'])
 
-        # # Add in optional demographics data
-        # if form.cleaned_data['gender']:
-        #     profile.gender = form.cleaned_data['gender']
-        # if form.cleaned_data['race']:
-        #     profile.race = form.cleaned_data['race']
-        # if form.cleaned_data['age']:
-        #     profile.age = form.cleaned_data['age']
-        # # if form.cleaned_data['country']:
-        # #    profile.age = form.cleaned_data['country']
+        # Add in optional demographics data
+        if request.data['profile']['gender']:
+            profile.gender = request.data['profile']['gender']
+        if request.data['profile']['race']:
+            profile.race = request.data['profile']['race']
+        if request.data['profile']['age']:
+            profile.age = request.data['profile']['age']
+        if request.data['profile']['country']:
+           profile.age = request.data['profile']['country']
 
         # Generate activation keys
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')

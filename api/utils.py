@@ -7,8 +7,8 @@ from api.models import Team
 import random
 
 
-contest_start = parse_datetime(settings.CONFIG["start_time"])
-contest_end = parse_datetime(settings.CONFIG["end_time"])
+contest_start = parse_datetime(settings.START_TIME)
+contest_end = parse_datetime(settings.END_TIME)
 
 
 def before_start():

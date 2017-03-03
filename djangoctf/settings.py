@@ -12,16 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-import json
-
-# Parse the secure configuration file
-with open('djangoctf/settings.json') as config_file:
-    CONFIG = json.loads(config_file.read())
-
-# Read security options from the file
-SECRET_KEY = CONFIG['secret_key']
-DEBUG = CONFIG['debug']
-ALLOWED_HOSTS = CONFIG['allowed_hosts']
+from djangoctf.server import *
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -73,19 +64,6 @@ TEMPLATES = [
     },
 ]
 
-# Database
-# https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
-for database in CONFIG['databases']:
-    if CONFIG['databases'][database]['NAME_JOIN']:
-        CONFIG['databases'][database]['NAME'] = os.path.join(BASE_DIR, CONFIG['databases'][database]['NAME'])
-
-DATABASES = CONFIG['databases']
-
-# Logging
-LOGGING = CONFIG['logging']
-ADMINS = list(map(tuple, CONFIG['admins']))
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -101,86 +79,22 @@ USE_L10N = False
 
 USE_TZ = True
 
-if CONFIG['cache']['enabled']:
-    CACHES = {
-        'default': {
-            'BACKEND': 'redis_cache.RedisCache',
-            'LOCATION': CONFIG['cache']['location']+CONFIG['cache']['port'],
-        },
-    }
-
-    SESSION_ENGINE = 'redis_sessions.session'
-    SESSION_REDIS_HOST = CONFIG['cache']['location']
-    SESSION_REDIS_PORT = int(CONFIG['cache']['port'])
-    SESSION_REDIS_DB = 0
-    SESSION_REDIS_PREFIX = 'session'
-else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
-        }
-    }
-
-if CONFIG['use_password_validators']:
-    AUTH_PASSWORD_VALIDATORS = [
-        {
-            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-            'OPTIONS': {
-                'min_length': 6,
-            }
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-        },
-        {
-            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-        },
-    ]
-
-if CONFIG['use_loadbalanced_databases']:
-    DATABASE_ROUTERS = ('multidb.MasterSlaveRouter',)
-    SLAVE_DATABASES = ['shadow-1']
-
 SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
-#TEMPLATES[0]['OPTIONS']['context_processors'].append("core.context_processors.site_configuration_processor")
 
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = "bootstrap3"
 
-# Security stuff
-
-CSRF_COOKIE_SECURE = CONFIG['ssl']
-SESSION_COOKIE_SECURE = CONFIG['ssl']
-
 CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
-if CONFIG['email']['enabled']:
-    # SMTP info
-
-    EMAIL_HOST = CONFIG['email']['host']
-    EMAIL_HOST_USER = CONFIG['email']['username']
-    EMAIL_HOST_PASSWORD = CONFIG['email']['password']
-    if EMAIL_HOST_USER == "":
-        EMAIL_HOST_USER = None
-    if EMAIL_HOST_PASSWORD == "":
-        EMAIL_HOST_PASSWORD = None
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    SERVER_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
-    DEFAULT_FROM_EMAIL = 'angstromCTF Team <contact@angstromctf.com>'
 
 SWAGGER_SETTINGS = {
     'LOGIN_URL': 'rest_framework:login',
@@ -193,3 +107,11 @@ SWAGGER_SETTINGS = {
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
+    }
+}
+
+USERS_PER_TEAM = 5
