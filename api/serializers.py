@@ -1,8 +1,6 @@
-from django.contrib.auth.models import User
-
 from rest_framework import serializers
 
-from api.models import Problem, Team, CorrectSubmission, Profile
+from api.models import Problem, Team, CorrectSubmission, Profile, User
 
 
 class ProblemSerializer(serializers.ModelSerializer):

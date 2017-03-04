@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import auth
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import viewsets, permissions, status as _status, schemas
@@ -172,7 +173,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 class UserViewSet(viewsets.GenericViewSet):
     queryset = auth.models.User.objects.all()
 
-    @list_route(methods=['post'], serializer_class=serializers.EmptySerializer)
+    @list_route(serializer_class=serializers.EmptySerializer)
     def status(self, request):
         response = {}
 
@@ -197,7 +198,7 @@ class UserViewSet(viewsets.GenericViewSet):
         else:
             return Response({}, _status.HTTP_401_UNAUTHORIZED)
 
-    @list_route(methods=['post'], permission_classes=[],
+    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
                 serializer_class=serializers.EmptySerializer)
     def logout(self, request):
         """Logs out a user."""
@@ -245,3 +246,32 @@ class UserViewSet(viewsets.GenericViewSet):
         auth.login(request, user)
 
         return self.status(request)
+    #
+    # @detail_route
+    # def activation(self, request):
+    #     """Activates the user's account."""
+    #
+    #     activation_expired = False
+    #     already_active = False
+    #     activation_success = False
+    #     resend_userid = ""
+    #     profile = get_object_or_404(models.Profile, activation_key=key)
+    #
+    #     if not profile.user.is_active:
+    #         if timezone.now() - profile.key_generated > EXPIRATION:
+    #             activation_expired = True
+    #             id_user = profile.user.id
+    #             resend_userid = str(id_user)
+    #         else:
+    #             profile.user.is_active = True
+    #             activation_success = True
+    #             profile.user.save()
+    #     else:
+    #         already_active = True
+    #
+    #     return render(request, 'activation.html', {
+    #         'activation_expired': activation_expired,
+    #         'already_active': already_active,
+    #         'activation_success': activation_success,
+    #         'resend_userid': resend_userid
+    #     })
