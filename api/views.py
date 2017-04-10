@@ -232,7 +232,10 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.data['profile']['age']:
             profile.age = request.data['profile']['age']
         if request.data['profile']['country']:
-           profile.age = request.data['profile']['country']
+           profile.country = request.data['profile']['country']
+        if request.data['profile']['state']:
+           profile.state = request.data['profile']['state']
+
 
         # Generate activation keys
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
@@ -246,32 +249,22 @@ class UserViewSet(viewsets.GenericViewSet):
         auth.login(request, user)
 
         return self.status(request)
-    #
-    # @detail_route
-    # def activation(self, request):
-    #     """Activates the user's account."""
-    #
-    #     activation_expired = False
-    #     already_active = False
-    #     activation_success = False
-    #     resend_userid = ""
-    #     profile = get_object_or_404(models.Profile, activation_key=key)
-    #
-    #     if not profile.user.is_active:
-    #         if timezone.now() - profile.key_generated > EXPIRATION:
-    #             activation_expired = True
-    #             id_user = profile.user.id
-    #             resend_userid = str(id_user)
-    #         else:
-    #             profile.user.is_active = True
-    #             activation_success = True
-    #             profile.user.save()
-    #     else:
-    #         already_active = True
-    #
-    #     return render(request, 'activation.html', {
-    #         'activation_expired': activation_expired,
-    #         'already_active': already_active,
-    #         'activation_success': activation_success,
-    #         'resend_userid': resend_userid
-    #     })
+
+    @detail_route
+    def activate(self, request):
+        """Activates the user's account."""
+
+        profile = get_object_or_404(models.Profile, activation_key=request.data['key'])
+
+        if not profile.user.is_active:
+            if timezone.now() - profile.key_generated > EXPIRATION:
+                return Response({
+                    'status': 'activation_expired',
+                    'user_id': str(profile.user.id)
+                }, _status.HTTP_401_UNAUTHORIZED)
+            else:
+                profile.user.is_active = True
+                return Response({'status': 'success'})
+        else:
+            return Response({'status': 'already_active'})
+
