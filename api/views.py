@@ -218,8 +218,7 @@ class UserViewSet(viewsets.GenericViewSet):
         """Signs the user up for an account."""
 
         # Check if this user already exists
-        if (models.User.objects.filter(username=request.data['username'] |
-                                       models.User.objects.filter(email=request.data['email']))).exists():
+        if models.User.objects.filter(username=request.data['username']).exists() or models.User.objects.filter(email=request.data['email']).exists():
             return Response({}, _status.HTTP_409_CONFLICT)
 
         user = models.User.objects.create_user(request.data['username'],
