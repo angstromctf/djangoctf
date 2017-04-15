@@ -93,6 +93,10 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     def new(self, request):
         """Creates new teams for the competition."""
 
+        # Check if this team already exists
+        if models.Team.objects.filter(name=request.data['name']).exists():
+            return Response({}, _status.HTTP_409_CONFLICT)
+
         code = create_code()
         shell_username = create_shell_username()
         shell_password = create_shell_password()
@@ -138,21 +142,23 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     def join(self, request):
         """Adds the user to a pre-existing team."""
 
-        team = models.Team.objects.get(code=request.data['code'])
-
-        # Compute the team's eligibility by combining its current eligibility with the user's eligibility
-        team.eligible = team.eligible and request.user.profile.eligible
-        team.save()
+        team = get_object_or_404(models.Team, code=request.data['code'])
 
         if team.members.count() < settings.USERS_PER_TEAM:
-            # If there are fewer than max number of people on the team, add the user to the team
+            # Compute the team's eligibility by combining its current eligibility with the user's eligibility
+            team.eligible = team.eligible and request.user.profile.eligible
+            team.save()
+
+            # Add the user to the team
             request.user.profile.team = team
             request.user.profile.save()
 
-        return self.account(request)
+            return self.account(request)
+        else:
+            return Response({}, status=_status.HTTP_409_CONFLICT)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
-    def progress(self, request, pk=None):
+    def progress(self):
         """Returns a list representing the user's score progression."""
 
         team = self.get_object()
@@ -171,7 +177,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class UserViewSet(viewsets.GenericViewSet):
-    queryset = auth.models.User.objects.all()
+    queryset = models.User.objects.all()
 
     @list_route(serializer_class=serializers.EmptySerializer)
     def status(self, request):
@@ -211,7 +217,12 @@ class UserViewSet(viewsets.GenericViewSet):
     def signup(self, request):
         """Signs the user up for an account."""
 
-        user = auth.models.User.objects.create_user(request.data['username'],
+        # Check if this user already exists
+        if (models.User.objects.filter(username=request.data['username'] |
+                                       models.User.objects.filter(email=request.data['email']))).exists():
+            return Response({}, _status.HTTP_409_CONFLICT)
+
+        user = models.User.objects.create_user(request.data['username'],
                                                     email=request.data['email'],
                                                     password=request.data['password'],
                                                     first_name=request.data['first_name'],
@@ -232,10 +243,9 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.data['profile']['age']:
             profile.age = request.data['profile']['age']
         if request.data['profile']['country']:
-           profile.country = request.data['profile']['country']
+            profile.country = request.data['profile']['country']
         if request.data['profile']['state']:
-           profile.state = request.data['profile']['state']
-
+            profile.state = request.data['profile']['state']
 
         # Generate activation keys
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
@@ -257,14 +267,24 @@ class UserViewSet(viewsets.GenericViewSet):
         profile = get_object_or_404(models.Profile, activation_key=request.data['key'])
 
         if not profile.user.is_active:
-            if timezone.now() - profile.key_generated > EXPIRATION:
+            if timezone.now() - profile.key_generated > settings.ACTIVATION_EXPIRATION_TIME:
                 return Response({
                     'status': 'activation_expired',
                     'user_id': str(profile.user.id)
-                }, _status.HTTP_401_UNAUTHORIZED)
-            else:
-                profile.user.is_active = True
-                return Response({'status': 'success'})
-        else:
-            return Response({'status': 'already_active'})
+                }, _status.HTTP_406_NOT_ACCEPTABLE)
 
+        profile.user.is_active = True
+        return Response({}, _status.HTTP_200_OK)
+
+    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
+                serializer_class=serializers.UserLoginSerializer)
+    def change_password(self, request):
+        user = auth.authenticate(username=request.user.get_username(), password=request.data['old'])
+
+        if user is not None:
+            user.set_password(request.data['password'])
+            user.save()
+            auth.login(request, user)
+            return Response({})
+        else:
+            return Response({}, _status.HTTP_401_UNAUTHORIZED)
