@@ -243,9 +243,9 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.data['profile']['age']:
             profile.age = request.data['profile']['age']
         if request.data['profile']['country']:
-           profile.country = request.data['profile']['country']
+            profile.country = request.data['profile']['country']
         if request.data['profile']['state']:
-           profile.state = request.data['profile']['state']
+            profile.state = request.data['profile']['state']
 
         # Generate activation keys
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
@@ -275,3 +275,16 @@ class UserViewSet(viewsets.GenericViewSet):
 
         profile.user.is_active = True
         return Response({}, _status.HTTP_200_OK)
+
+    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
+                serializer_class=serializers.UserLoginSerializer)
+    def change_password(self, request):
+        user = auth.authenticate(username=request.user.get_username(), password=request.data['old'])
+
+        if user is not None:
+            user.set_password(request.data['password'])
+            user.save()
+            auth.login(request, user)
+            return Response({})
+        else:
+            return Response({}, _status.HTTP_401_UNAUTHORIZED)
