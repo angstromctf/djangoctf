@@ -14,9 +14,9 @@ router.register('users', views.UserViewSet)
 schema_view = get_swagger_view(title='djangoctf API')
 
 urlpatterns = [
-    url('^$', schema_view),
-    url('^api/', views.schema),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url('^api/$', schema_view),
+    url('^api/schema', views.schema),
+    url(r'^api/', include(router.urls)),
+    url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 urlpatterns += router.urls
