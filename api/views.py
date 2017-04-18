@@ -38,50 +38,36 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         problem = self.get_object()
         team = request.user.profile.team
-        guess = request.data['flag'].strip().lower()
-
-        response = {}
-        code = _status.HTTP_200_OK
-
-        # We've already solved this problem
-        if problem in team.solved.all():
-            response['status'] = 'already_solved'
+        guess = request.data['guess'].strip().lower()
 
         # We've now solved the problem because the solution was correct
-        elif hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
-            team.solved.add(problem)
+        if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
+            if problem not in team.solved.all():
+                team.solved.add(problem)
 
-            # Update the team's score
-            team.score += problem.value
+                # Update the team's score
+                team.score += problem.value
 
-            # If this problem is supposed to update the team's last submitted time, do that (this is almost always true)
-            if problem.update_time:
-                team.score_lastupdate = timezone.now()
+                # If this problem is supposed to update the team's last submitted time, do that (this is almost always true)
+                if problem.update_time:
+                    team.score_lastupdate = timezone.now()
 
-            team.save()
+                team.save()
 
-            # Add a new CorrectSubmission object corresponding to having solved the problem
-            solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
-            solution.save()
+                # Add a new CorrectSubmission object corresponding to having solved the problem
+                solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
+                solution.save()
 
-            response['status'] = 'correct'
+            return Response({})
 
         # The submission was incorrect
         else:
-            code = _status.HTTP_406_NOT_ACCEPTABLE
-
-            if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).count() > 0:
-                # The user has already attempted this incorrect flag
-                response['already_attempted'] = True
-            else:
+            if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).exists():
                 # This is a new incorrect flag
                 solution = models.IncorrectSubmission(team=team, problem=problem, guess=guess)
                 solution.save()
-                response['already_attempted'] = False
 
-            response['status'] = 'incorrect'
-
-        return Response(response, status=code)
+            return Response({}, status=_status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
@@ -185,6 +171,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         if request.user.is_authenticated():
             response['user'] = serializers.UserSerializer(request.user).data
+            response['user']['eligible'] = request.user.profile.eligible
 
             if request.user.profile.team:
                 response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
