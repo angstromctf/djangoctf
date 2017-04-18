@@ -144,13 +144,12 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             return Response({}, status=_status.HTTP_409_CONFLICT)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
-    def progress(self):
+    def progress(self, *args, **kwargs):
         """Returns a list representing the user's score progression."""
 
         team = self.get_object()
 
-        return serializers.TeamSerializer(team)
-
+        return Response(serializers.TeamProfileSerializer(team).data)
 
     @list_route(permission_classes=[permissions.IsAuthenticated])
     def account(self, request):
