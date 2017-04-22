@@ -117,8 +117,8 @@ class Team(models.Model):
     solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
 
     # Information about team
-    name = models.CharField(max_length=128)
-    school = models.CharField(max_length=128)
+    name = models.CharField(max_length=64)
+    school = models.CharField(max_length=64)
 
     eligible = models.BooleanField(default=True)
 
