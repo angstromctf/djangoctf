@@ -38,7 +38,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         problem = self.get_object()
         team = request.user.profile.team
-        guess = request.get('guess', "").strip().lower()
+        guess = request['guess'].strip().lower() if 'guess' in request else ""
 
         # We've now solved the problem because the solution was correct
         if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
