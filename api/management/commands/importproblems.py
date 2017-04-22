@@ -20,7 +20,7 @@ class Command(BaseCommand):
         with open(path) as file:
             problems = json.load(file)
         for problem in filter(None, problems):
-            model = Problem.objects.filter(name=problem["name"]).get()
+            model = Problem.objects.filter(name=problem["name"]).first()
             if model:
                 for field in problem:
                     if field != "name":
