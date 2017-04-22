@@ -19,7 +19,7 @@ class Command(BaseCommand):
         path = os.path.abspath(options["problems"])
         with open(path) as file:
             problems = json.load(file)
-        for problem in problems:
+        for problem in filter(None, problems):
             model = Problem.objects.filter(name=problem["name"]).get()
             if model:
                 for field in problem:
