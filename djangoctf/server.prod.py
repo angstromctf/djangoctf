@@ -20,11 +20,9 @@ DATABASES = {
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-SHELL = {
-    'enabled': True,
-    'ssh_key': 'djangoctf/shell_privkey',
-    'hostname': 'shell.angstromctf.com'
-}
+SHELL_ENABLED = True
+SHELL_PRIVATE_KEY = "djangoctf/shell_privkey"
+SHELL_HOSTNAME = "shell.angstromctf.com"
 
 REQUIRE_USER_ACTIVATION = True
 

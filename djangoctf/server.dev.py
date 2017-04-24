@@ -18,8 +18,6 @@ DATABASES = {
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 
-SHELL = {
-    'enabled': False
-}
+SHELL_ENABLED = False
 
 REQUIRE_USER_ACTIVATION = False
