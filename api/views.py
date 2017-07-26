@@ -128,6 +128,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Create the team
         team = models.Team(
+            competition=models.Competition.current(),
             name=request.data['name'],
             school=request.data['school'],
             shell_username=shell_username,

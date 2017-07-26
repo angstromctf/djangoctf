@@ -23,6 +23,32 @@ CATEGORIES = [
 ]
 
 
+class Competition(models.Model):
+    """A single competition model."""
+
+    name = models.CharField(max_length=60)
+
+    date_registration_start = models.DateTimeField()
+    date_start = models.DateTimeField()
+    date_end = models.DateTimeField()
+
+    __current = None
+    __current_time = timezone.now()
+
+    @staticmethod
+    def current():
+        """Get the current or upcoming competition."""
+
+        # "Premature optimization is the root of all evil." - Donald Knuth
+        # "Fuck that." - Noah Kim
+
+        # Refresh from cache every 2 hours
+        now = timezone.now()
+        if Competition.__current is None or (now - Competition.__current_time).seconds > 2 * 60 * 60:
+            Competition.__current = Competition.objects.filter(date_end__lte=now).order_by("date_start")
+        return Competition.__current
+
+
 class Profile(models.Model):
     """An expanded user model wrapper.
 
@@ -63,7 +89,7 @@ class Problem(models.Model):
     """A CTF problem with information."""
 
     # Competition
-    # competition = models.ForeignKey(Competition, related_name="problems")
+    competition = models.ForeignKey(Competition, related_name="problems")
 
     # Standard information about the problem
     name = models.CharField(max_length=200)
@@ -116,7 +142,7 @@ class Team(models.Model):
     """
 
     # Competition
-    # competition = models.ForeignKey(Competition, related_name="teams")
+    competition = models.ForeignKey(Competition, related_name="teams")
 
     # Which problems this team has solved
     solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
