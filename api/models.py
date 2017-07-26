@@ -133,7 +133,7 @@ class Team(models.Model):
 
     # Score and last update of the team
     score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=timezone.now)
+    score_last = models.DateTimeField(default=timezone.now)
 
     # Shell username and password
     shell_username = models.CharField(max_length=20, default="")

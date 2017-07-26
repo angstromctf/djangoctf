@@ -3,13 +3,13 @@ from django.contrib import auth
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from rest_framework import viewsets, permissions, status as _status, schemas
+from rest_framework import viewsets, status as _status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
-from rest_framework_swagger.renderers import OpenAPIRenderer
+from rest_framework.permissions import IsAuthenticated
 
 from api import serializers, models
-from api.permissions import ContestStarted, ContestEnded, HasTeam, not_permission
+from api.permissions import ContestStarted, ContestEnded, HasTeam, AntiPermission
 from api.utils import create_code, create_shell_username, create_shell_password
 
 import hashlib
@@ -21,37 +21,47 @@ generator = schemas.SchemaGenerator()
 
 
 @api_view(exclude_from_schema=True)
-@renderer_classes([OpenAPIRenderer])
 def schema(request):
+    """Retrieve the raw schema view."""
+
     return Response(generator.get_schema())
 
 
 class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
+    """Get a list of the contest problems."""
+
     permission_classes = (ContestStarted,)
     queryset = models.Problem.objects.all()
     serializer_class = serializers.ProblemSerializer
 
-    @detail_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(ContestEnded),
-                                                        HasTeam), serializer_class=serializers.ProblemSubmitSerializer)
-    def submit(self, request, pk=None):
-        """Handles submissions for specific problems and returns success status."""
+    @detail_route(
+        methods=["post"],
+        permission_classes=(IsAuthenticated, AntiPermission(ContestEnded), HasTeam),
+        serializer_class=serializers.ProblemSubmitSerializer)
+    def submit(self, request, pk=None) -> Response:
+        """Handles problem submissions and returns success status."""
 
+        # Parse post data
+        try:
+            guess = request.data["guess"].strip().lower()
+        except KeyError:
+            return Response(status=500)
+
+        # Get problem and team
         problem = self.get_object()
         team = request.user.profile.team
-        guess = request.data['guess'].strip().lower()
 
-        # We've now solved the problem because the solution was correct
-        if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
-            if problem not in team.solved.all():
+        # Check if the team has solved
+        if problem not in team.solved.all():
+
+            # Check the hash of the guess
+            if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
+
+                # Add problem to solved and update score and time
                 team.solved.add(problem)
-
-                # Update the team's score
                 team.score += problem.value
-
-                # If this problem is supposed to update the team's last submitted time, do that (this is almost always true)
                 if problem.update_time:
-                    team.score_lastupdate = timezone.now()
-
+                    team.score_last = timezone.now()
                 team.save()
 
                 # Add a new CorrectSubmission object corresponding to having solved the problem
@@ -74,8 +84,10 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = models.Team.objects.all()
     serializer_class = serializers.TeamSerializer
 
-    @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
-                serializer_class=serializers.TeamCreateSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=(IsAuthenticated, AntiPermission(HasTeam)),
+        serializer_class=serializers.TeamCreateSerializer)
     def new(self, request):
         """Creates new teams for the competition."""
 
@@ -123,8 +135,10 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return self.account(request)
 
-    @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
-                serializer_class=serializers.TeamJoinSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=(IsAuthenticated, AntiPermission(HasTeam)),
+        serializer_class=serializers.TeamJoinSerializer)
     def join(self, request):
         """Adds the user to a pre-existing team."""
 
@@ -151,7 +165,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(serializers.TeamProfileSerializer(team).data)
 
-    @list_route(permission_classes=[permissions.IsAuthenticated])
+    @list_route(permission_classes=[IsAuthenticated])
     def account(self, request):
         """Displays private information about a user's team."""
 
@@ -177,7 +191,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         return Response(response)
 
-    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)],
+    @list_route(methods=['post'], permission_classes=[AntiPermission(IsAuthenticated)],
                 serializer_class=serializers.UserLoginSerializer)
     def login(self, request):
         """Logs in a user."""
@@ -190,7 +204,7 @@ class UserViewSet(viewsets.GenericViewSet):
         else:
             return Response({}, _status.HTTP_401_UNAUTHORIZED)
 
-    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
+    @list_route(methods=['post'], permission_classes=[IsAuthenticated],
                 serializer_class=serializers.EmptySerializer)
     def logout(self, request):
         """Logs out a user."""
@@ -199,7 +213,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         return self.status(request)
 
-    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)], serializer_class=serializers.SignupSerializer)
+    @list_route(methods=['post'], permission_classes=[AntiPermission(IsAuthenticated)], serializer_class=serializers.SignupSerializer)
     def signup(self, request):
         """Signs the user up for an account."""
 
@@ -261,7 +275,7 @@ class UserViewSet(viewsets.GenericViewSet):
         profile.user.is_active = True
         return Response({}, _status.HTTP_200_OK)
 
-    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
+    @list_route(methods=['post'], permission_classes=[IsAuthenticated],
                 serializer_class=serializers.UserLoginSerializer)
     def change_password(self, request):
         user = auth.authenticate(username=request.user.get_username(), password=request.data['old'])
