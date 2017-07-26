@@ -1,28 +1,33 @@
+import typing
 from rest_framework import permissions
 
-from api import utils
+from . import utils
 
-def not_permission(perm):
-    class NotPermission(permissions.BasePermission):
-        def __init__(self, *args, **kwargs):
-            self.inst = perm(*args, **kwargs)
-            if hasattr(self.inst, 'message'):
-                self.message = 'Opposite of {' + self.inst.message + '}.'
 
-        def has_permission(self, request, view):
-            return not self.inst.has_permission(request, view)
+class AntiPermission(permissions.BasePermission):
+    """A permission that negates another permission."""
 
-        def __getattribute__(self, s):
-            try:
-                x = super(NotPermission,self).__getattribute__(s)
-            except AttributeError:
-                pass
-            else:
-                return x
+    def __init__(self, permission: typing.Type[permissions.BasePermission], *args, **kwargs):
+        """Initialize a new anti-permission."""
 
-            return self.inst.__getattribute__(s)
+        self.__permission = permission(*args, **kwargs)
+        if hasattr(self.__permission, "message"):
+            self.message = "Opposite of {" + permission.message + "}."
 
-    return NotPermission
+    def has_permission(self, request, view):
+        """Check if a permission is granted."""
+
+        return not self.__permission.has_permission(request, view)
+
+    def __getattribute__(self, key):
+        """Get an attribute of the anti-permission."""
+
+        try:
+            value = super().__getattribute__(key)
+        except AttributeError:
+            return self.__permission.__getattribute__(key)
+        else:
+            return value
 
 
 class ContestStarted(permissions.BasePermission):

@@ -11,16 +11,18 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from datetime import timedelta
-1
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 from djangoctf.server import *
-
-PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 # Application definition
 
 INSTALLED_APPS = (
+    'rest_framework',
+    'corsheaders',
+    'api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,10 +31,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-    'rest_framework_swagger',
-    'rest_framework',
-    'corsheaders',
-    'api'
 )
 
 MIDDLEWARE = (
@@ -91,20 +89,10 @@ STATIC_URL = '/api/static/'
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
-CRISPY_TEMPLATE_PACK = "bootstrap3"
-
 CSRF_COOKIE_HTTPONLY = False
 
 X_FRAME_OPTIONS = "DENY"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
-SWAGGER_SETTINGS = {
-    'LOGIN_URL': 'rest_framework:login',
-    'LOGOUT_URL': 'rest_framework:logout',
-    'USE_SESSION_AUTH': True,
-    'DOC_EXPANSION': 'list',
-    'APIS_SORTER': 'alpha'
-}
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from api.models import CorrectSubmission, Team
+from api.models import Submission, Team
 
 
 class Command(BaseCommand):
@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
             team.solved.clear()
 
-            for submission in CorrectSubmission.objects.all().filter(team=team).order_by('time'):
+            for submission in Submission.objects.all().filter(team=team).order_by('time'):
                 score += submission.problem.value
                 submission.new_score = score
                 submission.save()

@@ -1,9 +1,20 @@
-from rest_framework import serializers
+"""REST serializers for API models.
 
-from api.models import Problem, Team, CorrectSubmission, Profile, User
+Each serializer defines how the respective model is represented whe
+it is communicated to the user via the REST API.
+"""
+
+from rest_framework import serializers
+from . import models
 
 
 class ProblemSerializer(serializers.ModelSerializer):
+    """Serializes the problem model.
+    
+    Adds a method that indicates whether the problem has been solved
+    if the requesting user is logged in and has a team.
+    """
+
     solved = serializers.SerializerMethodField('is_solved')
 
     def is_solved(self, obj):
@@ -14,27 +25,33 @@ class ProblemSerializer(serializers.ModelSerializer):
             return False
 
     class Meta:
-        model = Problem
+        model = models.Problem
         fields = ('id', 'title', 'text', 'value', 'category', 'hint', 'solved')
 
 
 class ProblemSubmitSerializer(serializers.ModelSerializer):
+    """Serializes competition problem submission result."""
+
     flag = serializers.Field()
 
     class Meta:
-        model = Problem
+        model = models.Problem
         fields = ('flag',)
 
 
 class TeamCreateSerializer(serializers.ModelSerializer):
+    """Serializes team creation result."""
+
     class Meta:
-        model = Team
+        model = models.Team
         fields = ('school', 'name')
 
 
 class TeamJoinSerializer(serializers.ModelSerializer):
+    """"""
+
     class Meta:
-        model = Team
+        model = models.Team
         fields = ('code',)
 
 
@@ -42,19 +59,19 @@ class SubmissionSerializer(serializers.ModelSerializer):
     problem = ProblemSerializer()
 
     class Meta:
-        model = CorrectSubmission
+        model = models.Submission
         fields = ('problem', 'time')
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = models.User
         fields = ('username',)
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = models.User
         fields = ('username', 'password')
 
 
@@ -62,13 +79,13 @@ class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = ('user',)
 
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Team
+        model = models.Team
         fields = ('id', 'name', 'school', 'score', 'score_lastupdate', 'eligible')
 
 
@@ -77,7 +94,7 @@ class CorrectSubmissionSerializer(serializers.ModelSerializer):
     team = TeamSerializer()
 
     class Meta:
-        model = CorrectSubmission
+        model = models.Submission
         fields = ('problem', 'team', 'new_score', 'time', 'problem', 'team')
 
 
@@ -89,20 +106,20 @@ class TeamProfileSerializer(serializers.ModelSerializer):
     def get_place(self, obj):
         place = -1
 
-        for index, team in enumerate(Team.objects.filter(eligible=True)):
+        for index, team in enumerate(models.Team.objects.filter(eligible=True)):
             if team.id == obj.id:
                 place = index + 1
 
         return place
 
     class Meta:
-        model = Team
+        model = models.Team
         fields = ('name', 'school', 'score', 'score_lastupdate', 'solves', 'members', 'place')
 
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Team
+        model = models.Team
         fields = ('code', 'shell_username', 'shell_password')
 
 
@@ -112,7 +129,7 @@ class EmptySerializer(serializers.BaseSerializer):
 
 class SignupProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
+        model = models.Profile
         fields = ('eligible', 'country', 'state', 'gender', 'age')
 
 
@@ -120,5 +137,5 @@ class SignupSerializer(serializers.ModelSerializer):
     profile = SignupProfileSerializer()
 
     class Meta:
-        model = User
+        model = models.User
         fields = ('username', 'password', 'first_name', 'last_name', 'email', 'profile')

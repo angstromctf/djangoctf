@@ -11,8 +11,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from api import handlers
-
 
 CATEGORIES = [
     'crypto',
@@ -23,6 +21,32 @@ CATEGORIES = [
     'misc',
     'master'
 ]
+
+
+class Competition(models.Model):
+    """A single competition model."""
+
+    name = models.CharField(max_length=60)
+
+    date_registration_start = models.DateTimeField()
+    date_start = models.DateTimeField()
+    date_end = models.DateTimeField()
+
+    __current = None
+    __current_time = timezone.now()
+
+    @staticmethod
+    def current():
+        """Get the current or upcoming competition."""
+
+        # "Premature optimization is the root of all evil." - Donald Knuth
+        # "Fuck that." - Noah Kim
+
+        # Refresh from cache every 2 hours
+        now = timezone.now()
+        if Competition.__current is None or (now - Competition.__current_time).seconds > 2 * 60 * 60:
+            Competition.__current = Competition.objects.filter(date_end__lte=now).order_by("date_start")
+        return Competition.__current
 
 
 class Profile(models.Model):
@@ -37,8 +61,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # The user's team
-    team = models.ForeignKey('Team', blank=True, on_delete=models.SET_NULL, null=True,
-                             default=None, related_name='members')
+    team = models.ForeignKey(
+        'Team', blank=True, on_delete=models.SET_NULL, null=True, default=None, related_name='members')
 
     # Activation information for this user
     activation_key = models.CharField(max_length=40, blank=True, null=True, default="")
@@ -64,6 +88,9 @@ class Profile(models.Model):
 class Problem(models.Model):
     """A CTF problem with information."""
 
+    # Competition
+    competition = models.ForeignKey(Competition, related_name="problems")
+
     # Standard information about the problem
     name = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
@@ -75,10 +102,9 @@ class Problem(models.Model):
     # Hash the flags so attackers can't get them even with database access
     flag = models.CharField(max_length=128)
 
-    # Whether solving this problem should update a team's "last submitted" time (off for survey problems)
-    update_time = models.BooleanField(default=True)
-
     def __str__(self):
+        """Represent the problem as a string."""
+
         return "Problem[" + self.title + "]"
 
     class Meta:
@@ -115,6 +141,9 @@ class Team(models.Model):
     reverse calls to the members attribute.
     """
 
+    # Competition
+    competition = models.ForeignKey(Competition, related_name="teams")
+
     # Which problems this team has solved
     solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
 
@@ -135,7 +164,7 @@ class Team(models.Model):
 
     # Score and last update of the team
     score = models.IntegerField(default=0)
-    score_lastupdate = models.DateTimeField(default=timezone.now)
+    score_last = models.DateTimeField(default=timezone.now)
 
     # Shell username and password
     shell_username = models.CharField(max_length=20, default="")
@@ -143,7 +172,7 @@ class Team(models.Model):
 
     # Meta model attributes
     class Meta:
-        ordering = ("-score", "score_lastupdate")
+        ordering = ("-score", "score_last")
 
     def __str__(self):
         """Represent the team as a string."""
@@ -151,16 +180,20 @@ class Team(models.Model):
         return "Team[" + self.name + "]"
 
 
-class CorrectSubmission(models.Model):
+class Submission(models.Model):
     """A correct submission for a problem."""
 
     # Link to team and problem
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='solves')
     problem = models.ForeignKey(Problem, on_delete=models.CASCADE, related_name='solves')
 
-    # Team's score at that time
-    new_score = models.IntegerField(default=0)
+    # Time and correctness
     time = models.DateTimeField(default=timezone.now)
+    correct = models.BooleanField()
+
+    # Guess and new score
+    guess = models.CharField(max_length=128, default="")
+    new_score = models.IntegerField(default=0)
 
     class Meta:
         ordering = ('time',)
@@ -168,26 +201,10 @@ class CorrectSubmission(models.Model):
     # Magic methods
     def __str__(self):
         """Represent the solved problem as a string."""
+
         return "%s solved %s at %s" % (str(self.team), str(self.problem), str(self.time))
 
 
-class IncorrectSubmission(models.Model):
-    """An incorrect submission for a problem."""
-
-    # Link to team and problem
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
-
-    # Time and contents of submission
-    guess = models.CharField(max_length=128)
-    time = models.DateTimeField(default=timezone.now)
-
-    # Magic methods
-    def __str__(self):
-        """Represent the solved problem as a string."""
-        return "%s incorrectly submitted %s at %s" % (str(self.team), str(self.problem), str(self.time))
-
-#
 # class ProblemUpdate(models.Model):
 #     """An update to a problem."""
 #
@@ -201,8 +218,8 @@ class IncorrectSubmission(models.Model):
 #     # Magic methods
 #     def __str__(self):
 #         return "%s updated at %s: %s" % (str(self.problem), str(self.time), str(self.time))
-#
-#
+
+
 # class Sponsor(models.Model):
 #     """A company or organization who sponsored this competition."""
 #
