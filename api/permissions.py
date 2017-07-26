@@ -1,7 +1,7 @@
 import typing
 from rest_framework import permissions
 
-from api import utils
+from . import utils
 
 
 class AntiPermission(permissions.BasePermission):
@@ -12,7 +12,7 @@ class AntiPermission(permissions.BasePermission):
 
         self.__permission = permission(*args, **kwargs)
         if hasattr(self.__permission, "message"):
-            self.message = "Opposite of {" + self.__permission.message + "}."
+            self.message = "Opposite of {" + permission.message + "}."
 
     def has_permission(self, request, view):
         """Check if a permission is granted."""
@@ -28,11 +28,6 @@ class AntiPermission(permissions.BasePermission):
             return self.__permission.__getattribute__(key)
         else:
             return value
-
-
-def not_permission(perm):
-
-    return AntiPermission(perm)
 
 
 class ContestStarted(permissions.BasePermission):
