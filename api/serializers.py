@@ -55,14 +55,6 @@ class TeamJoinSerializer(serializers.ModelSerializer):
         fields = ('code',)
 
 
-class SubmissionSerializer(serializers.ModelSerializer):
-    problem = ProblemSerializer()
-
-    class Meta:
-        model = models.Submission
-        fields = ('problem', 'time')
-
-
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
@@ -89,17 +81,17 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'school', 'score', 'score_lastupdate', 'eligible')
 
 
-class CorrectSubmissionSerializer(serializers.ModelSerializer):
+class SubmissionSerializer(serializers.ModelSerializer):
     problem = ProblemSerializer()
     team = TeamSerializer()
 
     class Meta:
         model = models.Submission
-        fields = ('problem', 'team', 'new_score', 'time', 'problem', 'team')
+        fields = ('problem', 'team', 'new_score', 'time', 'problem', 'team', 'correct')
 
 
 class TeamProfileSerializer(serializers.ModelSerializer):
-    solves = CorrectSubmissionSerializer(many=True, read_only=True)
+    solves = SubmissionSerializer(many=True, read_only=True)
     members = ProfileSerializer(many=True, read_only=True)
     place = serializers.SerializerMethodField()
 
