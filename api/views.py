@@ -180,7 +180,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         """Displays private information about a user's team."""
 
         if request.user.profile.team:
-            return Response(serializers.AccountSerializer(request.user.profile.team).data)
+            return Response(serializers.ShellAccountSerializer(request.user.profile.team).data)
         else:
             return Response({}, status=status.HTTP_423_LOCKED)
 
