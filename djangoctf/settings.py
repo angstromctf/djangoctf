@@ -31,17 +31,14 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'rest_framework_swagger',
     'rest_framework',
-    'corsheaders',
     'api'
 )
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -120,4 +117,3 @@ CACHES = {
 
 USERS_PER_TEAM = 5
 ACTIVATION_EXPIRATION_TIME = timedelta(days=2)
-

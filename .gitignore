@@ -71,3 +71,5 @@ target/
 
 # Images of people
 core/static/images/people/
+
+Pipfile.lock

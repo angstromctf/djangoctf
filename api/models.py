@@ -150,6 +150,25 @@ class Team(models.Model):
 
         return "Team[" + self.name + "]"
 
+    def get_place(self):
+        if self.eligible:
+            return list(Team.objects.filter(eligible=True)).index(self) + 1
+        else:
+            return -1
+
+    def report(self):
+        """Print a detailed report about this team."""
+
+        return """
+        name: {}
+        members: {}
+        score: {}, place: {}
+        eligible: {}
+        """.format(self.name,
+                   ', '.join(map(lambda member: "{} ({})".format(member.user.get_full_name, member.user.username), self.members.all())),
+                   self.score, self.get_place(),
+                   self.eligible)
+
 
 class CorrectSubmission(models.Model):
     """A correct submission for a problem."""
