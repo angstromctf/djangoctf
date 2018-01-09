@@ -12,6 +12,7 @@ djangorestframework = "*"
 sendgrid = "*"
 "psycopg2" = "*"
 django-rest-swagger = "*"
+django-cors-headers = "*"
 
 
 [dev-packages]

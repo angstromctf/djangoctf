@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from api.models import Profile, Problem, CorrectSubmission, IncorrectSubmission, Team, User
+from api.models import Profile, Problem, Submission, Team, User
 
 
 # Some Django magic to associate Profiles with Users
@@ -22,6 +22,5 @@ admin.site.register(User, UserAdmin)
 # Register models
 admin.site.register(Problem)
 admin.site.register(Profile)
-admin.site.register(CorrectSubmission)
-admin.site.register(IncorrectSubmission)
+admin.site.register(Submission)
 admin.site.register(Team)

@@ -2,86 +2,106 @@ from django.conf import settings
 from django.contrib import auth
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.db.models import Q
 
-from rest_framework import viewsets, permissions, status as _status, schemas
+from rest_framework import response, viewsets, status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
-from rest_framework_swagger.renderers import OpenAPIRenderer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
 from api import serializers, models
-from api.permissions import ContestStarted, ContestEnded, HasTeam, not_permission
+from api.permissions import ContestStarted, ContestEnded, HasTeam, anti_permission
 from api.utils import create_code, create_shell_username, create_shell_password
 
 import hashlib
 import logging
 import random
 
+
 logger = logging.getLogger(__name__)
-generator = schemas.SchemaGenerator()
 
 
 @api_view(exclude_from_schema=True)
-@renderer_classes([OpenAPIRenderer])
+@renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
 def schema(request):
+    """Retrieve the raw schema view."""
+    generator = schemas.SchemaGenerator(title='djangoctf api')
     return Response(generator.get_schema())
 
 
 class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
+    """REST Views for problems."""
+
     permission_classes = (ContestStarted,)
     queryset = models.Problem.objects.all()
     serializer_class = serializers.ProblemSerializer
 
-    @detail_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(ContestEnded),
-                                                        HasTeam), serializer_class=serializers.ProblemSubmitSerializer)
-    def submit(self, request, pk=None):
-        """Handles submissions for specific problems and returns success status."""
+    @detail_route(
+        methods=["post"],
+        permission_classes=(IsAuthenticated, anti_permission(ContestEnded), HasTeam),
+        serializer_class=serializers.ProblemSubmitSerializer)
+    def submit(self, request, pk=None) -> Response:
+        """Handles problem submissions and returns success status."""
 
+        # Parse post data
+        try:
+            guess = request.data["guess"].strip().lower()
+        except KeyError:
+            return Response(status=500)
+
+        # Get problem and team
         problem = self.get_object()
         team = request.user.profile.team
-        guess = request['guess'].strip().lower()
 
-        # We've now solved the problem because the solution was correct
-        if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
-            if problem not in team.solved.all():
+        # Check if the team has solved
+        if problem not in team.solved.all():
+
+            # Check the hash of the guess
+            if hashlib.sha512(guess.encode()).hexdigest() == problem.flag:
+
+                # Add problem to solved and update score and time
                 team.solved.add(problem)
-
-                # Update the team's score
                 team.score += problem.value
-
-                # If this problem is supposed to update the team's last submitted time, do that (this is almost always true)
                 if problem.update_time:
-                    team.score_lastupdate = timezone.now()
-
+                    team.score_last = timezone.now()
                 team.save()
 
                 # Add a new CorrectSubmission object corresponding to having solved the problem
-                solution = models.CorrectSubmission(team=team, problem=problem, new_score=team.score)
+                solution = models.Submission(team=team, problem=problem, new_score=team.score, correct=True)
                 solution.save()
 
             return Response({})
 
         # The submission was incorrect
         else:
-            if models.IncorrectSubmission.objects.filter(team=team, problem=problem, guess=guess).exists():
+
+            # Save the response only if they haven't guessed correctly
+            if not models.Submission.objects.filter(team=team, problem=problem, correct=True).exists():
+
                 # This is a new incorrect flag
-                solution = models.IncorrectSubmission(team=team, problem=problem, guess=guess)
+                solution = models.Submission(team=team, problem=problem, guess=guess, correct=False)
                 solution.save()
 
-            return Response({}, status=_status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
+    """REST views for teams."""
+
     queryset = models.Team.objects.all()
     serializer_class = serializers.TeamSerializer
 
-    @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
-                serializer_class=serializers.TeamCreateSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=(IsAuthenticated, anti_permission(HasTeam)),
+        serializer_class=serializers.TeamCreateSerializer)
     def new(self, request):
-        """Creates new teams for the competition."""
+        """Creates new teams in the competition."""
 
         # Check if this team already exists
         if models.Team.objects.filter(name=request.data['name']).exists():
-            return Response({}, _status.HTTP_409_CONFLICT)
+            return Response({}, status.HTTP_409_CONFLICT)
 
         code = create_code()
         shell_username = create_shell_username()
@@ -109,12 +129,14 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
                     "Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))
 
         # Create the team
-        team = models.Team(name=request.data['name'],
-                           school=request.data['school'],
-                           shell_username=shell_username,
-                           shell_password=shell_password,
-                           code=code,
-                           eligible=request.user.profile.eligible)
+        team = models.Team(
+            competition=models.Competition.current(),
+            name=request.data['name'],
+            school=request.data['school'],
+            shell_username=shell_username,
+            shell_password=shell_password,
+            code=code,
+            eligible=request.user.profile.eligible)
         team.save()
 
         # Add the user to that team
@@ -123,14 +145,17 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return self.account(request)
 
-    @list_route(methods=['post'], permission_classes=(permissions.IsAuthenticated, not_permission(HasTeam)),
-                serializer_class=serializers.TeamJoinSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=(IsAuthenticated, anti_permission(HasTeam)),
+        serializer_class=serializers.TeamJoinSerializer)
     def join(self, request):
         """Adds the user to a pre-existing team."""
 
         team = get_object_or_404(models.Team, code=request.data['code'])
 
         if team.members.count() < settings.USERS_PER_TEAM:
+
             # Compute the team's eligibility by combining its current eligibility with the user's eligibility
             team.eligible = team.eligible and request.user.profile.eligible
             team.save()
@@ -140,8 +165,9 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             request.user.profile.save()
 
             return self.account(request)
+
         else:
-            return Response({}, status=_status.HTTP_409_CONFLICT)
+            return Response({}, status=status.HTTP_409_CONFLICT)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
     def progress(self, *args, **kwargs):
@@ -151,14 +177,14 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         return Response(serializers.TeamProfileSerializer(team).data)
 
-    @list_route(permission_classes=[permissions.IsAuthenticated])
+    @list_route(permission_classes=[IsAuthenticated])
     def account(self, request):
         """Displays private information about a user's team."""
 
         if request.user.profile.team:
-            return Response(serializers.AccountSerializer(request.user.profile.team).data)
+            return Response(serializers.ShellAccountSerializer(request.user.profile.team).data)
         else:
-            return Response({}, status=_status.HTTP_423_LOCKED)
+            return Response({}, status=status.HTTP_423_LOCKED)
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -166,59 +192,64 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @list_route(serializer_class=serializers.EmptySerializer)
     def status(self, request):
-        response = {}
+        """Get the user eligibility."""
 
-        if request.user.is_authenticated():
+        response = {}
+        if request.user.is_authenticated:
             response['user'] = serializers.UserSerializer(request.user).data
             response['user']['eligible'] = request.user.profile.eligible
-
             if request.user.profile.team:
                 response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
-
         return Response(response)
 
-    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)],
-                serializer_class=serializers.UserLoginSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=[anti_permission(IsAuthenticated)],
+        serializer_class=serializers.UserLoginSerializer)
     def login(self, request):
-        """Logs in a user."""
+        """Log in a user."""
 
         user = auth.authenticate(username=request.data['username'], password=request.data['password'])
-
         if user is not None:
             auth.login(request, user)
             return self.status(request)
-        else:
-            return Response({}, _status.HTTP_401_UNAUTHORIZED)
+        return Response({}, status.HTTP_401_UNAUTHORIZED)
 
-    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
-                serializer_class=serializers.EmptySerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=[IsAuthenticated],
+        serializer_class=serializers.EmptySerializer)
     def logout(self, request):
-        """Logs out a user."""
+        """Log out a user."""
 
         auth.logout(request)
-
         return self.status(request)
 
-    @list_route(methods=['post'], permission_classes=[not_permission(permissions.IsAuthenticated)], serializer_class=serializers.SignupSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=[anti_permission(IsAuthenticated)],
+        serializer_class=serializers.SignupSerializer)
     def signup(self, request):
         """Signs the user up for an account."""
 
         # Check if this user already exists
-        if models.User.objects.filter(username=request.data['username']).exists() or models.User.objects.filter(email=request.data['email']).exists():
-            return Response({}, _status.HTTP_409_CONFLICT)
+        if models.User.objects.filter(Q(username=request.data['username']) | Q(email=request.data['email'])).exists():
+            return Response({}, status.HTTP_409_CONFLICT)
 
-        user = models.User.objects.create_user(request.data['username'],
-                                                    email=request.data['email'],
-                                                    password=request.data['password'],
-                                                    first_name=request.data['first_name'],
-                                                    last_name=request.data['last_name'])
+        # Create and save the user
+        user = models.User.objects.create_user(
+            username=request.data['username'],
+            email=request.data['email'],
+            password=request.data['password'],
+            first_name=request.data['first_name'],
+            last_name=request.data['last_name'])
         user.is_active = not settings.REQUIRE_USER_ACTIVATION
-
         user.save()
 
         # Create user profile
-        profile = models.Profile(user=user,
-                                 eligible=request.data['profile']['eligible'])
+        profile = models.Profile(
+            user=user,
+            eligible=request.data['profile']['eligible'])
 
         # Add in optional demographics data
         if request.data['profile']['gender']:
@@ -231,6 +262,8 @@ class UserViewSet(viewsets.GenericViewSet):
             profile.country = request.data['profile']['country']
         if request.data['profile']['state']:
             profile.state = request.data['profile']['state']
+
+        # TODO: compute eligibility posted data instead
 
         # Generate activation keys
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
@@ -250,26 +283,27 @@ class UserViewSet(viewsets.GenericViewSet):
         """Activates the user's account."""
 
         profile = get_object_or_404(models.Profile, activation_key=request.data['key'])
-
         if not profile.user.is_active:
             if timezone.now() - profile.key_generated > settings.ACTIVATION_EXPIRATION_TIME:
                 return Response({
                     'status': 'activation_expired',
                     'user_id': str(profile.user.id)
-                }, _status.HTTP_406_NOT_ACCEPTABLE)
+                }, status.HTTP_406_NOT_ACCEPTABLE)
 
         profile.user.is_active = True
-        return Response({}, _status.HTTP_200_OK)
+        return Response({}, status.HTTP_200_OK)
 
-    @list_route(methods=['post'], permission_classes=[permissions.IsAuthenticated],
-                serializer_class=serializers.UserLoginSerializer)
+    @list_route(
+        methods=['post'],
+        permission_classes=[IsAuthenticated],
+        serializer_class=serializers.UserLoginSerializer)
     def change_password(self, request):
-        user = auth.authenticate(username=request.user.get_username(), password=request.data['old'])
+        """Change a user's password."""
 
+        user = auth.authenticate(username=request.user.get_username(), password=request.data['old'])
         if user is not None:
             user.set_password(request.data['password'])
             user.save()
             auth.login(request, user)
             return Response({})
-        else:
-            return Response({}, _status.HTTP_401_UNAUTHORIZED)
+        return Response({}, status.HTTP_401_UNAUTHORIZED)
