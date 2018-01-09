@@ -1,6 +1,6 @@
 SECRET_KEY = '[REDACTED]'
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 import os
 from djangoctf.settings import BASE_DIR
