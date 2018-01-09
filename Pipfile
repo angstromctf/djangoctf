@@ -19,3 +19,4 @@ django-cors-headers = "*"
 
 docker-py = "*"
 paramiko = "*"
+gunicorn = "*"
