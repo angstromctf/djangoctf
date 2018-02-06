@@ -20,9 +20,9 @@ class Competition(models.Model):
     name = models.CharField(max_length=60)
     active = models.BooleanField(default=False)
 
-    date_registration_start = models.DateTimeField()
-    date_competition_start = models.DateTimeField()
-    date_competition_end = models.DateTimeField()
+    registration_start = models.DateTimeField()
+    competition_start = models.DateTimeField()
+    competition_end = models.DateTimeField()
 
     def save(self, *args, **kwargs):
         """Save and make sure there is only one active competition."""
@@ -32,6 +32,16 @@ class Competition(models.Model):
                 competition.active = False
                 competition.save()
         self.save()
+
+    def can_register(self):
+        """Check if a user can register at the current time."""
+
+        return timezone.now() < self.registration_start
+
+    def can_compete(self):
+        """Check if a user can compete at the current time."""
+
+        return self.competition_start < timezone.now() < self.competition_end
 
     @staticmethod
     def current():
