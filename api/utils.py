@@ -1,22 +1,9 @@
-from django.conf import settings
-from django.utils import timezone
-from django.utils.dateparse import parse_datetime
+
 
 from api.models import Team
 
 import random
 
-
-contest_start = parse_datetime(settings.START_TIME)
-contest_end = parse_datetime(settings.END_TIME)
-
-
-def before_start():
-    return timezone.now() < contest_start
-
-
-def after_end():
-    return timezone.now() > contest_end
 
 
 def minutes(delta):

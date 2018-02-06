@@ -56,4 +56,5 @@ LOGGING = {
         }
     }
 }
+
 ADMINS = [('Admin', 'admin@angstromctf.com')]

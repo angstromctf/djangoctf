@@ -11,42 +11,33 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-
-CATEGORIES = [
-    'crypto',
-    'binary',
-    'web',
-    're',
-    'forensics',
-    'misc',
-    'master'
-]
+CATEGORIES = ['crypto', 'binary', 'web', 're', 'forensics', 'misc', 'master']
 
 
 class Competition(models.Model):
     """A single competition model."""
 
     name = models.CharField(max_length=60)
+    active = models.BooleanField(default=False)
 
     date_registration_start = models.DateTimeField()
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
+    date_competition_start = models.DateTimeField()
+    date_competition_end = models.DateTimeField()
 
-    __current = None
-    __current_time = timezone.now()
+    def save(self, *args, **kwargs):
+        """Save and make sure there is only one active competition."""
+
+        if self.active:
+            for competition in Competition.objects.filter(active=True).exclude(id=self.id):
+                competition.active = False
+                competition.save()
+        self.save()
 
     @staticmethod
     def current():
         """Get the current or upcoming competition."""
 
-        # "Premature optimization is the root of all evil." - Donald Knuth
-        # "Fuck that." - Noah Kim
-
-        # Refresh from cache every 2 hours
-        now = timezone.now()
-        if Competition.__current is None or (now - Competition.__current_time).seconds > 2 * 60 * 60:
-            Competition.__current = Competition.objects.filter(date_end__lte=now).order_by("date_start")
-        return Competition.__current
+        return Competition.objects.filter(active=True).first()
 
 
 class Profile(models.Model):

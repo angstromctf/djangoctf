@@ -8,14 +8,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
-from djangoctf.server import *
+SECRET_KEY = 'abc123'
+
+DEBUG = True
+ALLOWED_HOSTS = ["*"]
+
 
 # Application definition
 
@@ -64,6 +67,14 @@ TEMPLATES = [
     },
 ]
 
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+    }
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -81,13 +92,20 @@ USE_TZ = True
 
 SITE_ID = 1
 
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/api/static/'
 
+
+# Login pages
+
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'rest_framework:login'
+
+
+# REST framework
 
 CSRF_COOKIE_HTTPONLY = False
 
@@ -104,7 +122,16 @@ CACHES = {
     }
 }
 
-# djangoctf
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+
+
+# DjangoCTF configuration
 
 USERS_PER_TEAM = 5
 ACTIVATION_EXPIRATION_TIME = timedelta(days=2)
+
+SHELL_ENABLED = False
+
+REQUIRE_USER_ACTIVATION = False
