@@ -10,6 +10,7 @@ as well as the progress of the teams.
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.forms import ValidationError
 
 CATEGORIES = ['crypto', 'binary', 'web', 're', 'forensics', 'misc', 'master']
 
@@ -36,7 +37,7 @@ class Competition(models.Model):
     def can_register(self):
         """Check if a user can register at the current time."""
 
-        return timezone.now() < self.registration_start
+        return self.registration_start < timezone.now() < self.competition_end
 
     def can_compete(self):
         """Check if a user can compete at the current time."""
@@ -61,10 +62,6 @@ class Profile(models.Model):
     # Which user this belongs to
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    # The user's team
-    team = models.ForeignKey(
-        'Team', blank=True, on_delete=models.SET_NULL, null=True, default=None, related_name='members')
-
     # Activation information for this user
     activation_key = models.CharField(max_length=40, blank=True, null=True, default="")
     key_generated = models.DateTimeField(default=timezone.now)
@@ -79,10 +76,7 @@ class Profile(models.Model):
     state = models.TextField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
 
-    # Magic methods
     def __str__(self):
-        """Represent the user as a string."""
-
         return "Profile[" + self.user.username + "]"
 
 
@@ -104,8 +98,6 @@ class Problem(models.Model):
     flag = models.CharField(max_length=128)
 
     def __str__(self):
-        """Represent the problem as a string."""
-
         return "Problem[" + self.title + "]"
 
     class Meta:
@@ -145,13 +137,15 @@ class Team(models.Model):
     # Competition
     competition = models.ForeignKey(Competition, related_name="teams", on_delete=models.CASCADE)
 
+    # Team members
+    members = models.ManyToManyField(User, related_name="teams")
+
     # Which problems this team has solved
     solved = models.ManyToManyField(Problem, blank=True, related_name="solvers")
 
     # Information about team
     name = models.CharField(max_length=64)
     school = models.CharField(max_length=64)
-
     eligible = models.BooleanField(default=True)
 
     address_street = models.CharField(max_length=1000, default=None, null=True, blank=True)
@@ -176,28 +170,29 @@ class Team(models.Model):
         ordering = ("-score", "score_last")
 
     def __str__(self):
-        """Represent the team as a string."""
-
         return "Team[" + self.name + "]"
 
+    def clean(self):
+        """Validate fields in the model.
+
+        Namely, make sure that no members on this team are part of
+        another team for the same competition. This is possible
+        because membership is managed through a many to many.
+        """
+
+        # TODO: make sure there are checks for team membership
+
+        for member in self.members.all():
+            if member.teams.filter(competition=self.competition).exclude(id=self.id).exists():
+                raise ValidationError("Some team members already part of a team.")
+        super().clean()
+
     def get_place(self):
+        """Get the place of the team in the current competition."""
+
         if self.eligible:
-            return list(Team.objects.filter(eligible=True)).index(self) + 1
-        else:
-            return -1
-
-    def report(self):
-        """Print a detailed report about this team."""
-
-        return """
-        name: {}
-        members: {}
-        score: {}, place: {}
-        eligible: {}
-        """.format(self.name,
-                   ', '.join(map(lambda member: "{} ({})".format(member.user.get_full_name, member.user.username), self.members.all())),
-                   self.score, self.get_place(),
-                   self.eligible)
+            return list(Team.objects.filter(eligible=True, competition__active=True)).index(self) + 1
+        return -1
 
 
 class Submission(models.Model):
@@ -218,11 +213,8 @@ class Submission(models.Model):
     class Meta:
         ordering = ('time',)
 
-    # Magic methods
     def __str__(self):
-        """Represent the solved problem as a string."""
-
-        return "%s solved %s at %s" % (str(self.team), str(self.problem), str(self.time))
+        return "{} solved {} at {}".format(self.team, self.problem, self.time)
 
 
 # class ProblemUpdate(models.Model):
