@@ -4,7 +4,7 @@ from . import *
 SECRET_KEY = '[REDACTED]'
 DEBUG = False
 
-ALLOWED_HOSTS = ['api.angstromctf.com', 'localhost']
+ALLOWED_HOSTS = ['angstromctf.com', 'localhost']
 
 START_TIME = '2017-03-25 12:00:00-04'
 END_TIME = '2017-04-01 12:00:00-04'
