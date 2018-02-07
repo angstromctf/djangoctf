@@ -7,12 +7,12 @@ name = "pypi"
 
 [packages]
 
-django = "*"
 djangorestframework = "*"
 sendgrid = "*"
 "psycopg2" = "*"
 django-rest-swagger = "*"
 django-cors-headers = "*"
+django = "*"
 
 
 [dev-packages]

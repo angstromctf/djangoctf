@@ -1,10 +1,10 @@
-import typing
 from rest_framework import permissions
 
-from . import utils
+from . import models
 
 
-def anti_permission(permission: typing.Type[permissions.BasePermission]):
+def invert(permission: type(permissions.BasePermission)):
+
     class AntiPermission(permissions.BasePermission):
         """A permission that negates another permission."""
 
@@ -13,7 +13,7 @@ def anti_permission(permission: typing.Type[permissions.BasePermission]):
 
             self.__permission = permission(*args, **kwargs)
             if hasattr(self.__permission, "message"):
-                self.message = "Opposite of {" + permission.message + "}."
+                self.message = "Opposite of {" + str(permission) + "}."
 
         def has_permission(self, request, view):
             """Check if a permission is granted."""
@@ -37,18 +37,18 @@ class ContestStarted(permissions.BasePermission):
     message = 'Not accessible before contest.'
 
     def has_permission(self, request, view):
-        return not utils.before_start()
+        return models.Competition.current().has_started()
 
 
 class ContestEnded(permissions.BasePermission):
     message = 'Not accessible after contest.'
 
     def has_permission(self, request, view):
-        return utils.after_end()
+        return models.Competition.current().has_ended()
 
 
 class HasTeam(permissions.BasePermission):
     message = 'Team required.'
 
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.profile.team
+        return request.user.is_authenticated and models.Team.current(members=request.user).exists()

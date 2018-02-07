@@ -4,14 +4,14 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
 
-from rest_framework import response, viewsets, status, schemas
+from rest_framework import viewsets, status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_swagger.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
 from api import serializers, models
-from api.permissions import ContestStarted, ContestEnded, HasTeam, anti_permission
+from api.permissions import ContestStarted, ContestEnded, HasTeam, invert
 from api.utils import create_code, create_shell_username, create_shell_password
 
 import hashlib
@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 @renderer_classes([SwaggerUIRenderer, OpenAPIRenderer])
 def schema(request):
     """Retrieve the raw schema view."""
-    generator = schemas.SchemaGenerator(title='djangoctf api')
+
+    generator = schemas.SchemaGenerator(title='DjangoCTF API')
     return Response(generator.get_schema())
 
 
@@ -39,7 +40,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
     @detail_route(
         methods=["post"],
-        permission_classes=(IsAuthenticated, anti_permission(ContestEnded), HasTeam),
+        permission_classes=(IsAuthenticated, invert(ContestEnded), HasTeam),
         serializer_class=serializers.ProblemSubmitSerializer)
     def submit(self, request, pk=None) -> Response:
         """Handles problem submissions and returns success status."""
@@ -94,13 +95,13 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
     @list_route(
         methods=['post'],
-        permission_classes=(IsAuthenticated, anti_permission(HasTeam)),
+        permission_classes=(IsAuthenticated, invert(HasTeam)),
         serializer_class=serializers.TeamCreateSerializer)
     def new(self, request):
         """Creates new teams in the competition."""
 
         # Check if this team already exists
-        if models.Team.objects.filter(name=request.data['name']).exists():
+        if models.Team.current(name=request.data['name']).exists():
             return Response({}, status.HTTP_409_CONFLICT)
 
         code = create_code()
@@ -109,24 +110,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Check if we need to set up a shell account for the team
         if settings.SHELL['enabled']:
-            import paramiko
-
-            # SSH to shell server
-            private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL['ssh_key_path'])
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(hostname=settings.SHELL['hostname'], username='root', pkey=private_key)
-
-            # Create the account
-            stdin, stdout, stderr = ssh.exec_command("addctfuser " + shell_username + " " + shell_password)
-
-            stdout_data = stdout.read().decode('utf-8')
-            stderr_data = stderr.read().decode('utf-8')
-
-            # Log if something went wrong
-            if not stderr:
-                logger.error(
-                    "Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))
+            create_shell_account(shell_username, shell_password)
 
         # Create the team
         team = models.Team(
@@ -138,51 +122,45 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             code=code,
             eligible=request.user.profile.eligible)
         team.save()
+        team.members.add(request.user)
 
         # Add the user to that team
-        request.user.profile.team = team
-        request.user.profile.save()
+        request.user.save()
 
         return self.account(request)
 
     @list_route(
         methods=['post'],
-        permission_classes=(IsAuthenticated, anti_permission(HasTeam)),
+        permission_classes=(IsAuthenticated, invert(HasTeam)),
         serializer_class=serializers.TeamJoinSerializer)
     def join(self, request):
         """Adds the user to a pre-existing team."""
 
         team = get_object_or_404(models.Team, code=request.data['code'])
-
         if team.members.count() < settings.USERS_PER_TEAM:
 
-            # Compute the team's eligibility by combining its current eligibility with the user's eligibility
+            # Update team fields
             team.eligible = team.eligible and request.user.profile.eligible
+            team.members.add(request.user)
             team.save()
-
-            # Add the user to the team
-            request.user.profile.team = team
-            request.user.profile.save()
-
             return self.account(request)
-
-        else:
-            return Response({}, status=status.HTTP_409_CONFLICT)
+        
+        return Response({}, status=status.HTTP_409_CONFLICT)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
     def progress(self, *args, **kwargs):
         """Returns a list representing the user's score progression."""
 
         team = self.get_object()
-
         return Response(serializers.TeamProfileSerializer(team).data)
 
     @list_route(permission_classes=[IsAuthenticated])
     def account(self, request):
         """Displays private information about a user's team."""
 
-        if request.user.profile.team:
-            return Response(serializers.ShellAccountSerializer(request.user.profile.team).data)
+        team = models.Team.current(members=request.user).first()
+        if team is not None:
+            return Response(serializers.ShellAccountSerializer(team).data)
         else:
             return Response({}, status=status.HTTP_423_LOCKED)
 
@@ -198,13 +176,13 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.user.is_authenticated:
             response['user'] = serializers.UserSerializer(request.user).data
             response['user']['eligible'] = request.user.profile.eligible
-            if request.user.profile.team:
-                response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
+            if request.user.team:
+                response['team'] = serializers.TeamProfileSerializer(request.user.team).data
         return Response(response)
 
     @list_route(
         methods=['post'],
-        permission_classes=[anti_permission(IsAuthenticated)],
+        permission_classes=[invert(IsAuthenticated)],
         serializer_class=serializers.UserLoginSerializer)
     def login(self, request):
         """Log in a user."""
@@ -227,7 +205,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
     @list_route(
         methods=['post'],
-        permission_classes=[anti_permission(IsAuthenticated)],
+        permission_classes=[invert(IsAuthenticated)],
         serializer_class=serializers.SignupSerializer)
     def signup(self, request):
         """Signs the user up for an account."""
@@ -307,3 +285,24 @@ class UserViewSet(viewsets.GenericViewSet):
             auth.login(request, user)
             return Response({})
         return Response({}, status.HTTP_401_UNAUTHORIZED)
+
+
+def create_shell_account(shell_username, shell_password):
+    import paramiko
+
+    # SSH to shell server
+    private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL['ssh_key_path'])
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname=settings.SHELL['hostname'], username='root', pkey=private_key)
+
+    # Create the account
+    stdin, stdout, stderr = ssh.exec_command("addctfuser " + shell_username + " " + shell_password)
+
+    stdout_data = stdout.read().decode('utf-8')
+    stderr_data = stderr.read().decode('utf-8')
+
+    # Log if something went wrong
+    if not stderr:
+        logger.error(
+            "Error while creating shell account.\nstdout: {}\nstderr: {}".format(stdout_data, stderr_data))

@@ -44,8 +44,18 @@ class Competition(models.Model):
 
         return self.competition_start < timezone.now() < self.competition_end
 
+    def has_started(self):
+        """Check if the contest has started."""
+
+        return self.competition_start < timezone.now()
+
+    def has_ended(self):
+        """Check if the competition has ended."""
+
+        return self.competition_end < timezone.now()
+
     @staticmethod
-    def current():
+    def current() -> "Competition":
         """Get the current or upcoming competition."""
 
         return Competition.objects.filter(active=True).first()
@@ -193,6 +203,12 @@ class Team(models.Model):
         if self.eligible:
             return list(Team.objects.filter(eligible=True, competition__active=True)).index(self) + 1
         return -1
+
+    @staticmethod
+    def current(**kwargs):
+        """Filter active competitions."""
+
+        return Team.objects.filter(competition__active=True, **kwargs)
 
 
 class Submission(models.Model):
