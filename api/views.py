@@ -144,7 +144,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             team.members.add(request.user)
             team.save()
             return self.account(request)
-        
+
         return Response({}, status=status.HTTP_409_CONFLICT)
 
     @detail_route(serializer_class=serializers.EmptySerializer)
@@ -247,7 +247,6 @@ class UserViewSet(viewsets.GenericViewSet):
         salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:5].encode('utf8')
         profile.activation_key = hashlib.sha1(salt + request.data['username'].encode('utf8')).hexdigest()
         profile.key_generated = timezone.now()
-
         profile.save()
 
         # Log the user in
