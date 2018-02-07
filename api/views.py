@@ -35,7 +35,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
     """REST Views for problems."""
 
     permission_classes = (ContestStarted,)
-    queryset = models.Problem.objects.all()
+    queryset = models.Problem.objects.filter(competition__active=True).all()
     serializer_class = serializers.ProblemSerializer
 
     @detail_route(
