@@ -1,3 +1,6 @@
+from . import *
+
+
 SECRET_KEY = '[REDACTED]'
 DEBUG = False
 
