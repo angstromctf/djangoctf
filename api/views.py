@@ -249,9 +249,10 @@ class UserViewSet(viewsets.GenericViewSet):
         profile.key_generated = timezone.now()
         profile.save()
 
-        # Log the user in
-        user = auth.authenticate(username=user.get_username(), password=request.data['password'])
-        auth.login(request, user)
+        if not settings.REQUIRE_USER_ACTIVATION:
+            # Log the user in
+            user = auth.authenticate(username=user.data['username'], password=user.data['password'])
+            auth.login(request, user)
 
         return self.status(request)
 
