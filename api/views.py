@@ -176,7 +176,7 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.user.is_authenticated:
             response['user'] = serializers.UserSerializer(request.user).data
             response['user']['eligible'] = request.user.profile.eligible
-            if request.user.profile.team:
+            if models.Team.current(user=request.user):
                 response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
         return Response(response)
 
