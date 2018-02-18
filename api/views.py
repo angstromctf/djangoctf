@@ -251,7 +251,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         if not settings.REQUIRE_USER_ACTIVATION:
             # Log the user in
-            user = auth.authenticate(username=user.data['username'], password=user.data['password'])
+            user = auth.authenticate(username=request.data['username'], password=request.data['password'])
             auth.login(request, user)
 
         return self.status(request)
