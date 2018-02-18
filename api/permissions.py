@@ -37,18 +37,20 @@ class ContestStarted(permissions.BasePermission):
     message = 'Not accessible before contest.'
 
     def has_permission(self, request, view):
-        return models.Competition.current().has_started()
+        current = models.Competition.current()
+        return current and current.has_started()
 
 
 class ContestEnded(permissions.BasePermission):
     message = 'Not accessible after contest.'
 
     def has_permission(self, request, view):
-        return models.Competition.current().has_ended()
+        current = models.Competition.current()
+        return current and current.has_ended()
 
 
 class HasTeam(permissions.BasePermission):
     message = 'Team required.'
 
     def has_permission(self, request, view):
-        return request.user.is_authenticated and models.Team.current(members=request.user).exists()
+        return request.user.is_authenticated and request.user.profile is not None

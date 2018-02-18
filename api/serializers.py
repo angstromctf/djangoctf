@@ -140,7 +140,7 @@ class SignupProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Profile
-        fields = ('eligible', 'country', 'state', 'gender', 'age')
+        fields = ('eligible', 'country', 'state', 'gender', 'age', 'race')
 
 
 class SignupSerializer(serializers.ModelSerializer):

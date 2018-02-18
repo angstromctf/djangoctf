@@ -53,7 +53,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
         # Get problem and team
         problem = self.get_object()
-        team = request.user.profile.team
+        team = request.user.profile.current_team
 
         # Check if the team has solved
         if problem not in team.solved.all():
@@ -158,7 +158,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
     def account(self, request):
         """Displays private information about a user's team."""
 
-        team = models.Team.current(members=request.user).first()
+        team = request.user.profile.current_team
         if team is not None:
             return Response(serializers.ShellAccountSerializer(team).data)
         else:
@@ -176,8 +176,8 @@ class UserViewSet(viewsets.GenericViewSet):
         if request.user.is_authenticated:
             response['user'] = serializers.UserSerializer(request.user).data
             response['user']['eligible'] = request.user.profile.eligible
-            if models.Team.current(user=request.user):
-                response['team'] = serializers.TeamProfileSerializer(request.user.profile.team).data
+            if request.user.profile.current_team:
+                response['team'] = serializers.TeamProfileSerializer(request.user.profile.current_team).data
         return Response(response)
 
     @list_route(

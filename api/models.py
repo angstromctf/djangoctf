@@ -58,7 +58,10 @@ class Competition(models.Model):
     def current() -> "Competition":
         """Get the current or upcoming competition."""
 
-        return Competition.objects.filter(active=True).first()
+        try:
+            return Competition.objects.get(active=True)
+        except Competition.DoesNotExist:
+            return None
 
 
 class Profile(models.Model):
@@ -88,6 +91,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return "Profile[" + self.user.username + "]"
+
+    @property
+    def current_team(self):
+        try:
+            return self.user.teams.get(competition=Competition.current())
+        except Team.DoesNotExist:
+            return None
 
 
 class Problem(models.Model):
@@ -208,7 +218,7 @@ class Team(models.Model):
     def current(**kwargs):
         """Filter active competitions."""
 
-        return Team.objects.filter(competition__active=True, **kwargs)
+        return Team.objects.get(competition=Competition.current(), **kwargs)
 
 
 class Submission(models.Model):
