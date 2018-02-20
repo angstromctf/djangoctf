@@ -71,16 +71,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
         fields = ('username', 'password')
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-    """Serializes all profile and user information."""
-
-    user = UserSerializer()
-
-    class Meta:
-        model = models.Profile
-        fields = ('user',)
-
-
 class TeamSerializer(serializers.ModelSerializer):
     """Serializes team information."""
 
@@ -104,7 +94,7 @@ class TeamProfileSerializer(serializers.ModelSerializer):
     """Serializes team and member information."""
 
     solves = SubmissionSerializer(many=True, read_only=True)
-    members = ProfileSerializer(many=True, read_only=True)
+    members = UserSerializer(many=True, read_only=True)
     place = serializers.SerializerMethodField()
 
     def get_place(self, obj):
