@@ -95,7 +95,7 @@ class Profile(models.Model):
     @property
     def current_team(self):
         try:
-            return self.user.teams.get(competition=Competition.current())
+            return self.user.teams.get(competition__active=True)
         except Team.DoesNotExist:
             return None
 
@@ -218,7 +218,7 @@ class Team(models.Model):
     def current(**kwargs):
         """Filter active competitions."""
 
-        return Team.objects.get(competition=Competition.current(), **kwargs)
+        return Team.objects.filter(competition__active=True, **kwargs)
 
 
 class Submission(models.Model):
