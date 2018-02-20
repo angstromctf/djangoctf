@@ -3,6 +3,8 @@ from django.contrib import auth
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from rest_framework import viewsets, status, schemas
 from rest_framework.decorators import detail_route, list_route, api_view, renderer_classes
@@ -169,6 +171,7 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = models.User.objects.all()
 
     @list_route(serializer_class=serializers.EmptySerializer)
+    @method_decorator(ensure_csrf_cookie)
     def status(self, request):
         """Get the user eligibility."""
 
