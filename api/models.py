@@ -32,7 +32,7 @@ class Competition(models.Model):
             for competition in Competition.objects.filter(active=True).exclude(id=self.id):
                 competition.active = False
                 competition.save()
-        self.save()
+        super(models.Model, self).save()
 
     def can_register(self):
         """Check if a user can register at the current time."""
