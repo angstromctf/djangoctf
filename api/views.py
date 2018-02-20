@@ -111,7 +111,7 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
         shell_password = create_shell_password()
 
         # Check if we need to set up a shell account for the team
-        if settings.SHELL['enabled']:
+        if settings.SHELL_ENABLED:
             create_shell_account(shell_username, shell_password)
 
         # Create the team
@@ -294,10 +294,10 @@ def create_shell_account(shell_username, shell_password):
     import paramiko
 
     # SSH to shell server
-    private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL['ssh_key_path'])
+    private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL_PRIVATE_KEY)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname=settings.SHELL['hostname'], username='root', pkey=private_key)
+    ssh.connect(hostname=settings.SHELL_HOSTNAME, username='root', pkey=private_key)
 
     # Create the account
     stdin, stdout, stderr = ssh.exec_command("addctfuser " + shell_username + " " + shell_password)
