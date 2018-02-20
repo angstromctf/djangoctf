@@ -53,4 +53,4 @@ class HasTeam(permissions.BasePermission):
     message = 'Team required.'
 
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.profile is not None
+        return request.user.is_authenticated and request.user.profile.current_team is not None
