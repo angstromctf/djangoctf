@@ -173,9 +173,10 @@ class UserViewSet(viewsets.GenericViewSet):
     @list_route(serializer_class=serializers.EmptySerializer)
     @method_decorator(ensure_csrf_cookie)
     def status(self, request):
-        """Get the user eligibility."""
+        """Get the current API status (user, team, competition)."""
 
-        response = {}
+        current = models.Competition.current()
+        response = {'competition': {'start': current.competition_start, 'end': current.competition_end}}
         if request.user.is_authenticated:
             response['user'] = serializers.UserSerializer(request.user).data
             response['user']['eligible'] = request.user.profile.eligible
