@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import auth
+from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.db.models import Q
@@ -51,7 +52,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
         try:
             guess = request.data["guess"].strip().lower()
         except KeyError:
-            return Response(status=500)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         # Get problem and team
         problem = self.get_object()
@@ -123,6 +124,12 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             shell_password=shell_password,
             code=code,
             eligible=request.user.profile.eligible)
+
+        try:
+            team.full_clean()
+        except ValidationError as error:
+            return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         team.save()
         team.members.add(request.user)
 
@@ -214,10 +221,6 @@ class UserViewSet(viewsets.GenericViewSet):
     def signup(self, request):
         """Signs the user up for an account."""
 
-        # Check if this user already exists
-        if models.User.objects.filter(Q(username=request.data['username']) | Q(email=request.data['email'])).exists():
-            return Response({}, status.HTTP_409_CONFLICT)
-
         # Create and save the user
         user = models.User.objects.create_user(
             username=request.data['username'],
@@ -226,6 +229,12 @@ class UserViewSet(viewsets.GenericViewSet):
             first_name=request.data['first_name'],
             last_name=request.data['last_name'])
         user.is_active = not settings.REQUIRE_USER_ACTIVATION
+
+        try:
+            user.full_clean()
+        except ValidationError as error:
+            return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
         user.save()
 
         # Create user profile
