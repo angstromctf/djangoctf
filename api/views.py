@@ -125,10 +125,10 @@ class TeamViewSet(viewsets.ReadOnlyModelViewSet):
             code=code,
             eligible=request.user.profile.eligible)
 
-        try:
-            team.full_clean()
-        except ValidationError as error:
-            return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        # try:
+        #     team.full_clean()
+        # except ValidationError as error:
+        #     return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         team.save()
         team.members.add(request.user)
@@ -230,10 +230,10 @@ class UserViewSet(viewsets.GenericViewSet):
             last_name=request.data['last_name'])
         user.is_active = not settings.REQUIRE_USER_ACTIVATION
 
-        try:
-            user.full_clean()
-        except ValidationError as error:
-            return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        # try:
+        #     user.full_clean()
+        # except ValidationError as error:
+        #     return Response({'errors': error.messages}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
         user.save()
 
