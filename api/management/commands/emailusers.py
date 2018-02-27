@@ -13,7 +13,7 @@ class Command(BaseCommand):
         sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
 
         email = Email("contact@angstromctf.com", "ångstromCTF Team")
-        mail = Mail(email, input("Subject: "), email, Content("text/html", input("Content (HTML): ")))
+        mail = Mail(email, input("Subject: "), None, Content("text/html", input("Content (HTML): ")))
 
         for user in User.objects.all():
             mail.personalizations[0].add_bcc(Email(user.email))
