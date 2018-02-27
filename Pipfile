@@ -9,7 +9,7 @@ name = "pypi"
 
 djangorestframework = "*"
 sendgrid = "*"
-"psycopg2" = "*"
+"psycopg2-binary" = "*"
 django-rest-swagger = "*"
 django-cors-headers = "*"
 django = "*"
