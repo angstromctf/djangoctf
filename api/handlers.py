@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@receiver(post_save, Team)
+@receiver(post_save, sender=Team)
 def create_team(team, **kwargs):
     # When a team is created, SSH into the shell server and make it a shell account
     if 'created' in kwargs and kwargs['created'] and settings.SHELL_ENABLED:
