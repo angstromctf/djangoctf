@@ -20,7 +20,7 @@ class ProblemSerializer(serializers.ModelSerializer):
     def is_solved(self, obj):
         if 'request' in self.context:
             user = self.context['request'].user
-            return user.is_authenticated() and user.profile.team is not None and obj in user.profile.team.solved.all()
+            return user.is_authenticated and user.profile.team is not None and obj in user.profile.team.solved.all()
         else:
             return False
 

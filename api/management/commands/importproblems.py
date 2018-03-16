@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 # from api.management import deploy
-from api.models import Problem
+from api.models import Problem, Competition
 
 import os
 import json
@@ -21,13 +21,14 @@ class Command(BaseCommand):
             problems = json.load(file)
         for problem in filter(None, problems):
             if problem.pop("enabled"):
-                model = Problem.objects.filter(name=problem["name"]).first()
-                if model:
-                    for field in problem:
-                        if field != "name":
-                            setattr(model, field, problem[field])
-                else:
-                    model = Problem.objects.create(**problem)
+                try:
+                    model = Problem.current().get(name=problem["name"])
+                    if model:
+                        for field in problem:
+                            if field != "name":
+                                setattr(model, field, problem[field])
+                except Problem.DoesNotExist:
+                    model = Problem.objects.create(competition=Competition.current(), **problem)
                 model.save()
             else:
                 model = Problem.objects.filter(name=problem["name"]).first()

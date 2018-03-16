@@ -123,6 +123,12 @@ class Problem(models.Model):
     class Meta:
         ordering = ('value',)
 
+    @staticmethod
+    def current(**kwargs):
+        """Filter active competitions."""
+
+        return Problem.objects.filter(competition__active=True, **kwargs)
+
     # def save(self, *args, **kwargs):
     #     try:
     #         old_value = Problem.objects.get(id=self.id).value
