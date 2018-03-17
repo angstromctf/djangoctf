@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=Team)
-def create_team(team, **kwargs):
+def create_team(sender, team, created, **kwargs):
     # When a team is created, SSH into the shell server and make it a shell account
-    if 'created' in kwargs and kwargs['created'] and settings.SHELL_ENABLED:
+    if created and settings.SHELL_ENABLED:
         import paramiko
 
         private_key = paramiko.RSAKey.from_private_key_file(settings.SHELL_PRIVATE_KEY)

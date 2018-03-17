@@ -19,9 +19,10 @@ class Command(BaseCommand):
         subj = input("Subject: ")
         cont = input("Content (HTML): ")
 
-        for user in User.objects.all():
+        for i, user in enumerate(User.objects.all()):
             try:
                 mail = Mail(email, subj, Email(user.email, user.get_full_name()), Content("text/html", cont))
                 response = sg.client.mail.send.post(request_body=mail.get())
-            except exc:
-                print(exc)
+                print("Successfully emailed user {}/{}.".format(i+1, User.objects.count()))
+            except Exception as e:
+                print(e)
