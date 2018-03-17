@@ -50,10 +50,10 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
         """Handles problem submissions and returns success status."""
 
         # Parse post data
-        try:
-            guess = request.data["guess"].strip().lower()
-        except KeyError:
+        if request.data["guess"] is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        guess = request.data["guess"].strip().lower()
 
         # Get problem and team
         problem = self.get_object()
