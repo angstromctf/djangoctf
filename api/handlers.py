@@ -22,7 +22,7 @@ def create_team(team, **kwargs):
 
         ssh.connect(hostname=settings.SHELL_HOSTNAME, username='root', pkey=private_key)
 
-        command = "/root/addteam " + team.shell_username + " " + team.shell_password
+        command = "/root/addteam.sh " + team.shell_username + " " + team.shell_password
         stdin, stdout, stderr = ssh.exec_command(command)
 
         stdout_data = stdout.read().decode('utf-8')
