@@ -230,7 +230,7 @@ class Team(models.Model):
 
 
 class Submission(models.Model):
-    """A correct submission for a problem."""
+    """A submission for a problem."""
 
     # Link to team and problem
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='solves')
