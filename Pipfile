@@ -13,6 +13,7 @@ sendgrid = "*"
 django-rest-swagger = "*"
 django-cors-headers = "*"
 django = "*"
+"psycopg2" = "*"
 
 
 [dev-packages]
