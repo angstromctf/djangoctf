@@ -31,6 +31,6 @@ class Command(BaseCommand):
                     Problem.current().annotate(count=Count("solves")).aggregate(Sum("count"))['count__sum'],
                     Team.current().filter(score__gt=0).count(),
 
-                    Team.current().filter(score__gt=0).annotate(count=Count("members__profile__country", distinct=True)).aggregate(Sum("count"))['count__sum'],
-                    Team.current().filter(score__gt=0).annotate(count=Count("members__profile__state", distinct=True)).aggregate(Sum("count"))['count__sum'],
+                    Team.current().filter(score__gt=0).values("members__profile__country").distinct().count(),
+                    Team.current().filter(score__gt=0).values("members__profile__state").distinct().count()
                     ))
