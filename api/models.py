@@ -114,6 +114,8 @@ class Problem(models.Model):
     category = models.CharField(max_length=50)
     hint = models.TextField()
 
+    update_time = models.BooleanField(default=True)
+
     # Hash the flags so attackers can't get them even with database access
     flag = models.CharField(max_length=128)
 
