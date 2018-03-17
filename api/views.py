@@ -219,7 +219,7 @@ class UserViewSet(viewsets.GenericViewSet):
     def signup(self, request):
         """Signs the user up for an account."""
 
-        if models.User.objects.exists(username=request.data['username']) or models.User.objects.exists(email=request.data['email']):
+        if models.User.objects.filter(username=request.data['username']).exists() or models.User.objects.filter(email=request.data['email']).exists():
             return Response({}, status.HTTP_409_CONFLICT)
 
         # Create and save the user
