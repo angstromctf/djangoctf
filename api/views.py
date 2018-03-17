@@ -76,11 +76,8 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
                 solution = models.Submission(team=team, problem=problem, new_score=team.score, correct=True)
                 solution.save()
 
-            return Response({})
-
-        # The submission was incorrect
+                return Response({})
         else:
-
             # Save the response only if they haven't guessed correctly
             if not models.Submission.objects.filter(team=team, problem=problem, correct=True).exists():
 
@@ -88,7 +85,7 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
                 solution = models.Submission(team=team, problem=problem, guess=guess, correct=False)
                 solution.save()
 
-            return Response({}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response({}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
 class TeamViewSet(viewsets.ReadOnlyModelViewSet):
